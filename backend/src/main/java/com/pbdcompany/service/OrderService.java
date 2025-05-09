@@ -17,23 +17,19 @@ public class OrderService {
     @Autowired
     private ProductRepository productRepository;
 
-    public OrderResponse createOrder(OrderRequest request){
+    public Order createOrder(String customerId,OrderRequest request){
         Product product = productRepository.findById(request.getProductId())
                 .orElseThrow(() -> new RuntimeException("Product not found"));
 
         Order order = new Order();
-        order.setCustomerId("current-customer-id");
-        //TODO 将 current-customer-id 替换为当前实际登陆用户的id
+        order.setCustomerId(customerId);
         order.setProductId(request.getProductId());
         order.setQuantity(request.getQuantity());
         order.setTotalPrice(product.getPrice() * request.getQuantity());
         order.setStatus("PENDING"); //提交成功 订单待支付
 
-        order = orderRepository.save(order);
+        return order = orderRepository.save(order);
 
-        return new OrderResponse(
-                order.getId(),order.getStatus(),order.getTotalPrice()
-        );
     }
 
     public OrderResponse payOrder(String orderId, String paymentMethod){
