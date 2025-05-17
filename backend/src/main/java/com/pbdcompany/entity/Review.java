@@ -1,8 +1,8 @@
 package com.pbdcompany.entity;
 
+import jakarta.persistence.*;
 import lombok.Data;
 
-import javax.persistence.*;
 import java.time.LocalDateTime;
 
 /**
@@ -10,12 +10,13 @@ import java.time.LocalDateTime;
  */
 @Entity
 @Data
+@Table
 public class Review {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private String id;
-    private String customerId;
-    private String orderId;
+    private Long id;
+    private Long customerId;
+    private Long orderId;
     private Integer rating; // 1-5
     private String comment;
 

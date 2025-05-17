@@ -13,7 +13,7 @@ public class ProductService {
     @Autowired
     private ProductRepository productRepository;
 
-    public List<ProductResponse> searchProduct(String name, String id){
+    public List<ProductResponse> searchProduct(String name, Long id){
         List<Product> products = productRepository.findByNameContainingOrId(name,id);
         return products.stream()
                 .map(product -> new ProductResponse(
@@ -22,5 +22,9 @@ public class ProductService {
                         product.getPrice(),
                         product.getStock()
                 ) ).toList();
+    }
+
+    public List<Product> getAllProducts() {
+        return productRepository.findAll();
     }
 }

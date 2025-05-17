@@ -14,7 +14,7 @@ public class TrackingController {
     private TrackingService trackingService;
 
     @GetMapping
-    public TrackingResponse getTrackingInfo(String orderId){
+    public TrackingResponse getTrackingInfo(Long orderId){
         return trackingService.getTrackingInfo(orderId);
     }
 }

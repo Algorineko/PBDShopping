@@ -1,11 +1,8 @@
 package com.pbdcompany.controller;
 
-import com.pbdcompany.entity.CustomerUserDetails;
 import com.pbdcompany.service.ReviewService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -16,12 +13,12 @@ public class ReviewController {
 
     @PostMapping("/{orderId}")
     public ResponseEntity<?> addReview(
-            @PathVariable String orderId,
+            @PathVariable Long orderId,
             Integer rating,
             String comment,
-            @RequestParam(required = false) String images,
-            @AuthenticationPrincipal CustomerUserDetails userDetails) {
-        String customerId = userDetails.getUsername();
+            @RequestParam(required = false) String images) {
+        Long customerId = 10001L;
+        //TODO 使用TOKEN来获取ID
 
         reviewService.addReview(orderId, customerId, rating, comment, images);
 

@@ -20,8 +20,8 @@ public class CartService {
     @Autowired
     private ProductRepository productRepository;
 
-    public void addToCart(String customerId, AddToCartRequest request) {
-        Product product = productRepository.findById(request.getProductId())
+    public void addToCart(Long customerId, AddToCartRequest request) {
+        Product product = productRepository.findById(String.valueOf(request.getProductId()))
                 .orElseThrow(() -> new RuntimeException("Product not found"));
 
         CartItem cartItem = new CartItem();
@@ -31,12 +31,12 @@ public class CartService {
 
         cartItemRepository.save(cartItem);
     }
-    public CartResponse getCart(String customerId) {
+    public CartResponse getCart(Long customerId) {
 
         List<CartItem> cartItems = cartItemRepository.findByCustomerId(customerId);
         List<CartItemResponse> itemResponses = cartItems.stream()
                 .map(cartItem -> {
-                    Product product = productRepository.findById(cartItem.getProductId())
+                    Product product = productRepository.findById(String.valueOf(cartItem.getProductId()))
                             .orElseThrow(() -> new RuntimeException("Product not found in cart"));
                     return new CartItemResponse(
                             cartItem.getProductId(),

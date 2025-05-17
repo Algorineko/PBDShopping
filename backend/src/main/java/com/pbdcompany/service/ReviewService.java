@@ -1,11 +1,13 @@
 package com.pbdcompany.service;
 
-import com.pbdcompany.entity.Order;
+import com.pbdcompany.entity.Orders;
 import com.pbdcompany.entity.Review;
 import com.pbdcompany.repository.OrderRepository;
 import com.pbdcompany.repository.ReviewRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 public class ReviewService {
@@ -15,10 +17,10 @@ public class ReviewService {
     @Autowired
     private OrderRepository orderRepository;
 
-    public void addReview(String orderId, String customerId, Integer rating, String comment, String images){
-        Order order = orderRepository.findById(orderId)
+    public void addReview(Long orderId, Long customerId, Integer rating, String comment, String images){
+        Orders orders = orderRepository.findById(String.valueOf(orderId))
                 .orElseThrow( () -> new RuntimeException("Order not found"));
-        if(!"DELIVERED".equals(order.getStatus())){
+        if(!"DELIVERED".equals(orders.getStatus())){
             throw new RuntimeException("Order must be delivered before review");
         }
 
@@ -30,5 +32,9 @@ public class ReviewService {
         review.setImages(images);
 
         reviewRepository.save(review);
+    }
+
+    public List<Review> getAllReviews() {
+        return reviewRepository.findAll();
     }
 }

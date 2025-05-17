@@ -8,6 +8,6 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class RegisterResponse {
-    private String customerId;
+    private Long customerId;
     private String username;
 }

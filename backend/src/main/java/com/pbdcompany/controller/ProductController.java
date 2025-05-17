@@ -20,7 +20,7 @@ public class ProductController {
     @RequestMapping("/search")
     public List<ProductResponse> searchProduct(
             @RequestParam(required = false) String name,
-            @RequestParam(required = false) String id) {
+            @RequestParam(required = false) Long id) {
             /*
                 @RequestParam(required = false)：
                     表示该请求参数是可选的（非必需）
