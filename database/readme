@@ -1,0 +1,7 @@
+5.18的修改：
+1.修改设置>编辑器>文件编码中的属性文件的默认编码为UTF-8,以便配置resources文件夹中的application.properties。
+2.修改了application.properties中的部分备注，添加了本地(李卓阳)数据库的调试配置。
+3.修改了设置>项目结构中的语言级别为17。
+4.修改了backend文件夹中的pom.xml配置文件：
+    ①修改原本mysql的dependency的artifactId,从mysql-connector-java改为mysql-connector-j,由于版本的原因。
+    ②新增mybatis的dependency，用于简化数据库的连接，见第64行
