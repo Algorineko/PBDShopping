@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.example.springbootmybatis.mapper.ReviewMapper">
+
+    <!-- 通用查询字段 -->
+    <sql id="Base_Column_List">
+        ReviewID, CustomerID, OrderItemID, Rating, Comment
+    </sql>
+
+    <!-- 结果映射 -->
+    <resultMap id="ReviewResultMap" type="org.example.springbootmybatis.entity.Review">
+        <id property="reviewId" column="ReviewID"/>
+        <result property="customerId" column="CustomerID"/>
+        <result property="orderItemId" column="OrderItemID"/>
+        <result property="rating" column="Rating"/>
+        <result property="comment" column="Comment"/>
+    </resultMap>
+
+    <!-- 查询所有评论 -->
+    <select id="findAll" resultMap="ReviewResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from review
+    </select>
+
+    <!-- 根据ID删除评论 -->
+    <delete id="deleteById">
+        delete from review
+        where ReviewID = #{id}
+    </delete>
+
+    <!-- 插入评论 -->
+    <insert id="insert">
+        insert into review
+        (
+        <include refid="Base_Column_List"/>
+        )
+        values
+        (
+        #{reviewId},
+        #{customerId},
+        #{orderItemId},
+        #{rating},
+        #{comment}
+        )
+    </insert>
+
+    <!-- 动态更新评论信息 -->
+    <update id="update">
+        update review
+        <set>
+            <if test="customerId != null">
+                CustomerID = #{customerId},
+            </if>
+            <if test="orderItemId != null">
+                OrderItemID = #{orderItemId},
+            </if>
+            <if test="rating != null">
+                Rating = #{rating},
+            </if>
+            <if test="comment != null and comment.trim() != ''">
+                Comment = #{comment},
+            </if>
+        </set>
+        where ReviewID = #{reviewId}
+    </update>
+
+    <!-- 根据ID查询评论 -->
+    <select id="findById" resultMap="ReviewResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from review
+        where ReviewID = #{id}
+    </select>
+
+</mapper>

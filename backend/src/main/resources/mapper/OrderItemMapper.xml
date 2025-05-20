@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.example.springbootmybatis.mapper.OrderItemMapper">
+
+    <!-- 通用查询字段 -->
+    <sql id="Base_Column_List">
+        OrderItemID, OrderID, ProductID, Quantity, Price
+    </sql>
+
+    <!-- 结果映射 -->
+    <resultMap id="OrderItemResultMap" type="org.example.springbootmybatis.entity.OrderItem">
+        <id property="orderItemId" column="OrderItemID"/>
+        <result property="orderId" column="OrderID"/>
+        <result property="productId" column="ProductID"/>
+        <result property="quantity" column="Quantity"/>
+        <result property="price" column="Price"/>
+    </resultMap>
+
+    <!-- 查询所有订单项 -->
+    <select id="findAll" resultMap="OrderItemResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from orderItem
+    </select>
+
+    <!-- 根据ID删除订单项 -->
+    <delete id="deleteById">
+        delete from orderItem
+        where OrderItemID = #{id}
+    </delete>
+
+    <!-- 插入订单项 -->
+    <insert id="insert">
+        insert into orderItem
+        (
+        <include refid="Base_Column_List"/>
+        )
+        values
+        (
+        #{orderItemId},
+        #{orderId},
+        #{productId},
+        #{quantity},
+        #{price}
+        )
+    </insert>
+
+    <!-- 动态更新订单项信息 -->
+    <update id="update">
+        update orderItem
+        <set>
+            <if test="orderId != null">
+                OrderID = #{orderId},
+            </if>
+            <if test="productId != null">
+                ProductID = #{productId},
+            </if>
+            <if test="quantity != null">
+                Quantity = #{quantity},
+            </if>
+            <if test="price != null">
+                Price = #{price},
+            </if>
+        </set>
+        where OrderItemID = #{orderItemId}
+    </update>
+
+    <!-- 根据ID查询订单项 -->
+    <select id="findById" resultMap="OrderItemResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from orderItem
+        where OrderItemID = #{id}
+    </select>
+
+</mapper>

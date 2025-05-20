@@ -5,3 +5,12 @@
 4.修改了backend文件夹中的pom.xml配置文件：
     ①修改原本mysql的dependency的artifactId,从mysql-connector-java改为mysql-connector-j,由于版本的原因。
     ②新增mybatis的dependency，用于简化数据库的连接，见第64行
+
+
+
+5.20的修改：
+1.修改数据库文件为shopping5.sql
+2.增加数据库设计文档（第二版）
+3.在backend文件中，修改entity包中的实体类和Service包中的Service类，新增mapper包和resources文件下的mapper.xml映射配置文件
+4.在application.properties中，增加XML映射配置文件位置的配置
+5.在main/java目录下，建立一个test文件，用于测试与数据库的连接

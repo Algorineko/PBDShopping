@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.example.springbootmybatis.mapper.AdminMapper">
+
+    <!-- 通用查询字段 -->
+    <sql id="Base_Column_List">
+        AdminID, AdminName, Password
+    </sql>
+
+    <!-- 结果映射 -->
+    <resultMap id="AdminResultMap" type="org.example.springbootmybatis.entity.Admin">
+        <id property="adminId" column="AdminID"/>
+        <result property="adminName" column="AdminName"/>
+        <result property="password" column="Password"/>
+    </resultMap>
+
+    <!-- 查询所有管理员 -->
+    <select id="findAll" resultMap="AdminResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from admin
+    </select>
+
+    <!-- 根据ID删除管理员 -->
+    <delete id="deleteById">
+        delete from admin
+        where AdminID = #{id}
+    </delete>
+
+    <!-- 插入管理员 -->
+    <insert id="insert">
+        insert into admin(<include refid="Base_Column_List"/>)
+        values
+        (
+        #{adminId},
+        #{adminName},
+        #{password}
+        )
+    </insert>
+
+    <!-- 动态更新管理员信息 -->
+    <update id="update">
+        update admin
+        <set>
+            <if test="adminName != null">
+                AdminName = #{adminName},
+            </if>
+            <if test="password != null">
+                Password = #{password},
+            </if>
+        </set>
+        where AdminID = #{adminId}
+    </update>
+
+    <!-- 根据ID查询管理员 -->
+    <select id="findById" resultMap="AdminResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from admin
+        where AdminID = #{id}
+    </select>
+
+</mapper>

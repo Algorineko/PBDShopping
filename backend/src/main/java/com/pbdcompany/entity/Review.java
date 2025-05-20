@@ -1,27 +1,20 @@
 package com.pbdcompany.entity;
 
-import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
-
-/**
- * 客户评价
- */
-@Entity
 @Data
-@Table
+@AllArgsConstructor
+@NoArgsConstructor
 public class Review {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-    private Long customerId;
-    private Long orderId;
-    private Integer rating; // 1-5
+    private int reviewId;
+    private int orderItemId;
+    private int customerId;
+    private double rating;
     private String comment;
 
-    @Lob
-    @Column(columnDefinition = "TEXT")
-    private String images; // base64 encoded image data（JSON）
-    private LocalDateTime createAt = LocalDateTime.now();
+//    private LocalDateTime addedAt;
+//    private LocalDateTime updatedAt;
 }
+

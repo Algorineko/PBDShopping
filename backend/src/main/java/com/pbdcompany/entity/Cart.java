@@ -7,14 +7,11 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Product {
-    private int productId;
-    private int categoryId;
-    private int merchantId;
-    private String productName;
-    private String description;
-    private Double price;
-    
+public class Cart {
+    private int cartId;
+    private int customerId;
+
 //    private LocalDateTime addedAt;
 //    private LocalDateTime updatedAt;
 }
+

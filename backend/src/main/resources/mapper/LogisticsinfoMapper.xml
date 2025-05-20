@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.example.springbootmybatis.mapper.LogisticsinfoMapper">
+
+    <!-- 通用查询字段 -->
+    <sql id="Base_Column_List">
+        LogisticsID, OrderItemID, LogisticsCompany, TrackingNumber, Status
+    </sql>
+
+    <!-- 结果映射 -->
+    <resultMap id="LogisticsinfoResultMap" type="org.example.springbootmybatis.entity.Logisticsinfo">
+        <id property="logisticsId" column="LogisticsID"/>
+        <result property="orderItemId" column="OrderItemID"/>
+        <result property="logisticsCompany" column="LogisticsCompany"/>
+        <result property="trackingNumber" column="TrackingNumber"/>
+        <result property="status" column="Status"/>
+    </resultMap>
+
+    <!-- 查询所有物流信息 -->
+    <select id="findAll" resultMap="LogisticsinfoResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from logisticsinfo
+    </select>
+
+    <!-- 根据ID删除物流信息 -->
+    <delete id="deleteById">
+        delete from logisticsinfo
+        where LogisticsID = #{id}
+    </delete>
+
+    <!-- 插入物流信息 -->
+    <insert id="insert">
+        insert into logisticsinfo
+        (
+        <include refid="Base_Column_List"/>
+        )
+        values
+        (
+        #{logisticsId},
+        #{orderItemId},
+        #{logisticsCompany},
+        #{trackingNumber},
+        #{status}
+        )
+    </insert>
+
+    <!-- 动态更新物流信息 -->
+    <update id="update">
+        update logisticsinfo
+        <set>
+            <if test="orderItemId != null">
+                OrderItemID = #{orderItemId},
+            </if>
+            <if test="logisticsCompany != null and logisticsCompany.trim() != ''">
+                LogisticsCompany = #{logisticsCompany},
+            </if>
+            <if test="trackingNumber != null and trackingNumber.trim() != ''">
+                TrackingNumber = #{trackingNumber},
+            </if>
+            <if test="status != null">
+                Status = #{status},
+            </if>
+        </set>
+        where LogisticsID = #{logisticsId}
+    </update>
+
+    <!-- 根据ID查询物流信息 -->
+    <select id="findById" resultMap="LogisticsinfoResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from logisticsinfo
+        where LogisticsID = #{id}
+    </select>
+
+</mapper>
