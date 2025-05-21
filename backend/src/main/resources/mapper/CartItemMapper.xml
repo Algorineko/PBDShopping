@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.example.springbootmybatis.mapper.CartItemMapper">
+
+    <!-- 通用查询字段 -->
+    <sql id="Base_Column_List">
+        CartItemID, CartID, ProductID, Quantity, SelectedOptions, Status
+    </sql>
+
+    <!-- 结果映射 -->
+    <resultMap id="CartItemResultMap" type="org.example.springbootmybatis.entity.CartItem">
+        <id property="cartItemId" column="CartItemID"/>
+        <result property="cartId" column="CartID"/>
+        <result property="productId" column="ProductID"/>
+        <result property="quantity" column="Quantity"/>
+        <result property="selectedOptions" column="SelectedOptions"/>
+        <result property="status" column="Status"/>
+    </resultMap>
+
+    <!-- 查询所有购物车项 -->
+    <select id="findAll" resultMap="CartItemResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from cartItem
+    </select>
+
+    <!-- 根据ID删除购物车项 -->
+    <delete id="deleteById">
+        delete from cartItem
+        where CartItemID = #{id}
+    </delete>
+
+    <!-- 插入购物车项 -->
+    <insert id="insert">
+        insert into cartItem
+        (
+        <include refid="Base_Column_List"/>
+        )
+        values
+        (
+        #{cartItemId},
+        #{cartId},
+        #{productId},
+        #{quantity},
+        #{selectedOptions},
+        #{status}
+        )
+    </insert>
+
+    <!-- 动态更新购物车项信息 -->
+    <update id="update">
+        update cartItem
+        <set>
+            <if test="cartId != null">
+                CartID = #{cartId},
+            </if>
+            <if test="productId != null">
+                ProductID = #{productId},
+            </if>
+            <if test="quantity != null">
+                Quantity = #{quantity},
+            </if>
+            <if test="selectedOptions != null and selectedOptions.trim() != ''">
+                SelectedOptions = #{selectedOptions},
+            </if>
+            <if test="status != null">
+                Status = #{status},
+            </if>
+        </set>
+        where CartItemID = #{cartItemId}
+    </update>
+
+    <!-- 根据ID查询购物车项 -->
+    <select id="findById" resultMap="CartItemResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from cartItem
+        where CartItemID = #{id}
+    </select>
+
+</mapper>

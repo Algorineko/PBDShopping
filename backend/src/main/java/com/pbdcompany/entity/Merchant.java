@@ -7,14 +7,14 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Product {
-    private int productId;
-    private int categoryId;
+public class Merchant {
     private int merchantId;
-    private String productName;
-    private String description;
-    private Double price;
-    
+    private String merchantName;
+    private String password; //可能有问题，右边的描述是varchar(255) = "
+    private String phoneNumber;
+    private String merchantAddress;
+    private String headPicture;
+
 //    private LocalDateTime addedAt;
 //    private LocalDateTime updatedAt;
 }
