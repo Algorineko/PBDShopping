@@ -1,8 +1,10 @@
 
 package com.pbdcompany.service;
 
-import org.example.springbootmybatis.entity.Product;
-import org.example.springbootmybatis.mapper.ProductMapper;
+
+import com.pbdcompany.dto.response.ProductResponse;
+import com.pbdcompany.entity.Product;
+import com.pbdcompany.mapper.ProductMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -37,5 +39,10 @@ public class ProductService {
     // 根据ID查询商品信息
     public Product findById(int id) {
         return productMapper.findById(id);
+    }
+
+    // 根据Id或名称查询商品信息
+    public List<ProductResponse> findByNameOrId(String name, int id) {
+        return productMapper.findByNameOrId(name, id);
     }
 }

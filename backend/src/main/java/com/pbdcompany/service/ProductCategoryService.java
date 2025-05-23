@@ -1,8 +1,9 @@
 
 package com.pbdcompany.service;
 
-import org.example.springbootmybatis.entity.ProductCategory;
-import org.example.springbootmybatis.mapper.ProductCategoryMapper;
+
+import com.pbdcompany.entity.ProductCategory;
+import com.pbdcompany.mapper.ProductCategoryMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

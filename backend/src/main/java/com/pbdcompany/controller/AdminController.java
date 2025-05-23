@@ -24,18 +24,18 @@ public class AdminController {
      */
     @GetMapping("/customer")
     public List<Customer> getAllCustomers(){
-        return customerService.getAllCustomers();
+        return customerService.findAll();
     }
 
     @Autowired
-    private OrderService orderService;
+    private OrdersService ordersService;
 
     /**
      *  获取所有订单信息
      */
     @GetMapping("/order")
     public List<Orders> getAllOrders(){
-        return orderService.getAllOrders();
+        return ordersService.findAll();
     }
     @Autowired
     private ProductService productService;
@@ -45,7 +45,8 @@ public class AdminController {
      */
     @GetMapping("/product")
     public List<Product> getAllProducts(){
-        return productService.getAllProducts();
+
+        return productService.findAll();
     }
 
     @Autowired
@@ -55,7 +56,7 @@ public class AdminController {
      */
     @GetMapping("/review")
     public List<Review> getAllReviews(){
-        return reviewService.getAllReviews();
+        return reviewService.findAll();
     }
 
 }

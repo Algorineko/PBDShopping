@@ -1,7 +1,8 @@
 package com.pbdcompany.mapper;
 
+import com.pbdcompany.entity.Merchant;
 import org.apache.ibatis.annotations.Mapper;
-import org.example.springbootmybatis.entity.Merchant;
+
 
 import java.util.List;
 

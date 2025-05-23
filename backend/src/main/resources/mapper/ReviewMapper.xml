@@ -2,7 +2,7 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="org.example.springbootmybatis.mapper.ReviewMapper">
+<mapper namespace="com.pbdcompany.mapper.ReviewMapper">
 
     <!-- 通用查询字段 -->
     <sql id="Base_Column_List">
@@ -10,13 +10,14 @@
     </sql>
 
     <!-- 结果映射 -->
-    <resultMap id="ReviewResultMap" type="org.example.springbootmybatis.entity.Review">
+    <resultMap id="ReviewResultMap" type="com.pbdcompany.entity.Review">
         <id property="reviewId" column="ReviewID"/>
         <result property="customerId" column="CustomerID"/>
         <result property="orderItemId" column="OrderItemID"/>
         <result property="rating" column="Rating"/>
         <result property="comment" column="Comment"/>
     </resultMap>
+
 
     <!-- 查询所有评论 -->
     <select id="findAll" resultMap="ReviewResultMap">
@@ -32,20 +33,14 @@
     </delete>
 
     <!-- 插入评论 -->
-    <insert id="insert">
-        insert into review
-        (
-        <include refid="Base_Column_List"/>
-        )
-        values
-        (
-        #{reviewId},
-        #{customerId},
-        #{orderItemId},
-        #{rating},
-        #{comment}
-        )
+    <insert id="insert" useGeneratedKeys="true" keyProperty="reviewId">
+        INSERT INTO review (
+            CustomerID, OrderItemID, Rating, Comment
+        ) VALUES (
+                     #{customerId}, #{orderItemId}, #{rating}, #{comment}
+                 )
     </insert>
+
 
     <!-- 动态更新评论信息 -->
     <update id="update">

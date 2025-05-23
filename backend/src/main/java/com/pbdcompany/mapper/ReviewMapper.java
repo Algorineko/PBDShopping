@@ -1,7 +1,8 @@
 package com.pbdcompany.mapper;
 
+import com.pbdcompany.entity.Review;
 import org.apache.ibatis.annotations.Mapper;
-import org.example.springbootmybatis.entity.Review;
+
 
 import java.util.List;
 

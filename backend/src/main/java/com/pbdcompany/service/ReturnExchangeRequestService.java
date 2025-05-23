@@ -1,8 +1,9 @@
 
 package com.pbdcompany.service;
 
-import org.example.springbootmybatis.entity.ReturnExchangeRequest;
-import org.example.springbootmybatis.mapper.ReturnExchangeRequestMapper;
+
+import com.pbdcompany.dto.request.ReturnExchangeRequest;
+import com.pbdcompany.mapper.ReturnExchangeRequestMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

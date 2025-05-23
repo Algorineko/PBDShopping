@@ -4,12 +4,12 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class TrackingResponse {
-    private String logisticsCompany; //物流公司
-    private String trackingNumber; //物流单号
-    private DeliveryStatus status;
+public class OrderTrackingResponse {
+    private int orderId;
+    private List<OrderItemTrackingResponse> items;
 }
-

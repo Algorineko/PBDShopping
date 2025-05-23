@@ -1,8 +1,8 @@
 
 package com.pbdcompany.service;
 
-import org.example.springbootmybatis.entity.Logisticsinfo;
-import org.example.springbootmybatis.mapper.LogisticsinfoMapper;
+import com.pbdcompany.entity.Logisticsinfo;
+import com.pbdcompany.mapper.LogisticsinfoMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

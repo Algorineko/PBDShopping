@@ -1,8 +1,9 @@
 
 package com.pbdcompany.service;
 
-import org.example.springbootmybatis.entity.Admin;
-import org.example.springbootmybatis.mapper.AdminMapper;
+
+import com.pbdcompany.entity.Admin;
+import com.pbdcompany.mapper.AdminMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

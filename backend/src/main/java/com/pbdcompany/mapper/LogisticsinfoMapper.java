@@ -1,7 +1,7 @@
 package com.pbdcompany.mapper;
 
+import com.pbdcompany.entity.Logisticsinfo;
 import org.apache.ibatis.annotations.Mapper;
-import org.example.springbootmybatis.entity.Logisticsinfo;
 
 import java.util.List;
 
@@ -17,5 +17,7 @@ public interface LogisticsinfoMapper {
     public void update(Logisticsinfo Logisticsinfo);
 
     public Logisticsinfo findById(int id);
- 
+
+    public Logisticsinfo findByOrderItemId(int orderItemId);
+
 }

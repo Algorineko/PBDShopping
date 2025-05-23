@@ -1,8 +1,9 @@
 
 package com.pbdcompany.service;
 
-import org.example.springbootmybatis.entity.CartItem;
-import org.example.springbootmybatis.mapper.CartItemMapper;
+
+import com.pbdcompany.entity.CartItem;
+import com.pbdcompany.mapper.CartItemMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -35,7 +36,7 @@ public class CartItemService {
     }
 
     // 根据ID查询购物车项信息
-    public CartItem findById(int id) {
+    public List<CartItem> findById(int id) {
         return cartItemMapper.findById(id);
     }
 }

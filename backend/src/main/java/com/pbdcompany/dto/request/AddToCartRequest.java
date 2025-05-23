@@ -4,6 +4,7 @@ import lombok.Data;
 
 @Data
 public class AddToCartRequest {
-    private Long productId;
+    private int productId;
     private Integer quantity;
+    private String selectedOptions;
 }

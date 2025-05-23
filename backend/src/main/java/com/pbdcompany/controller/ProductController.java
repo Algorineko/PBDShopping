@@ -20,13 +20,8 @@ public class ProductController {
     @RequestMapping("/search")
     public List<ProductResponse> searchProduct(
             @RequestParam(required = false) String name,
-            @RequestParam(required = false) Long id) {
-            /*
-                @RequestParam(required = false)：
-                    表示该请求参数是可选的（非必需）
-                    如果请求中没有传入该参数，其值将为 null
-             */
-                return productService.searchProduct(name, id);
+            @RequestParam(required = false) int id) {
+                return productService.findByNameOrId(name, id);
     }
 
 }

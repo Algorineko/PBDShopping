@@ -1,7 +1,7 @@
 package com.pbdcompany.mapper;
 
+import com.pbdcompany.entity.OrderItem;
 import org.apache.ibatis.annotations.Mapper;
-import org.example.springbootmybatis.entity.OrderItem;
 
 import java.util.List;
 
@@ -17,5 +17,8 @@ public interface OrderItemMapper {
     public void update(OrderItem OrderItem);
 
     public OrderItem findById(int id);
- 
+
+    public List<OrderItem> findByOrderId(int orderId);
+
+
 }

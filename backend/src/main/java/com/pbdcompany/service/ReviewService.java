@@ -1,8 +1,8 @@
 
 package com.pbdcompany.service;
 
-import org.example.springbootmybatis.entity.Review;
-import org.example.springbootmybatis.mapper.ReviewMapper;
+import com.pbdcompany.entity.Review;
+import com.pbdcompany.mapper.ReviewMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

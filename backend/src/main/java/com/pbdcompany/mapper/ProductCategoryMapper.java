@@ -1,7 +1,8 @@
 package com.pbdcompany.mapper;
 
+import com.pbdcompany.entity.ProductCategory;
 import org.apache.ibatis.annotations.Mapper;
-import org.example.springbootmybatis.entity.ProductCategory;
+
 
 import java.util.List;
 

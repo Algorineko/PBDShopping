@@ -1,8 +1,9 @@
 package com.pbdcompany.mapper;
 
+import com.pbdcompany.entity.Customer;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
-import org.example.springbootmybatis.entity.Customer;
+
 
 import java.util.List;
 
@@ -44,6 +45,10 @@ public interface CustomerMapper {
 
     //一般性的查询
     //@Select("select * from customer where CustomerName = #{username} and Password = #{password}")
-    public Customer findByUsernameAndPassword(@Param("username") String username, @Param("password") String password);
+    public Customer findByUsernameAndPassword(
+            @Param("username") String username,
+            @Param("password") String password);
     //此处，不使用@Param注解也可以，但仅限于Springboot官方框架，使用阿里云的框架就会报错
+
+
 }

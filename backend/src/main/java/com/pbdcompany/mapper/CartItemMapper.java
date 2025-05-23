@@ -1,7 +1,7 @@
 package com.pbdcompany.mapper;
 
+import com.pbdcompany.entity.CartItem;
 import org.apache.ibatis.annotations.Mapper;
-import org.example.springbootmybatis.entity.CartItem;
 
 import java.util.List;
 
@@ -16,6 +16,6 @@ public interface CartItemMapper {
 
     public void update(CartItem CartItem);
 
-    public CartItem findById(int id);
+    public List<CartItem> findById(int id);
  
 }

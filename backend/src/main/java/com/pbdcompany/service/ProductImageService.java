@@ -1,8 +1,9 @@
 
 package com.pbdcompany.service;
 
-import org.example.springbootmybatis.entity.ProductImage;
-import org.example.springbootmybatis.mapper.ProductImageMapper;
+
+import com.pbdcompany.entity.ProductImage;
+import com.pbdcompany.mapper.ProductImageMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class OrderResponse {
-    private Long orderId;
+    private int orderId;
     private String status;
     private Double totalPrice;
 }

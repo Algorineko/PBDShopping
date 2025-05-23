@@ -1,8 +1,11 @@
 
 package com.pbdcompany.service;
 
-import org.example.springbootmybatis.entity.Customer;
-import org.example.springbootmybatis.mapper.CustomerMapper;
+
+import com.pbdcompany.dto.request.RegisterRequest;
+import com.pbdcompany.dto.response.RegisterResponse;
+import com.pbdcompany.entity.Customer;
+import com.pbdcompany.mapper.CustomerMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -38,4 +41,24 @@ public class CustomerService {
     public Customer findByUsernameAndPassword(String username, String password) {
         return customerMapper.findByUsernameAndPassword(username, password);
     }
+
+    //注册
+    public RegisterResponse register(RegisterRequest request) {
+        Customer customer = new Customer();
+        customer.setCustomerName(request.getUsername());
+        customer.setPassword(request.getPassword());
+        customer.setPhoneNumber(request.getPhone());
+        customer.setMoney(0.0); // 新用户初始金额为0
+        customer.setAddress(""); // 默认地址为空
+        customer.setHeadPicture(""); // 默认头像为空
+        customerMapper.insert(customer); // 插入数据库
+        return new RegisterResponse(customer.getCustomerId(), customer.getCustomerName());
+    }
+
+    //登录
+    public Customer login(String username, String password) {
+        return customerMapper.findByUsernameAndPassword(username, password);
+    }
+
+
 }

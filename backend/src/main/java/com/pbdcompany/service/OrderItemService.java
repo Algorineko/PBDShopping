@@ -1,8 +1,8 @@
 
 package com.pbdcompany.service;
 
-import org.example.springbootmybatis.entity.OrderItem;
-import org.example.springbootmybatis.mapper.OrderItemMapper;
+import com.pbdcompany.entity.OrderItem;
+import com.pbdcompany.mapper.OrderItemMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

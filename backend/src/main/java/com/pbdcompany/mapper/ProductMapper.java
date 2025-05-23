@@ -1,7 +1,8 @@
 package com.pbdcompany.mapper;
 
+import com.pbdcompany.dto.response.ProductResponse;
+import com.pbdcompany.entity.Product;
 import org.apache.ibatis.annotations.Mapper;
-import org.example.springbootmybatis.entity.Product;
 
 import java.util.List;
 
@@ -17,5 +18,7 @@ public interface ProductMapper {
     public void update(Product Product);
 
     public Product findById(int id);
+
+    public List<ProductResponse> findByNameOrId(String name, int id);
  
 }

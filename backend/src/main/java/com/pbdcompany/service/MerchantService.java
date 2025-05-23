@@ -1,8 +1,9 @@
 
 package com.pbdcompany.service;
 
-import org.example.springbootmybatis.entity.Merchant;
-import org.example.springbootmybatis.mapper.MerchantMapper;
+
+import com.pbdcompany.entity.Merchant;
+import com.pbdcompany.mapper.MerchantMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

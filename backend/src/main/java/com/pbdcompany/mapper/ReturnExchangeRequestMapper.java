@@ -1,7 +1,7 @@
 package com.pbdcompany.mapper;
 
+import com.pbdcompany.dto.request.ReturnExchangeRequest;
 import org.apache.ibatis.annotations.Mapper;
-import org.example.springbootmybatis.entity.ReturnExchangeRequest;
 
 import java.util.List;
 
@@ -17,5 +17,7 @@ public interface ReturnExchangeRequestMapper {
     public void update(ReturnExchangeRequest ReturnExchangeRequest);
 
     public ReturnExchangeRequest findById(int id);
- 
+
+
+
 }
