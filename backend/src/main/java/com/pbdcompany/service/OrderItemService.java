@@ -25,8 +25,8 @@ public class OrderItemService {
     }
 
     // 添加订单项
-    public void insert(OrderItem orderItem) {
-        orderItemMapper.insert(orderItem);
+    public int insert(OrderItem orderItem) {
+        return orderItemMapper.insert(orderItem);
     }
 
     // 更新订单项信息

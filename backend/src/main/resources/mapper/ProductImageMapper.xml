@@ -30,7 +30,7 @@
     </delete>
 
     <!-- 插入商品图片 -->
-    <insert id="insert">
+    <insert id="insert" useGeneratedKeys="true" keyProperty="productImageId">
         insert into productImage
         (
         <include refid="Base_Column_List"/>

@@ -12,7 +12,7 @@ public interface LogisticsinfoMapper {
 
     public void deleteById(int id);
 
-    public void insert(Logisticsinfo Logisticsinfo);
+    public int insert(Logisticsinfo Logisticsinfo);
 
     public void update(Logisticsinfo Logisticsinfo);
 

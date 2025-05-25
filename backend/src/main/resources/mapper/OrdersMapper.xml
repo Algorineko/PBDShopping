@@ -31,15 +31,11 @@
     </delete>
 
     <!-- 插入订单 -->
-    <insert id="insert">
-        INSERT INTO Orders (customerId, totalPrice, status)
-        VALUES (#{customerId}, #{totalPrice}, #{status})
+    <insert id="insert" useGeneratedKeys="true" keyProperty="orderId">
+        INSERT INTO Orders (<include refid="Base_Column_List"/>)
+        VALUES (#{orderId},#{customerId}, #{totalPrice}, #{status})
     </insert>
 
-    <insert id="insertOrderItem">
-        INSERT INTO OrderItem (orderId, productId, quantity, price)
-        VALUES (#{orderId}, #{productId}, #{quantity}, #{price})
-    </insert>
 
 
     <!-- 动态更新订单信息 -->

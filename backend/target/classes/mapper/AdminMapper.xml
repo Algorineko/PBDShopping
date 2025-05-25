@@ -2,7 +2,7 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="org.example.springbootmybatis.mapper.AdminMapper">
+<mapper namespace="com.pbdcompany.mapper.AdminMapper">
 
     <!-- 通用查询字段 -->
     <sql id="Base_Column_List">
@@ -10,7 +10,7 @@
     </sql>
 
     <!-- 结果映射 -->
-    <resultMap id="AdminResultMap" type="org.example.springbootmybatis.entity.Admin">
+    <resultMap id="AdminResultMap" type="com.pbdcompany.entity.Admin">
         <id property="adminId" column="AdminID"/>
         <result property="adminName" column="AdminName"/>
         <result property="password" column="Password"/>
@@ -30,7 +30,7 @@
     </delete>
 
     <!-- 插入管理员 -->
-    <insert id="insert">
+    <insert id="insert" useGeneratedKeys="true" keyProperty="adminId">
         insert into admin(<include refid="Base_Column_List"/>)
         values
         (

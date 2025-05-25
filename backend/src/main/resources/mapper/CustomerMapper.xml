@@ -33,7 +33,7 @@
     </delete>
 
     <!-- 插入用户 -->
-    <insert id="insert">
+    <insert id="insert" useGeneratedKeys="true" keyProperty="customerId">
         INSERT INTO customer (customerName, password, money, phoneNumber, address, headPicture)
         VALUES (#{customerName}, #{password}, #{money}, #{phoneNumber}, #{address}, #{headPicture})
     </insert>
@@ -63,8 +63,11 @@
     </update>
 
     <!-- 根据用户名和密码查询用户 -->
-    <select id="findByUsernameAndPassword" parameterType="map" resultType="Customer">
-        SELECT * FROM Customer WHERE customerName = #{username} AND password = #{password}
+    <select id="findByUsernameAndPassword" resultMap="CustomerResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from customer
+        where CustomerName = #{username} and Password = #{password}
     </select>
 
 </mapper>

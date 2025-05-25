@@ -13,7 +13,7 @@ public interface ProductCategoryMapper {
 
     public void deleteById(int id);
 
-    public void insert(ProductCategory ProductCategory);
+    public int insert(ProductCategory ProductCategory);
 
     public void update(ProductCategory ProductCategory);
 

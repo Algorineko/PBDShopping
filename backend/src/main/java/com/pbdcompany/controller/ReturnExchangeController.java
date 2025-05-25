@@ -2,7 +2,8 @@ package com.pbdcompany.controller;
 
 import com.pbdcompany.Utils.JwtUtils;
 import com.pbdcompany.dto.request.ReturnExchangeRequest;
-import com.pbdcompany.service.ReturnExchangeRequestService;
+import com.pbdcompany.entity.ReturnExchange;
+import com.pbdcompany.service.ReturnExchangeService;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -15,7 +16,7 @@ import org.springframework.web.bind.annotation.*;
 public class ReturnExchangeController {
 
     @Autowired
-    private ReturnExchangeRequestService returnExchangeRequestService;
+    private ReturnExchangeService returnExchangeService;
 
     @Autowired
     private JwtUtils jwtUtils; // 注入 JWT 工具类
@@ -45,17 +46,20 @@ public class ReturnExchangeController {
             @RequestBody ReturnExchangeRequest request,
             HttpServletRequest httpServletRequest) {
 
+        // 0. 通过Request得到实体类
+        ReturnExchange returnExchange = returnExchangeService.getByRequest(request);
+
         // 1. 解析 Token 获取用户 ID
         int customerId = extractCustomerId(httpServletRequest);
-        request.setCustomerId(customerId);
+        returnExchange.setCustomerId(customerId);
 
         // 2. 设置默认状态（可选）
-        if (request.getStatus() == 0) {
-            request.setStatus(0); // 默认为待处理
+        if (returnExchange.getStatus() == 0) {
+            returnExchange.setStatus(0); // 默认为待处理
         }
 
         // 3. 插入退换货请求
-        returnExchangeRequestService.insert(request);
+        returnExchangeService.insert(returnExchange);
 
         return ResponseEntity.ok(request);
     }

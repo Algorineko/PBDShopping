@@ -32,7 +32,7 @@
     </delete>
 
     <!-- 插入订单项 -->
-    <insert id="insert">
+    <insert id="insert" useGeneratedKeys="true" keyProperty="orderItemId">
         insert into orderItem
         (
         <include refid="Base_Column_List"/>
@@ -73,6 +73,14 @@
         <include refid="Base_Column_List"/>
         from orderItem
         where OrderItemID = #{id}
+    </select>
+
+    <!-- 根据（订单的）ID查询（所有的）订单项 -->
+    <select id="findByOrderId" resultMap="OrderItemResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from orderItem
+        where OrderID = #{orderId}
     </select>
 
 </mapper>

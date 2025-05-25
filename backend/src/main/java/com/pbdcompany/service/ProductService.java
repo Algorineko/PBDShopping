@@ -8,7 +8,9 @@ import com.pbdcompany.mapper.ProductMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class ProductService {
@@ -27,8 +29,8 @@ public class ProductService {
     }
 
     // 添加商品
-    public void insert(Product product) {
-        productMapper.insert(product);
+    public int insert(Product product) {
+        return productMapper.insert(product);
     }
 
     // 更新商品信息
@@ -43,6 +45,27 @@ public class ProductService {
 
     // 根据Id或名称查询商品信息
     public List<ProductResponse> findByNameOrId(String name, int id) {
-        return productMapper.findByNameOrId(name, id);
-    }
+        //修改目标：分别通过名称和id查询商品信息。然后将所有查询结果封装成List<ProductResponse>返回
+        //productMapper.现在有查询商品名称的接口findByName(String name)，以及查询商品id的接口findById(int id)
+
+            List<Product> products = new ArrayList<>();
+
+            if (name != null && !name.isEmpty()) {
+                products.addAll(productMapper.findByName(name));
+            }
+
+            if (id > 0) {
+                Product product = productMapper.findById(id);
+                if (product != null) {
+                    products.add(product);
+                }
+            }
+
+            // 去重处理（避免同时传name和id导致重复）
+            return products.stream()
+                    .distinct()
+                    .map(p -> new ProductResponse(p.getProductId(), p.getProductName(), p.getPrice()))
+                    .collect(Collectors.toList());
+        }
+
 }

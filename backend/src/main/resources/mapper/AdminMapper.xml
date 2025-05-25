@@ -30,7 +30,7 @@
     </delete>
 
     <!-- 插入管理员 -->
-    <insert id="insert">
+    <insert id="insert" useGeneratedKeys="true" keyProperty="adminId">
         insert into admin(<include refid="Base_Column_List"/>)
         values
         (

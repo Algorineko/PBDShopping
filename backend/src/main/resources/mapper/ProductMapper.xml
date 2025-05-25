@@ -33,7 +33,7 @@
     </delete>
 
     <!-- 插入商品 -->
-    <insert id="insert">
+    <insert id="insert" useGeneratedKeys="true" keyProperty="productId">
         insert into product
         (
         <include refid="Base_Column_List"/>
@@ -79,5 +79,14 @@
         from product
         where ProductID = #{id}
     </select>
+
+    <!-- 根据名称模糊查询商品 -->
+    <select id="findByName" resultMap="ProductResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from product
+        where ProductName like concat('%', #{name}, '%')
+    </select>
+
 
 </mapper>

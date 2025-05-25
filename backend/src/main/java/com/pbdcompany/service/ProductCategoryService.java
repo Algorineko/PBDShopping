@@ -26,8 +26,8 @@ public class ProductCategoryService {
     }
 
     // 添加商品分类
-    public void insert(ProductCategory productCategory) {
-        productCategoryMapper.insert(productCategory);
+    public int insert(ProductCategory productCategory) {
+        return productCategoryMapper.insert(productCategory);
     }
 
     // 更新商品分类信息

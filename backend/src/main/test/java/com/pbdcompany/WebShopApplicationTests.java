@@ -1,15 +1,25 @@
 package com.pbdcompany;
 
-import org.example.springbootmybatis.entity.*;
-import org.example.springbootmybatis.mapper.*;
+import com.pbdcompany.entity.*;
+import com.pbdcompany.mapper.*;
 import org.junit.jupiter.api.Test;
+import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.List;
 
-@SpringBootTest //springboot单元测试的注解，测试方法在运行时，会自动启动springboot项目，且自动生成IDC容器
-class SpringbootMybatisApplicationTests {
+
+//springboot单元测试的注解，测试方法在运行时，会自动启动springboot项目，且自动生成IDC容器
+@SpringBootTest(classes = WebShopApplication.class)
+@MapperScan("com.pbdcompany.mapper")
+class WebShopApplicationTests {
+
+
+    /*
+        ---------------------------  测试1：对mapper层的接口进行的单独测试  ------------------------
+     */
+
 
     /*
         测试1：admin表
@@ -35,23 +45,23 @@ class SpringbootMybatisApplicationTests {
         System.out.println(admin);
     }
 
-    /*
-        测试2：cart表
-     */
-    @Autowired
-    private CartMapper cartMapper;
-
-    @Test
-    public void testAddCart(){
-        Cart cart = new Cart(0, 5);
-        cartMapper.insert(cart);
-    }
-
-    @Test
-    public void testFindCartById(){
-        Cart cart = cartMapper.findById(3);
-        System.out.println(cart);
-    }
+//    /*
+//        测试2：cart表
+//     */
+//    @Autowired
+//    private CartMapper cartMapper;
+//
+//    @Test
+//    public void testAddCart(){
+//        Cart cart = new Cart(0, 5);
+//        cartMapper.insert(cart);
+//    }
+//
+//    @Test
+//    public void testFindCartById(){
+//        Cart cart = cartMapper.findById(3);
+//        System.out.println(cart);
+//    }
 
 
 /*
@@ -65,20 +75,20 @@ class SpringbootMybatisApplicationTests {
     //注：即使插入失败，主键的ID依然会自动递增
     @Test
     public void testAddCartItem(){
-        CartItem cartItem = new CartItem(0, 4, 8, 3,"Test", "Test");
+        CartItem cartItem = new CartItem(0, 4, 8, 3, "Test");
         cartItemMapper.insert(cartItem);
     }
 
     @Test
     public void testUpdateCartItem(){
-        CartItem cartItem = new CartItem(0, 2, 9, 3,"Test5", "Test5");
+        CartItem cartItem = new CartItem(0, 2, 9, 3, "Test5");
         cartItemMapper.update(cartItem);
     }
 
     @Test
     public void testFindCartItemById(){
-        CartItem cartItem = cartItemMapper.findById(2);
-        System.out.println(cartItem);
+        List<CartItem> cartItemList = cartItemMapper.findByCustomerId(2);
+        System.out.println(cartItemList);
     }
 
 /*
@@ -267,15 +277,15 @@ class SpringbootMybatisApplicationTests {
 
 
     /*
-    测试12：returnexchangerequest表
+    测试12：returnexchange表
  */
 
     @Autowired
-    private ReturnExchangeRequestMapper returnExchangeRequestMapper;
+    private ReturnExchangeMapper returnExchangeMapper;
     @Test
-    public void testInsertReturnExchangeRequest(){
-        ReturnExchangeRequest returnExchangeRequest = new ReturnExchangeRequest(0, 3, 2, "Test", "Test", 0);
-        returnExchangeRequestMapper.insert(returnExchangeRequest);
+    public void testInsertReturnExchange(){
+        ReturnExchange returnExchange = new ReturnExchange(0, 3, 2, "Test", "Test", 0, "Test", "Test");
+        returnExchangeMapper.insert(returnExchange);
     }
 
     /*
@@ -301,6 +311,11 @@ class SpringbootMybatisApplicationTests {
 
 
 
+
+
+    /*
+        ---------------------------  测试2：对controller层能否正常运作进行的专门测试 ------------------------
+     */
 
 }
 

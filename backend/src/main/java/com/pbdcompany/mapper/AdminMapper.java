@@ -13,7 +13,7 @@ public interface AdminMapper {
     
     public void deleteById(int id);
     
-    public void insert(Admin Admin);
+    public int insert(Admin Admin);
 
     public void update(Admin Admin);
 

@@ -35,9 +35,13 @@
     <!-- 插入评论 -->
     <insert id="insert" useGeneratedKeys="true" keyProperty="reviewId">
         INSERT INTO review (
-            CustomerID, OrderItemID, Rating, Comment
+        <include refid="Base_Column_List"/>
         ) VALUES (
-                     #{customerId}, #{orderItemId}, #{rating}, #{comment}
+                  #{reviewId},
+                  #{customerId},
+                  #{orderItemId},
+                  #{rating},
+                  #{comment}
                  )
     </insert>
 

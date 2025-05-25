@@ -25,8 +25,8 @@ public class ReviewService {
     }
 
     // 添加评论
-    public void insert(Review review) {
-        reviewMapper.insert(review);
+    public int insert(Review review) {
+        return reviewMapper.insert(review);
     }
 
     // 更新评论信息

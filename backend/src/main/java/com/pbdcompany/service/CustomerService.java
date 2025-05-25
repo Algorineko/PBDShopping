@@ -28,8 +28,8 @@ public class CustomerService {
     }
 
     // 添加用户
-    public void insert(Customer customer) {
-        customerMapper.insert(customer);
+    public int insert(Customer customer) {
+       return  customerMapper.insert(customer);
     }
 
     // 根据ID更新用户数据
@@ -51,8 +51,10 @@ public class CustomerService {
         customer.setMoney(0.0); // 新用户初始金额为0
         customer.setAddress(""); // 默认地址为空
         customer.setHeadPicture(""); // 默认头像为空
-        customerMapper.insert(customer); // 插入数据库
-        return new RegisterResponse(customer.getCustomerId(), customer.getCustomerName());
+        int customerId = customerMapper.insert(customer); // 插入数据库
+
+        //此处，对逻辑作出修改，原因：使用insert插入数据库后，可以返回Id
+        return new RegisterResponse(customerId, customer.getCustomerName());
     }
 
     //登录

@@ -31,7 +31,7 @@
     </delete>
 
     <!-- 插入商品分类 -->
-    <insert id="insert">
+    <insert id="insert" useGeneratedKeys="true" keyProperty="categoryId">
         insert into productCategory
         (
         <include refid="Base_Column_List"/>

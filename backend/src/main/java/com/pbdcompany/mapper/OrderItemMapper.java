@@ -12,7 +12,7 @@ public interface OrderItemMapper {
 
     public void deleteById(int id);
 
-    public void insert(OrderItem OrderItem);
+    public int insert(OrderItem OrderItem);
 
     public void update(OrderItem OrderItem);
 

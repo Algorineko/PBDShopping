@@ -13,12 +13,13 @@ public interface ProductMapper {
 
     public void deleteById(int id);
 
-    public void insert(Product Product);
+    public int insert(Product Product);
 
     public void update(Product Product);
 
     public Product findById(int id);
 
-    public List<ProductResponse> findByNameOrId(String name, int id);
+    //要求：使用表达式匹配来搜索所有的相似内容
+    public List<Product> findByName(String name);
  
 }

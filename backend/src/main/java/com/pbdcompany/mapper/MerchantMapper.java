@@ -13,7 +13,7 @@ public interface MerchantMapper {
     
     public void deleteById(int id);
     
-    public void insert(Merchant Merchant);
+    public int insert(Merchant Merchant);
 
     public void update(Merchant Merchant);
 

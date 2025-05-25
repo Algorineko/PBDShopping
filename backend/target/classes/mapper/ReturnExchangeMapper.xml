@@ -2,39 +2,42 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.pbdcompany.mapper.ReturnExchangeRequestMapper">
+<mapper namespace="com.pbdcompany.mapper.ReturnExchangeMapper">
 
     <!-- 通用查询字段 -->
     <sql id="Base_Column_List">
-        requestId, orderItemId, customerId, requestType, reason, status
+        requestId, orderItemId, customerId, requestType, reason, status,
+        logisticsCompany, trackingNumber
     </sql>
 
     <!-- 结果映射 -->
-    <resultMap id="ReturnExchangeRequestResultMap" type="com.pbdcompany.entity.ReturnExchangeRequest">
+    <resultMap id="ReturnExchangeResultMap" type="com.pbdcompany.entity.ReturnExchange">
         <id property="requestId" column="requestId"/>
         <result property="orderItemId" column="orderItemId"/>
         <result property="customerId" column="customerId"/>
         <result property="requestType" column="requestType"/>
         <result property="reason" column="reason"/>
         <result property="status" column="status"/>
+        <result property="logisticsCompany" column="logisticsCompany"/>
+        <result property="trackingNumber" column="trackingNumber"/>
     </resultMap>
 
     <!-- 查询所有退换货请求 -->
-    <select id="findAll" resultMap="ReturnExchangeRequestResultMap">
+    <select id="findAll" resultMap="ReturnExchangeResultMap">
         select
         <include refid="Base_Column_List"/>
-        from returnExchangeRequest
+        from returnExchange
     </select>
 
     <!-- 根据ID删除退换货请求 -->
     <delete id="deleteById">
-        delete from returnExchangeRequest
+        delete from returnExchange
         where requestId = #{id}
     </delete>
 
     <!-- 插入退换货请求 -->
-    <insert id="insert">
-        insert into returnExchangeRequest
+    <insert id="insert" useGeneratedKeys="true" keyProperty="requestId">
+        insert into returnExchange
         (
         <include refid="Base_Column_List"/>
         )
@@ -45,13 +48,15 @@
         #{customerId},
         #{requestType},
         #{reason},
-        #{status}
+        #{status},
+        #{logisticsCompany},
+        #{trackingNumber}
         )
     </insert>
 
     <!-- 动态更新退换货请求信息 -->
     <update id="update">
-        update returnExchangeRequest
+        update returnExchange
         <set>
             <if test="orderItemId != null">
                 orderItemId = #{orderItemId},
@@ -65,18 +70,24 @@
             <if test="reason != null and reason.trim() != ''">
                 reason = #{reason},
             </if>
-            <if test="status != null and status.trim() != ''">
+            <if test="status != null">
                 status = #{status},
+            </if>
+            <if test="logisticsCompany != null and logisticsCompany.trim() != ''">
+                logisticsCompany = #{logisticsCompany},
+            </if>
+            <if test="trackingNumber != null and trackingNumber.trim() != ''">
+                trackingNumber = #{trackingNumber},
             </if>
         </set>
         where requestId = #{requestId}
     </update>
 
     <!-- 根据ID查询退换货请求 -->
-    <select id="findById" resultMap="ReturnExchangeRequestResultMap">
+    <select id="findById" resultMap="ReturnExchangeResultMap">
         select
         <include refid="Base_Column_List"/>
-        from returnExchangeRequest
+        from returnExchange
         where requestId = #{id}
     </select>
 

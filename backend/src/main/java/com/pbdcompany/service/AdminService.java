@@ -26,8 +26,8 @@ public class AdminService {
     }
 
     // 添加管理员
-    public void insert(Admin admin) {
-        adminMapper.insert(admin);
+    public int insert(Admin admin) {
+        return adminMapper.insert(admin);
     }
 
     // 更新管理员信息

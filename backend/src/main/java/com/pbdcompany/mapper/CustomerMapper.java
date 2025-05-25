@@ -28,7 +28,7 @@ public interface CustomerMapper {
      */
 
     //@Insert("insert into customer(customerid, customername, password, money, phonenumber, address) values(#{customerId}, #{customerName}, #{password}, #{money}, #{phoneNumber}, #{address})")
-    public void insert(Customer customer);
+    public int insert(Customer customer);
 
     /*
         根据Id更新用户数据

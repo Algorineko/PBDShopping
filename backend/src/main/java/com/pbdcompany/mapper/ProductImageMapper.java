@@ -13,7 +13,7 @@ public interface ProductImageMapper {
 
     public void deleteById(int id);
 
-    public void insert(ProductImage ProductImage);
+    public int insert(ProductImage ProductImage);
 
     public void update(ProductImage ProductImage);
 

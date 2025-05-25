@@ -6,6 +6,7 @@ import com.pbdcompany.dto.request.OrderRequest;
 import com.pbdcompany.dto.response.OrderResponse;
 import com.pbdcompany.entity.OrderItem;
 import com.pbdcompany.entity.Orders;
+import com.pbdcompany.mapper.OrderItemMapper;
 import com.pbdcompany.mapper.OrdersMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,6 +18,8 @@ public class OrdersService {
 
     @Autowired
     private OrdersMapper ordersMapper;
+    @Autowired
+    private OrderItemMapper orderItemMapper;
 
     // 查询所有订单
     public List<Orders> findAll() {
@@ -29,8 +32,8 @@ public class OrdersService {
     }
 
     // 添加订单
-    public void insert(Orders orders) {
-        ordersMapper.insert(orders);
+    public int insert(Orders orders) {
+        return ordersMapper.insert(orders);
     }
 
     // 更新订单信息
@@ -50,9 +53,12 @@ public class OrdersService {
         order.setTotalPrice(request.getTotalPrice());
         order.setStatus("PENDING"); // 初始状态为待支付
 
-        ordersMapper.insert(order); // 插入后 orderId 应该被填充
 
-        int orderId = order.getOrderId(); // 获取刚插入的订单ID
+        //此处需要修改逻辑！！！需要将insert的orderId返回！！！
+
+        int orderId = ordersMapper.insert(order);
+
+        // 获取刚插入的订单ID
 
         // 2. 插入订单项
         for (OrderRequest.OrderItemRequest item : request.getOrderItems()) {
@@ -62,7 +68,8 @@ public class OrdersService {
             orderItem.setQuantity(item.getQuantity());
             orderItem.setPrice(item.getPrice()); // 前端传入或后端计算均可
 
-            ordersMapper.insertOrderItem(orderItem);
+            //修改了此处的逻辑，引入了orderItemMapper
+            orderItemMapper.insert(orderItem);
         }
 
         // 3. 返回响应

@@ -13,7 +13,7 @@ public interface ReviewMapper {
 
     public void deleteById(int id);
 
-    public void insert(Review Review);
+    public int insert(Review Review);
 
     public void update(Review Review);
 

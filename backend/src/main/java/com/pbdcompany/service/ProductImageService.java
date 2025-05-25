@@ -26,8 +26,8 @@ public class ProductImageService {
     }
 
     // 添加商品图片
-    public void insert(ProductImage productImage) {
-        productImageMapper.insert(productImage);
+    public int insert(ProductImage productImage) {
+        return productImageMapper.insert(productImage);
     }
 
     // 更新商品图片信息

@@ -2,7 +2,7 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="org.example.springbootmybatis.mapper.MerchantMapper">
+<mapper namespace="com.pbdcompany.mapper.MerchantMapper">
 
     <!-- 通用查询字段 -->
     <sql id="Base_Column_List">
@@ -10,7 +10,7 @@
     </sql>
 
     <!-- 结果映射 -->
-    <resultMap id="MerchantResultMap" type="org.example.springbootmybatis.entity.Merchant">
+    <resultMap id="MerchantResultMap" type="com.pbdcompany.entity.Merchant">
         <id property="merchantId" column="MerchantID"/>
         <result property="merchantName" column="MerchantName"/>
         <result property="merchantAddress" column="MerchantAddress"/>
@@ -33,7 +33,7 @@
     </delete>
 
     <!-- 插入商户信息 -->
-    <insert id="insert">
+    <insert id="insert" useGeneratedKeys="true" keyProperty="merchantId">
         insert into merchant
         (
         <include refid="Base_Column_List"/>

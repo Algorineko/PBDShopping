@@ -33,7 +33,7 @@
     </delete>
 
     <!-- 插入商户信息 -->
-    <insert id="insert">
+    <insert id="insert" useGeneratedKeys="true" keyProperty="merchantId">
         insert into merchant
         (
         <include refid="Base_Column_List"/>

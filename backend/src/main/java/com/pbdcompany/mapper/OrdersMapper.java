@@ -15,13 +15,11 @@ public interface OrdersMapper {
 
     public void deleteById(int id);
 
-    public void insert(Orders Orders);
+    public int insert(Orders Orders);
 
     public void update(Orders Orders);
 
     public Orders findById(int id);
 
-    public OrderResponse createOrder(int customerId, OrderRequest request);
 
-    public void insertOrderItem(OrderItem orderItem);
 }

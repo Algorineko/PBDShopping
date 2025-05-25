@@ -25,8 +25,8 @@ public class LogisticsinfoService {
     }
 
     // 添加物流信息
-    public void insert(Logisticsinfo logisticsinfo) {
-        logisticsinfoMapper.insert(logisticsinfo);
+    public int insert(Logisticsinfo logisticsinfo) {
+        return logisticsinfoMapper.insert(logisticsinfo);
     }
 
     // 更新物流信息

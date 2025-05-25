@@ -2,7 +2,7 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="org.example.springbootmybatis.mapper.ProductCategoryMapper">
+<mapper namespace="com.pbdcompany.mapper.ProductCategoryMapper">
 
     <!-- 通用查询字段 -->
     <sql id="Base_Column_List">
@@ -10,7 +10,7 @@
     </sql>
 
     <!-- 结果映射 -->
-    <resultMap id="ProductCategoryResultMap" type="org.example.springbootmybatis.entity.ProductCategory">
+    <resultMap id="ProductCategoryResultMap" type="com.pbdcompany.entity.ProductCategory">
         <id property="categoryId" column="CategoryID"/>
         <result property="categoryName" column="CategoryName"/>
         <result property="description" column="Description"/>
@@ -31,7 +31,7 @@
     </delete>
 
     <!-- 插入商品分类 -->
-    <insert id="insert">
+    <insert id="insert" useGeneratedKeys="true" keyProperty="categoryId">
         insert into productCategory
         (
         <include refid="Base_Column_List"/>

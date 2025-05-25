@@ -2,7 +2,7 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="org.example.springbootmybatis.mapper.ProductMapper">
+<mapper namespace="com.pbdcompany.mapper.ProductMapper">
 
     <!-- 通用查询字段 -->
     <sql id="Base_Column_List">
@@ -10,7 +10,7 @@
     </sql>
 
     <!-- 结果映射 -->
-    <resultMap id="ProductResultMap" type="org.example.springbootmybatis.entity.Product">
+    <resultMap id="ProductResultMap" type="com.pbdcompany.entity.Product">
         <id property="productId" column="ProductID"/>
         <result property="categoryId" column="CategoryID"/>
         <result property="merchantId" column="MerchantID"/>
@@ -33,7 +33,7 @@
     </delete>
 
     <!-- 插入商品 -->
-    <insert id="insert">
+    <insert id="insert" useGeneratedKeys="true" keyProperty="productId">
         insert into product
         (
         <include refid="Base_Column_List"/>
@@ -79,5 +79,14 @@
         from product
         where ProductID = #{id}
     </select>
+
+    <!-- 根据名称模糊查询商品 -->
+    <select id="findByName" resultMap="ProductResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from product
+        where ProductName like concat('%', #{name}, '%')
+    </select>
+
 
 </mapper>

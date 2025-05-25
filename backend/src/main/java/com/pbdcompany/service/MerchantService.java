@@ -26,8 +26,8 @@ public class MerchantService {
     }
 
     // 添加商户
-    public void insert(Merchant merchant) {
-        merchantMapper.insert(merchant);
+    public int insert(Merchant merchant) {
+       return   merchantMapper.insert(merchant);
     }
 
     // 更新商户信息

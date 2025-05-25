@@ -32,7 +32,7 @@
     </delete>
 
     <!-- 插入物流信息 -->
-    <insert id="insert">
+    <insert id="insert" useGeneratedKeys="true" keyProperty="logisticsId">
         insert into logisticsinfo
         (
         <include refid="Base_Column_List"/>
@@ -75,7 +75,8 @@
         where LogisticsID = #{id}
     </select>
 
-    <select id="findByOrderItemId" resultType="com.pbdcompany.entity.Logisticsinfo">
+    <!-- 新增的功能，根据订单项Id查询物流信息   -->
+    <select id="findByOrderItemId" resultType="LogisticsinfoResultMap">
         SELECT * FROM logisticsinfo WHERE orderItemId = #{orderItemId}
     </select>
 
