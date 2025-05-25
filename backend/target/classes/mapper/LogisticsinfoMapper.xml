@@ -76,7 +76,7 @@
     </select>
 
     <!-- 新增的功能，根据订单项Id查询物流信息   -->
-    <select id="findByOrderItemId" resultType="LogisticsinfoResultMap">
+    <select id="findByOrderItemId" resultMap="LogisticsinfoResultMap">
         SELECT * FROM logisticsinfo WHERE orderItemId = #{orderItemId}
     </select>
 
