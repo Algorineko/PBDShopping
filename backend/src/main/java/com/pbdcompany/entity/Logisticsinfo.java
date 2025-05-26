@@ -14,8 +14,5 @@ public class Logisticsinfo {
     private String logisticsCompany;
     private String trackingNumber;
     private Status status;
-
-//    private LocalDateTime addedAt;
-//    private LocalDateTime updatedAt;
 }
 

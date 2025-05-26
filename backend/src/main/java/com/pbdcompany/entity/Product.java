@@ -14,7 +14,5 @@ public class Product {
     private String productName;
     private String description;
     private Double price;
-    
-//    private LocalDateTime addedAt;
-//    private LocalDateTime updatedAt;
+
 }

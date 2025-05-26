@@ -27,7 +27,7 @@
 
     <!-- 根据ID删除购物车项 -->
     <delete id="deleteById">
-        delete from cartItem
+        delete from CartItem
         where CartItemID = #{id}
     </delete>
 

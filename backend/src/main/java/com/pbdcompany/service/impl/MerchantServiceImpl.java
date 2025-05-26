@@ -32,7 +32,7 @@ public class MerchantServiceImpl implements MerchantService {
 
     @Override
     public Merchant login(String username, String password) {
-        Merchant merchant = merchantMapper.findByMerchantName(username);;
+        Merchant merchant = merchantMapper.findByMerchantName(username);
         if (merchant != null && merchant.getPassword().equals(password)) {
             return merchant;
         }

@@ -14,7 +14,5 @@ public class Review {
     private double rating;
     private String comment;
 
-//    private LocalDateTime addedAt;
-//    private LocalDateTime updatedAt;
 }
 
