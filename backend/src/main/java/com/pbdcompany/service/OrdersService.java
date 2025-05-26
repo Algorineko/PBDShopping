@@ -56,9 +56,11 @@ public class OrdersService {
 
         //此处需要修改逻辑！！！需要将insert的orderId返回！！！
 
-        int orderId = ordersMapper.insert(order);
+        //需要再次修改逻辑，orderId在调用insert后确实会自动填充到实体类中。
+        ordersMapper.insert(order);
 
         // 获取刚插入的订单ID
+        int orderId = order.getOrderId();
 
         // 2. 插入订单项
         for (OrderRequest.OrderItemRequest item : request.getOrderItems()) {

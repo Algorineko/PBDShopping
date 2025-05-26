@@ -51,10 +51,11 @@ public class CustomerService {
         customer.setMoney(0.0); // 新用户初始金额为0
         customer.setAddress(""); // 默认地址为空
         customer.setHeadPicture(""); // 默认头像为空
-        int customerId = customerMapper.insert(customer); // 插入数据库
+        customerMapper.insert(customer); // 插入数据库
 
         //此处，对逻辑作出修改，原因：使用insert插入数据库后，可以返回Id
-        return new RegisterResponse(customerId, customer.getCustomerName());
+        //上述原因错误，插入数据库后，返回值为影响到的语句数量，而不是Id。Id会自动填充进实体类里。
+        return new RegisterResponse(customer.getCustomerId(), customer.getCustomerName());
     }
 
     //登录
