@@ -1,6 +1,7 @@
 package com.pbdcompany.controller;
 
 import com.pbdcompany.dto.request.OrderRequest;
+import com.pbdcompany.dto.response.OrderInfoResponse;
 import com.pbdcompany.dto.response.OrderResponse;
 import com.pbdcompany.Utils.JwtUtils;
 import com.pbdcompany.service.OrdersService;
@@ -9,10 +10,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 
 @RestController
@@ -61,6 +61,25 @@ public class OrderController {
             return jwtUtils.extractCustomerId(token); // 使用工具类方法
         } catch (Exception e) {
             return null;
+        }
+    }
+
+    @Autowired
+
+
+    // 查看商家所有订单
+    @GetMapping("/list")
+    public List<OrderInfoResponse> getOrdersByMerchant(@RequestParam int merchantId) {
+        return ordersService.getOrdersByMerchantId(merchantId);
+    }
+
+    // 处理订单：发货 / 退货 / 换货
+    @PutMapping("/update")
+    public String handleOrder(@RequestBody UpdateOrderRequest request) {
+        if (ordersService.updateOrder(request)) {
+            return "订单更新成功";
+        } else {
+            return "订单不存在或无权限操作";
         }
     }
 }

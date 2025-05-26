@@ -1,17 +1,3 @@
-
-package com.pbdcompany.service;
-
-
-import com.pbdcompany.dto.response.ProductResponse;
-import com.pbdcompany.entity.Product;
-import com.pbdcompany.mapper.ProductMapper;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
-
 @Service
 public class ProductService {
 
@@ -29,8 +15,8 @@ public class ProductService {
     }
 
     // 添加商品
-    public int insert(Product product) {
-        return productMapper.insert(product);
+    public void insert(Product product) {
+        productMapper.insert(product);
     }
 
     // 更新商品信息
@@ -43,29 +29,45 @@ public class ProductService {
         return productMapper.findById(id);
     }
 
-    // 根据Id或名称查询商品信息
+    // 根据名称或ID搜索商品（顾客使用）
     public List<ProductResponse> findByNameOrId(String name, int id) {
-        //修改目标：分别通过名称和id查询商品信息。然后将所有查询结果封装成List<ProductResponse>返回
-        //productMapper.现在有查询商品名称的接口findByName(String name)，以及查询商品id的接口findById(int id)
+        return productMapper.findByNameOrId(name, id);
+    }
 
-            List<Product> products = new ArrayList<>();
+    // 查看商家自己的商品（新增）
+    public List<ProductInfoResponse> getProductsByMerchant(int merchantId) {
+        return productMapper.findByMerchantId(merchantId).stream()
+                .map(this::convertToResponse)
+                .collect(Collectors.toList());
+    }
 
-            if (name != null && !name.isEmpty()) {
-                products.addAll(productMapper.findByName(name));
-            }
+    // 修改商品信息（新增）
+    public boolean updateProduct(UpdateProductRequest request) {
+        Product product = productMapper.findById(request.getProductId());
 
-            if (id > 0) {
-                Product product = productMapper.findById(id);
-                if (product != null) {
-                    products.add(product);
-                }
-            }
-
-            // 去重处理（避免同时传name和id导致重复）
-            return products.stream()
-                    .distinct()
-                    .map(p -> new ProductResponse(p.getProductId(), p.getProductName(), p.getPrice()))
-                    .collect(Collectors.toList());
+        if (product == null || product.getMerchantId() != request.getMerchantId()) {
+            return false; // 商品不存在或无权限
         }
 
+        if (request.getProductName() != null) {
+            product.setProductName(request.getProductName());
+        }
+        if (request.getDescription() != null) {
+            product.setDescription(request.getDescription());
+        }
+        if (request.getPrice() != null) {
+            product.setPrice(request.getPrice());
+        }
+
+        productMapper.updateSelective(product);
+        return true;
+    }
+
+    // 转换 Entity -> Response
+    private ProductInfoResponse convertToResponse(Product product) {
+        if (product == null) return null;
+        ProductInfoResponse response = new ProductInfoResponse();
+        BeanUtils.copyProperties(response, product);
+        return response;
+    }
 }
