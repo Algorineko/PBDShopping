@@ -36,7 +36,13 @@ public class CartItemService {
     }
 
     // 根据ID查询购物车项信息
-    public List<CartItem> findById(int id) {
+    public CartItem findById(int id) {
         return cartItemMapper.findById(id);
     }
+
+    //根据用户id查询所有购物车项
+    public List<CartItem> findByCustomerId(int customerId) {
+        return cartItemMapper.findByCustomerId(customerId);
+    }
+
 }

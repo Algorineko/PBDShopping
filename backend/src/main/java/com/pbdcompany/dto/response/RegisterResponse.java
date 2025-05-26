@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class RegisterResponse {
-    private int customerId;
+    private int Id;
     private String username;
+    private Boolean success;
 }

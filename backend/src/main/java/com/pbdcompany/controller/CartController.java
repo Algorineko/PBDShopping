@@ -33,8 +33,9 @@ public class CartController {
             cartItemService.insert(new CartItem(
                     0,customerId,
                     request.getProductId(),
-                    request.getProductId(),
-                    request.getSelectedOptions()));
+                    request.getQuantity(),
+                    request.getSelectedOptions()
+                    ));
             return ResponseEntity.ok("Item added to cart successfully");
         } catch (Exception e) {
             return ResponseEntity.status(500).body("Failed to add item to cart");
@@ -45,7 +46,7 @@ public class CartController {
     public ResponseEntity<?> getCart(HttpServletRequest httpServletRequest) {
         int customerId = extractCustomerIdFromToken(httpServletRequest);
         try {
-            List<CartItem> carts = cartItemService.findById(customerId); // 假设此处筛选该用户的数据
+            List<CartItem> carts = cartItemService.findByCustomerId(customerId); // 筛选该用户的数据
             return ResponseEntity.ok(carts);
         } catch (Exception e) {
             return ResponseEntity.status(500).body("Failed to retrieve cart data");
@@ -65,7 +66,7 @@ public class CartController {
     @PutMapping("/{cartItemId}")
     public ResponseEntity<?> updateCart(@PathVariable int cartItemId, @RequestBody CartItem updatedCartItem) {
         try {
-            updatedCartItem.setCartItemId(cartItemId); // 确保ID一致
+            updatedCartItem.setCartItemId(cartItemId);
             cartItemService.update(updatedCartItem);
             return ResponseEntity.ok("Cart updated successfully");
         } catch (Exception e) {

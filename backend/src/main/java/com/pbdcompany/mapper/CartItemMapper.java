@@ -16,6 +16,8 @@ public interface CartItemMapper {
 
     public void update(CartItem CartItem);
 
-    public List<CartItem> findById(int id);
+    public CartItem findById(int id);
+
+    public List<CartItem> findByCustomerId(int customerId);
  
 }

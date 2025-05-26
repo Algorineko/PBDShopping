@@ -13,7 +13,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.stream.Collectors;
-import com.pbdcompany.enums.DeliveryStatus;
+import com.pbdcompany.enums.Status;
 @Service
 public class TrackingService {
 
@@ -45,7 +45,7 @@ public class TrackingService {
                             item.getQuantity(),
                             logistics.getLogisticsCompany(),
                             logistics.getTrackingNumber(),
-                            DeliveryStatus.valueOf(logistics.getStatus().toUpperCase())
+                            Status.valueOf(logistics.getStatus().toUpperCase())
                     );
                 })
                 .collect(Collectors.toList());

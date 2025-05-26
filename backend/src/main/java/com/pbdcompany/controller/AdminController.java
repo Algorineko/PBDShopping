@@ -1,14 +1,9 @@
 package com.pbdcompany.controller;
 
-import com.pbdcompany.entity.Customer;
-import com.pbdcompany.entity.Orders;
-import com.pbdcompany.entity.Product;
-import com.pbdcompany.entity.Review;
+import com.pbdcompany.entity.*;
 import com.pbdcompany.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -17,46 +12,46 @@ import java.util.List;
 public class AdminController {
 
     @Autowired
-    private CustomerService customerService;
+    private AdminService adminService;
 
-    /**
-     *  获取所有用户信息
-     */
     @GetMapping("/customer")
-    public List<Customer> getAllCustomers(){
-        return customerService.findAll();
+    public List<Customer> getAllCustomers() {
+        return adminService.getAllCustomers();
     }
 
-    @Autowired
-    private OrdersService ordersService;
+    @DeleteMapping("/customer/{id}")
+    public void deleteCustomer(@PathVariable int id) {
+        adminService.deleteCustomer(id);
+    }
 
-    /**
-     *  获取所有订单信息
-     */
     @GetMapping("/order")
-    public List<Orders> getAllOrders(){
-        return ordersService.findAll();
+    public List<Orders> getAllOrders() {
+        return adminService.getAllOrders();
     }
-    @Autowired
-    private ProductService productService;
 
-    /**
-     *   获取所有商品信息
-     */
+    @PutMapping("/product")
+    public void updateProduct(@RequestBody Product product) {
+        adminService.updateProduct(product);
+    }
+
     @GetMapping("/product")
-    public List<Product> getAllProducts(){
-
-        return productService.findAll();
+    public List<Product> getAllProducts() {
+        return adminService.getAllProducts();
     }
 
-    @Autowired
-    private ReviewService  reviewService;
-    /**
-     * 获取所有评论
-     */
     @GetMapping("/review")
-    public List<Review> getAllReviews(){
-        return reviewService.findAll();
+    public List<Review> getAllReviews() {
+        return adminService.getAllReviews();
+    }
+
+    @DeleteMapping("/review/{id}")
+    public void deleteReview(@PathVariable int id) {
+        adminService.deleteReview(id);
+    }
+
+    @GetMapping("/admin")
+    public List<Admin> getAllAdmins() {
+        return adminService.getAllAdmins();
     }
 
 }

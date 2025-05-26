@@ -23,8 +23,10 @@ public interface MerchantMapper {
 
     Merchant findById(int id);
 
-    // 新增方法
+
     Merchant findByMerchantName(String merchantName);  // 查询店铺名是否存在
+
+    Merchant findByUsername(String username);
 
     Merchant findByPhoneNumber(String phoneNumber);    // 查询手机号是否存在
 }

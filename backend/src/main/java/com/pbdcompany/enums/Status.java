@@ -4,7 +4,7 @@ package com.pbdcompany.enums;
 import lombok.Getter;
 
 @Getter
-public enum DeliveryStatus {
+public enum Status {
     PENDING("待处理"),
     NOT_SHIPPED("未发货"),
     IN_TRANSIT("运输中"),
@@ -14,7 +14,7 @@ public enum DeliveryStatus {
 
     private final String description;
 
-    DeliveryStatus(String description) {
+    Status(String description) {
         this.description = description;
     }
 
