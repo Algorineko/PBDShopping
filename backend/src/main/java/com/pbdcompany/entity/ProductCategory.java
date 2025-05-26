@@ -12,7 +12,4 @@ public class ProductCategory {
     private String categoryName;
     private String description;
     private String image;
-
-//    private LocalDateTime addedAt;
-//    private LocalDateTime updatedAt;
 }

@@ -12,6 +12,4 @@ public class ProductImage {
     private int productId;
     private String image;
 
-//    private LocalDateTime addedAt;
-//    private LocalDateTime updatedAt;
 }

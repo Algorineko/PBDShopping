@@ -2,7 +2,7 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="org.example.springbootmybatis.mapper.OrdersMapper">
+<mapper namespace="com.pbdcompany.mapper.OrdersMapper">
 
     <!-- 通用查询字段 -->
     <sql id="Base_Column_List">
@@ -10,7 +10,7 @@
     </sql>
 
     <!-- 结果映射 -->
-    <resultMap id="OrdersResultMap" type="org.example.springbootmybatis.entity.Orders">
+    <resultMap id="OrdersResultMap" type="com.pbdcompany.entity.Orders">
         <id property="orderId" column="OrderID"/>
         <result property="customerId" column="CustomerID"/>
         <result property="totalPrice" column="TotalPrice"/>

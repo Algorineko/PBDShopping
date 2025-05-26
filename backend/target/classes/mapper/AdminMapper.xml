@@ -2,64 +2,107 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
 <mapper namespace="com.pbdcompany.mapper.AdminMapper">
 
-    <!-- 通用查询字段 -->
-    <sql id="Base_Column_List">
-        AdminID, AdminName, Password
-    </sql>
-
-    <!-- 结果映射 -->
-    <resultMap id="AdminResultMap" type="com.pbdcompany.entity.Admin">
-        <id property="adminId" column="AdminID"/>
-        <result property="adminName" column="AdminName"/>
+    <!-- 结果映射：Customer -->
+    <resultMap id="CustomerResultMap" type="com.pbdcompany.entity.Customer">
+        <id property="customerId" column="CustomerID"/>
+        <result property="customerName" column="CustomerName"/>
         <result property="password" column="Password"/>
+        <result property="money" column="Money"/>
+        <result property="phoneNumber" column="PhoneNumber"/>
+        <result property="address" column="Address"/>
     </resultMap>
 
-    <!-- 查询所有管理员 -->
-    <select id="findAll" resultMap="AdminResultMap">
-        select
-        <include refid="Base_Column_List"/>
-        from admin
+    <!-- 查询所有用户 -->
+    <select id="findAllCustomers" resultMap="CustomerResultMap">
+        SELECT * FROM customer
     </select>
 
-    <!-- 根据ID删除管理员 -->
-    <delete id="deleteById">
-        delete from admin
-        where AdminID = #{id}
+    <!-- 根据ID查询用户 -->
+    <select id="findCustomerById" parameterType="int" resultMap="CustomerResultMap">
+        SELECT * FROM customer WHERE CustomerID = #{id}
+    </select>
+
+    <!-- 删除用户 -->
+    <delete id="deleteCustomerById" parameterType="int">
+        DELETE FROM customer WHERE CustomerID = #{id}
     </delete>
 
-    <!-- 插入管理员 -->
-    <insert id="insert">
-        insert into admin(<include refid="Base_Column_List"/>)
-        values
-        (
-        #{adminId},
-        #{adminName},
-        #{password}
-        )
-    </insert>
 
-    <!-- 动态更新管理员信息 -->
-    <update id="update">
-        update admin
-        <set>
-            <if test="adminName != null">
-                AdminName = #{adminName},
-            </if>
-            <if test="password != null">
-                Password = #{password},
-            </if>
-        </set>
-        where AdminID = #{adminId}
+    <!-- 查询所有订单 -->
+    <select id="findAllOrders" resultType="com.pbdcompany.entity.Orders">
+        SELECT * FROM orders
+    </select>
+
+    <select id="findOrderById" parameterType="int" resultType="com.pbdcompany.entity.Orders">
+        SELECT * FROM orders WHERE OrderID = #{id}
+    </select>
+
+
+    <!-- 查询商品 -->
+    <select id="findAllProducts" resultType="com.pbdcompany.entity.Product">
+        SELECT * FROM product
+    </select>
+
+    <select id="findProductById" parameterType="int" resultType="com.pbdcompany.entity.Product">
+        SELECT * FROM product WHERE ProductID = #{id}
+    </select>
+
+    <!-- 修改商品信息 -->
+    <update id="updateProduct" parameterType="com.pbdcompany.entity.Product">
+        UPDATE product
+        SET
+            ProductName = #{productName},
+            Price = #{price},
+            Description = #{description},
+            Stock = #{stock},
+            Category = #{category},
+            MerchantId = #{merchantId}
+        WHERE ProductID = #{productId}
     </update>
 
-    <!-- 根据ID查询管理员 -->
-    <select id="findById" resultMap="AdminResultMap">
-        select
-        <include refid="Base_Column_List"/>
-        from admin
-        where AdminID = #{id}
+
+    <!-- 查询评论 -->
+    <select id="findAllReviews" resultType="com.pbdcompany.entity.Review">
+        SELECT * FROM review
     </select>
+
+    <select id="findReviewById" parameterType="int" resultType="com.pbdcompany.entity.Review">
+        SELECT * FROM review WHERE ReviewID = #{id}
+    </select>
+
+    <delete id="deleteReviewById" parameterType="int">
+        DELETE FROM review WHERE ReviewID = #{id}
+    </delete>
+
+
+    <!-- 管理员相关 -->
+    <select id="findAllAdmins" resultType="com.pbdcompany.entity.Admin">
+        SELECT * FROM admin
+    </select>
+
+    <select id="findAdminById" parameterType="int" resultType="com.pbdcompany.entity.Admin">
+        SELECT * FROM admin WHERE AdminID = #{id}
+    </select>
+
+    <insert id="insertAdmin" parameterType="com.pbdcompany.entity.Admin">
+        INSERT INTO admin (AdminName, Password, Email)
+        VALUES (#{adminName}, #{password}, #{email})
+    </insert>
+
+    <update id="updateAdmin" parameterType="com.pbdcompany.entity.Admin">
+        UPDATE admin
+        SET
+            AdminName = #{adminName},
+            Password = #{password},
+            Email = #{email}
+        WHERE AdminID = #{adminId}
+    </update>
+
+    <delete id="deleteAdminById" parameterType="int">
+        DELETE FROM admin WHERE AdminID = #{id}
+    </delete>
 
 </mapper>

@@ -42,7 +42,7 @@ public class JwtUtils {
     private static String SECRET_KEY;
 
     // 设置过期时间（24小时）
-    private final long JWT_EXPIRATION = 86400000;
+    private static final long JWT_EXPIRATION = 86400000;
 
     // 提取用户名
     public String extractUsername(String token) {

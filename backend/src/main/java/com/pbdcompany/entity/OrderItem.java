@@ -14,7 +14,5 @@ public class OrderItem {
     private int quantity;
     private double price;
 
-//    private LocalDateTime addedAt;
-//    private LocalDateTime updatedAt;
 }
 

@@ -63,8 +63,9 @@
     </update>
 
     <!-- 根据用户名和密码查询用户 -->
-    <select id="findByUsernameAndPassword" parameterType="map" resultType="Customer">
-        SELECT * FROM Customer WHERE customerName = #{username} AND password = #{password}
+    <select id="findByUsernameAndPassword" parameterType="map" resultType="com.pbdcompany.entity.Customer">
+        SELECT * FROM customer WHERE customerName = #{username} AND password = #{password}
     </select>
+
 
 </mapper>
