@@ -1,5 +1,12 @@
 package com.pbdcompany.controller;
 
+import com.pbdcompany.dto.request.UpdateLogisticsRequest;
+import com.pbdcompany.dto.response.LogisticsInfoResponse;
+import com.pbdcompany.service.LogisticsinfoService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
 @RestController
 @RequestMapping("/api/merchant/logistics")
 public class LogisticsController {
