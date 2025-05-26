@@ -69,4 +69,41 @@ public class OrdersService {
         return new OrderResponse(orderId, "PENDING", request.getTotalPrice());
     }
 
+    // 获取商家的所有订单
+    public List<OrderInfoResponse> getOrdersByMerchantId(int merchantId) {
+        return ordersMapper.findCustomerOrdersByMerchantId(merchantId).stream()
+                .collect(Collectors.toList());
+    }
+
+    // 更新订单状态和物流信息
+    public boolean updateOrder(UpdateOrderRequest request) {
+        Orders order = ordersMapper.findById(request.getOrderId());
+
+        if (order == null || order.getMerchantId() != request.getMerchantId()) {
+            return false; // 订单不存在或无权限操作
+        }
+
+        if (request.getLogisticsCompany() != null) {
+            order.setLogisticsCompany(request.getLogisticsCompany());
+        }
+        if (request.getTrackingNumber() != null) {
+            order.setTrackingNumber(request.getTrackingNumber());
+        }
+        if (request.getNewStatus() != null) {
+            order.setOrderStatus(request.getNewStatus());
+        }
+
+        ordersMapper.update(order);
+        return true;
+    }
+
+    // 转换 Entity -> Response
+    private OrderInfoResponse convertToResponse(Orders order) {
+        if (order == null) return null;
+        OrderInfoResponse response = new OrderInfoResponse();
+        BeanUtils.copyProperties(response, order);
+        return response;
+    }
+
+
 }

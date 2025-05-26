@@ -20,4 +20,6 @@ public interface LogisticsinfoMapper {
 
     public Logisticsinfo findByOrderItemId(int orderItemId);
 
+
 }
+

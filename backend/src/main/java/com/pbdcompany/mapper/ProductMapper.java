@@ -7,18 +7,19 @@ import org.apache.ibatis.annotations.Mapper;
 import java.util.List;
 
 @Mapper //该应用程序在应用时，会自动为该接口创建一个代理实现对象，并且将其存入IOC容器中，成为Bean
+
 public interface ProductMapper {
 
-    public List<Product> findAll();
+    List<Product> findAll();
+    void deleteById(int id);
+    void insert(Product product);
+    void update(Product product);
+    Product findById(int id);
 
-    public void deleteById(int id);
+    List<ProductResponse> findByNameOrId(String name, int id);
 
-    public void insert(Product Product);
-
-    public void update(Product Product);
-
-    public Product findById(int id);
-
-    public List<ProductResponse> findByNameOrId(String name, int id);
- 
+    // 新增方法
+    List<Product> findByMerchantId(int merchantId); // 查询商家自己的商品
+    void updateSelective(Product product); // 可选字段更新
 }
+

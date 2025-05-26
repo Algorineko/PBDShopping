@@ -1,15 +1,3 @@
-
-package com.pbdcompany.service;
-
-
-import com.pbdcompany.dto.response.ProductResponse;
-import com.pbdcompany.entity.Product;
-import com.pbdcompany.mapper.ProductMapper;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import java.util.List;
-
 @Service
 public class ProductService {
 
@@ -41,8 +29,45 @@ public class ProductService {
         return productMapper.findById(id);
     }
 
-    // 根据Id或名称查询商品信息
+    // 根据名称或ID搜索商品（顾客使用）
     public List<ProductResponse> findByNameOrId(String name, int id) {
         return productMapper.findByNameOrId(name, id);
+    }
+
+    // 查看商家自己的商品（新增）
+    public List<ProductInfoResponse> getProductsByMerchant(int merchantId) {
+        return productMapper.findByMerchantId(merchantId).stream()
+                .map(this::convertToResponse)
+                .collect(Collectors.toList());
+    }
+
+    // 修改商品信息（新增）
+    public boolean updateProduct(UpdateProductRequest request) {
+        Product product = productMapper.findById(request.getProductId());
+
+        if (product == null || product.getMerchantId() != request.getMerchantId()) {
+            return false; // 商品不存在或无权限
+        }
+
+        if (request.getProductName() != null) {
+            product.setProductName(request.getProductName());
+        }
+        if (request.getDescription() != null) {
+            product.setDescription(request.getDescription());
+        }
+        if (request.getPrice() != null) {
+            product.setPrice(request.getPrice());
+        }
+
+        productMapper.updateSelective(product);
+        return true;
+    }
+
+    // 转换 Entity -> Response
+    private ProductInfoResponse convertToResponse(Product product) {
+        if (product == null) return null;
+        ProductInfoResponse response = new ProductInfoResponse();
+        BeanUtils.copyProperties(response, product);
+        return response;
     }
 }
