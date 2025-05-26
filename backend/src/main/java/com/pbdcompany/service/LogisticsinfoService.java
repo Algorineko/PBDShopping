@@ -47,7 +47,7 @@ public class LogisticsinfoService {
         LogisticsInfoResponse response = new LogisticsInfoResponse();
         response.setLogisticsCompany(info.getLogisticsCompany());
         response.setTrackingNumber(info.getTrackingNumber());
-        response.setStatus(info.getStatus().name());
+        response.setStatus(info.getStatus());
         return response;
     }
 }

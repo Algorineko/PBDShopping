@@ -38,14 +38,14 @@ public class TrackingService {
                 .map(item -> {
                     Logisticsinfo logistics = logisticsinfoMapper.findByOrderItemId(item.getOrderItemId());
 
-                    String upperCase = logistics.getStatus().toUpperCase();
+                    String upperCase = logistics.getStatus().toString().toUpperCase();
                     return new OrderItemTrackingResponse(
                             item.getOrderItemId(),
                             item.getProductId(),
                             item.getQuantity(),
                             logistics.getLogisticsCompany(),
                             logistics.getTrackingNumber(),
-                            Status.valueOf(logistics.getStatus().toUpperCase())
+                            Status.valueOf(logistics.getStatus().toString().toUpperCase())
                     );
                 })
                 .collect(Collectors.toList());

@@ -21,6 +21,10 @@ import java.util.List;
 @RequestMapping("/api/customer/order")
 public class OrderController {
 
+
+    /*
+        TODO: 需要联系OrderItemService
+     */
     @Autowired
     private OrdersService ordersService;
 
