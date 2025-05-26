@@ -26,8 +26,8 @@ public class CartItemService {
     }
 
     // 添加购物车项
-    public int insert(CartItem cartItem) {
-        return cartItemMapper.insert(cartItem);
+    public void insert(CartItem cartItem) {
+        cartItemMapper.insert(cartItem);
     }
 
     // 更新购物车项信息
@@ -36,7 +36,13 @@ public class CartItemService {
     }
 
     // 根据ID查询购物车项信息
-    public List<CartItem> findById(int customerId) {
+    public CartItem findById(int id) {
+        return cartItemMapper.findById(id);
+    }
+
+    //根据用户id查询所有购物车项
+    public List<CartItem> findByCustomerId(int customerId) {
         return cartItemMapper.findByCustomerId(customerId);
     }
+
 }

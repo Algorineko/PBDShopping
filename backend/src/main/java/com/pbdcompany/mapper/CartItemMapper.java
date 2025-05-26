@@ -12,9 +12,11 @@ public interface CartItemMapper {
 
     public void deleteById(int id);
 
-    public int insert(CartItem CartItem);
+    public void insert(CartItem CartItem);
 
     public void update(CartItem CartItem);
+
+    public CartItem findById(int id);
 
     public List<CartItem> findByCustomerId(int customerId);
  
