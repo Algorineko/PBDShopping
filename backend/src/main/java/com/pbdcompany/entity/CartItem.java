@@ -13,5 +13,7 @@ public class CartItem {
     private int productId;
     private int quantity;
     private String selectedOptions; //用于描述物品的购买选项，比如颜色、尺寸
+//    private LocalDateTime addedAt;
+//    private LocalDateTime updatedAt;
 }
 

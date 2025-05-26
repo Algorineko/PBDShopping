@@ -5,78 +5,47 @@
 
 <mapper namespace="com.pbdcompany.mapper.AdminMapper">
 
-    <!-- 结果映射：Customer -->
-    <resultMap id="CustomerResultMap" type="com.pbdcompany.entity.Customer">
-        <id property="customerId" column="CustomerID"/>
-        <result property="customerName" column="CustomerName"/>
-        <result property="password" column="Password"/>
-        <result property="money" column="Money"/>
-        <result property="phoneNumber" column="PhoneNumber"/>
-        <result property="address" column="Address"/>
-    </resultMap>
-
     <!-- 查询所有用户 -->
-    <select id="findAllCustomers" resultMap="CustomerResultMap">
+    <select id="findAllCustomers" resultType="com.pbdcompany.entity.Customer">
         SELECT * FROM customer
     </select>
 
     <!-- 根据ID查询用户 -->
-    <select id="findCustomerById" parameterType="int" resultMap="CustomerResultMap">
-        SELECT * FROM customer WHERE CustomerID = #{id}
+    <select id="findCustomerById" parameterType="int" resultType="com.pbdcompany.entity.Customer">
+        SELECT * FROM customer WHERE id = #{id}
     </select>
 
     <!-- 删除用户 -->
     <delete id="deleteCustomerById" parameterType="int">
-        DELETE FROM customer WHERE CustomerID = #{id}
+        DELETE FROM customer WHERE id = #{id}
     </delete>
-
 
     <!-- 查询所有订单 -->
     <select id="findAllOrders" resultType="com.pbdcompany.entity.Orders">
         SELECT * FROM orders
     </select>
 
-    <select id="findOrderById" parameterType="int" resultType="com.pbdcompany.entity.Orders">
-        SELECT * FROM orders WHERE OrderID = #{id}
-    </select>
-
-
     <!-- 查询商品 -->
     <select id="findAllProducts" resultType="com.pbdcompany.entity.Product">
         SELECT * FROM product
     </select>
 
-    <select id="findProductById" parameterType="int" resultType="com.pbdcompany.entity.Product">
-        SELECT * FROM product WHERE ProductID = #{id}
-    </select>
-
-    <!-- 修改商品信息 -->
+    <!-- 修改商品 -->
     <update id="updateProduct" parameterType="com.pbdcompany.entity.Product">
         UPDATE product
-        SET
-            ProductName = #{productName},
-            Price = #{price},
-            Description = #{description},
-            Stock = #{stock},
-            Category = #{category},
-            MerchantId = #{merchantId}
-        WHERE ProductID = #{productId}
+        SET name = #{name}, price = #{price}, description = #{description}, stock = #{stock}
+        WHERE id = #{id}
     </update>
-
 
     <!-- 查询评论 -->
     <select id="findAllReviews" resultType="com.pbdcompany.entity.Review">
         SELECT * FROM review
     </select>
 
-    <select id="findReviewById" parameterType="int" resultType="com.pbdcompany.entity.Review">
-        SELECT * FROM review WHERE ReviewID = #{id}
-    </select>
-
+    <!-- 删除评论 -->
     <delete id="deleteReviewById" parameterType="int">
-        DELETE FROM review WHERE ReviewID = #{id}
+        DELETE FROM review WHERE id = #{id}
     </delete>
-
 
     <!-- 管理员相关 -->
     <select id="findAllAdmins" resultType="com.pbdcompany.entity.Admin">
@@ -84,25 +53,22 @@
     </select>
 
     <select id="findAdminById" parameterType="int" resultType="com.pbdcompany.entity.Admin">
-        SELECT * FROM admin WHERE AdminID = #{id}
+        SELECT * FROM admin WHERE id = #{id}
     </select>
 
     <insert id="insertAdmin" parameterType="com.pbdcompany.entity.Admin">
-        INSERT INTO admin (AdminName, Password, Email)
-        VALUES (#{adminName}, #{password}, #{email})
+        INSERT INTO admin (username, password, email)
+        VALUES (#{username}, #{password}, #{email})
     </insert>
 
     <update id="updateAdmin" parameterType="com.pbdcompany.entity.Admin">
         UPDATE admin
-        SET
-            AdminName = #{adminName},
-            Password = #{password},
-            Email = #{email}
-        WHERE AdminID = #{adminId}
+        SET username = #{username}, password = #{password}, email = #{email}
+        WHERE id = #{id}
     </update>
 
     <delete id="deleteAdminById" parameterType="int">
-        DELETE FROM admin WHERE AdminID = #{id}
+        DELETE FROM admin WHERE id = #{id}
     </delete>
 
 </mapper>

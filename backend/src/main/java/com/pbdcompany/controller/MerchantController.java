@@ -1,6 +1,7 @@
 package com.pbdcompany.controller;
 
 import com.pbdcompany.dto.request.MerchantRegisterRequest;
+import com.pbdcompany.dto.request.RegisterRequest;
 import com.pbdcompany.dto.response.MerchantResponse;
 import com.pbdcompany.service.MerchantService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,8 +18,8 @@ public class MerchantController {
 
     // 注册商家
     @PostMapping("/register")
-    public String register(@RequestBody MerchantRegisterRequest request) {
-        if (merchantService.register(request)) {
+    public String register(@RequestBody RegisterRequest request) {
+        if (merchantService.register(request).getSuccess()) {
             return "注册成功";
         } else {
             return "用户名或手机号已存在";
