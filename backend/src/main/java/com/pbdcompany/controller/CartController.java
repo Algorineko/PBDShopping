@@ -23,6 +23,10 @@ public class CartController {
     @Autowired
     private CartItemService cartItemService;
 
+    //将 JwtUtils 改为可注入的 Bean，这样可以在测试中使用 @Mock 来模拟其行为。
+    @Autowired
+    private JwtUtils jwtUtils;
+
     @PostMapping("/add")
     public ResponseEntity<?> addToCart(
             @RequestBody AddToCartRequest request,
@@ -73,13 +77,14 @@ public class CartController {
         }
     }
 
+    //5.26修改：将 JwtUtils 改为可注入的 Bean。
     // 从请求中提取用户ID
     private int extractCustomerIdFromToken(HttpServletRequest request) {
         String token = parseJwt(request);
         if (token == null) {
             throw new RuntimeException("Missing or invalid token");
         }
-        return JwtUtils.extractCustomerId(token);
+        return jwtUtils.extractCustomerId(token);
     }
 
     // 从 Header 提取 JWT Token

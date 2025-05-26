@@ -21,13 +21,14 @@ public class ReturnExchangeController {
     @Autowired
     private JwtUtils jwtUtils; // 注入 JWT 工具类
 
+    //5.26修改：将 JwtUtils 改为可注入的 Bean。
     // 提取用户ID的通用方法
     private int extractCustomerId(HttpServletRequest request) {
         String token = parseJwt(request);
         if (token == null) {
             throw new RuntimeException("Missing or invalid token");
         }
-        return JwtUtils.extractCustomerId(token);
+        return jwtUtils.extractCustomerId(token);
     }
 
     // 从请求头提取 Token

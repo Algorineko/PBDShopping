@@ -22,6 +22,10 @@ public class OrderController {
     @Autowired
     private OrdersService ordersService;
 
+    //将 JwtUtils 改为可注入的 Bean，这样可以在测试中使用 @Mock 来模拟其行为。
+    @Autowired
+    private JwtUtils jwtUtils;
+
     @PostMapping("/create")
     public ResponseEntity<OrderResponse> createOrder(
             @RequestBody OrderRequest request,
@@ -50,10 +54,11 @@ public class OrderController {
         return null;
     }
 
+    //5.26修改：将 JwtUtils 改为可注入的 Bean。
     // 使用 JWT 解析出用户 ID（假设你有 JWT 工具类）
     private Object getCustomerIdFromToken(String token) {
         try {
-            return JwtUtils.extractCustomerId(token); // 使用工具类方法
+            return jwtUtils.extractCustomerId(token); // 使用工具类方法
         } catch (Exception e) {
             return null;
         }

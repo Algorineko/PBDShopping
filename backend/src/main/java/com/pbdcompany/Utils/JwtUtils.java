@@ -28,7 +28,8 @@ public class JwtUtils {
     }
 
     // 提取用户 ID（假设你在 token 中存储了 customerId）
-    public static int extractCustomerId(String token) {
+    //5.26: 修改extractCustomerId方法，去掉其static标签
+    public  int extractCustomerId(String token) {
         Claims claims = extractAllClaims(token);
         return claims.get("customerId", Integer.class);
     }

@@ -33,7 +33,7 @@ public class ReviewController {
         if (token == null) {
             throw new RuntimeException("Missing or invalid token");
         }
-        return JwtUtils.extractCustomerId(token);
+        return jwtUtils.extractCustomerId(token);
     }
     @PostMapping("/{orderId}")
     public ResponseEntity<?> addReview(

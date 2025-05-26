@@ -20,8 +20,11 @@ public class ProductController {
     @RequestMapping("/search")
     public List<ProductResponse> searchProduct(
             @RequestParam(required = false) String name,
-            @RequestParam(required = false) int id) {
-                return productService.findByNameOrId(name, id);
+            @RequestParam(required = false) Integer id) {
+
+        //5.26修改: 如果 id 为 null，传 0 或其他默认值给底层方法
+        return productService.findByNameOrId(name, id != null ? id : 0);
     }
+    //5.26修改：将int id改为Integer id，为了能使id赋值为null。
 
 }

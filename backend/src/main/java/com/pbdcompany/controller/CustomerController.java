@@ -32,7 +32,11 @@ public class CustomerController {
     public ResponseEntity<?> login(@RequestParam String username, @RequestParam String password) {
         Customer customer = customerService.login(username, password);
         if (customer == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("用户名或密码错误");
+            return ResponseEntity
+                    .status(HttpStatus.UNAUTHORIZED)
+                    .contentType(org.springframework.http.MediaType.APPLICATION_JSON)
+                    .body("\"用户名或密码错误\"");
+            //5.26修改：增加了.contentType的属性设置，以避免在测试时返回的是乱码。
         }
         return ResponseEntity.ok(customer);
     }

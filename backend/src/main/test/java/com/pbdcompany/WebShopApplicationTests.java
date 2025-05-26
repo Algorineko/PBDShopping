@@ -2,10 +2,12 @@ package com.pbdcompany;
 
 import com.pbdcompany.entity.*;
 import com.pbdcompany.mapper.*;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+
 
 import java.util.List;
 
@@ -117,6 +119,7 @@ class WebShopApplicationTests {
     public void testInsert(){
         Customer customer = new Customer(0, "李浩6", "123456", 987689., "9582164", "山东省临淄区XXXX", "");
         customerMapper.insert(customer);
+        System.out.println("此时主键的ID已经是：" + customer.getCustomerId());
     }
 
     @Test
@@ -311,11 +314,6 @@ class WebShopApplicationTests {
 
 
 
-
-
-    /*
-        ---------------------------  测试2：对controller层能否正常运作进行的专门测试 ------------------------
-     */
 
 }
 
