@@ -26,8 +26,8 @@ public class LogisticsinfoService {
     }
 
     // 添加物流信息
-    public int insert(Logisticsinfo logisticsinfo) {
-        return logisticsinfoMapper.insert(logisticsinfo);
+    public void insert(Logisticsinfo logisticsinfo) {
+        logisticsinfoMapper.insert(logisticsinfo);
     }
 
     // 更新物流信息
@@ -47,7 +47,7 @@ public class LogisticsinfoService {
         LogisticsInfoResponse response = new LogisticsInfoResponse();
         response.setLogisticsCompany(info.getLogisticsCompany());
         response.setTrackingNumber(info.getTrackingNumber());
-        response.setStatus(info.getStatus());
+        response.setStatus(info.getStatus().name());
         return response;
     }
 }

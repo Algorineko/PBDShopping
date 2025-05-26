@@ -3,20 +3,14 @@ package com.pbdcompany.service;
 
 
 import com.pbdcompany.dto.request.OrderRequest;
-import com.pbdcompany.dto.request.UpdateOrderRequest;
-import com.pbdcompany.dto.response.OrderInfoResponse;
 import com.pbdcompany.dto.response.OrderResponse;
 import com.pbdcompany.entity.OrderItem;
 import com.pbdcompany.entity.Orders;
-import com.pbdcompany.enums.Status;
 import com.pbdcompany.mapper.OrdersMapper;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class OrdersService {
@@ -54,7 +48,7 @@ public class OrdersService {
         Orders order = new Orders();
         order.setCustomerId(customerId);
         order.setTotalPrice(request.getTotalPrice());
-        order.setStatus(Status.PENDING); // 初始状态为待支付
+        order.setStatus("PENDING"); // 初始状态为待支付
 
         ordersMapper.insert(order); // 插入后 orderId 应该被填充
 
@@ -72,12 +66,13 @@ public class OrdersService {
         }
 
         // 3. 返回响应
-        return new OrderResponse(orderId, Status.PENDING, request.getTotalPrice());
+        return new OrderResponse(orderId, "PENDING", request.getTotalPrice());
     }
 
     // 获取商家的所有订单
     public List<OrderInfoResponse> getOrdersByMerchantId(int merchantId) {
-        return new ArrayList<>(ordersMapper.findCustomerOrdersByMerchantId(merchantId));
+        return ordersMapper.findCustomerOrdersByMerchantId(merchantId).stream()
+                .collect(Collectors.toList());
     }
 
     // 更新订单状态和物流信息
@@ -95,7 +90,7 @@ public class OrdersService {
             order.setTrackingNumber(request.getTrackingNumber());
         }
         if (request.getNewStatus() != null) {
-            order.setStatus(Status.valueOf(request.getNewStatus()));
+            order.setOrderStatus(request.getNewStatus());
         }
 
         ordersMapper.update(order);

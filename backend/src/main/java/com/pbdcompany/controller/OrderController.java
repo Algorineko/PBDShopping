@@ -1,11 +1,9 @@
 package com.pbdcompany.controller;
 
 import com.pbdcompany.dto.request.OrderRequest;
-import com.pbdcompany.dto.request.UpdateOrderRequest;
 import com.pbdcompany.dto.response.OrderInfoResponse;
 import com.pbdcompany.dto.response.OrderResponse;
 import com.pbdcompany.Utils.JwtUtils;
-import com.pbdcompany.entity.Merchant;
 import com.pbdcompany.service.OrdersService;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,10 +19,6 @@ import java.util.List;
 @RequestMapping("/api/customer/order")
 public class OrderController {
 
-
-    /*
-        TODO: 需要联系OrderItemService
-     */
     @Autowired
     private OrdersService ordersService;
 
@@ -56,7 +50,7 @@ public class OrderController {
         return null;
     }
 
-
+    // 使用 JWT 解析出用户 ID（假设你有 JWT 工具类）
     private Object getCustomerIdFromToken(String token) {
         try {
             return JwtUtils.extractCustomerId(token); // 使用工具类方法
@@ -65,12 +59,14 @@ public class OrderController {
         }
     }
 
+    @Autowired
 
+
+    // 查看商家所有订单
     @GetMapping("/list")
-    public List<OrderInfoResponse> getOrdersByMerchantId(@RequestParam int merchantId) {
+    public List<OrderInfoResponse> getOrdersByMerchant(@RequestParam int merchantId) {
         return ordersService.getOrdersByMerchantId(merchantId);
     }
-
 
     // 处理订单：发货 / 退货 / 换货
     @PutMapping("/update")

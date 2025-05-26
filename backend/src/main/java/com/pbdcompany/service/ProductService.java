@@ -1,17 +1,3 @@
-package com.pbdcompany.service;
-
-import com.pbdcompany.dto.request.UpdateProductRequest;
-import com.pbdcompany.dto.response.ProductInfoResponse;
-import com.pbdcompany.dto.response.ProductResponse;
-import com.pbdcompany.entity.Product;
-import com.pbdcompany.mapper.ProductMapper;
-import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
-
-import java.util.List;
-import java.util.stream.Collectors;
-
 @Service
 public class ProductService {
 
