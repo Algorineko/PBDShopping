@@ -1,14 +1,9 @@
 package com.pbdcompany.mapper;
 
+import com.pbdcompany.dto.response.MerchantProfileResponse;
 import com.pbdcompany.entity.Merchant;
 import org.apache.ibatis.annotations.Mapper;
-
-
 import java.util.List;
-
-
-import com.pbdcompany.entity.Merchant;
-import org.apache.ibatis.annotations.*;
 
 @Mapper
 public interface MerchantMapper {
@@ -24,11 +19,11 @@ public interface MerchantMapper {
     Merchant findById(int id);
 
 
-    Merchant findByMerchantName(String merchantName);  // 查询店铺名是否存在
-
     Merchant findByUsername(String username);
 
-    Merchant findByPhoneNumber(String phoneNumber);    // 查询手机号是否存在
+    Merchant findByUsernameAndPassword(String username, String password);
+
+    MerchantProfileResponse findProfileByUsername(String username);
 }
 
 

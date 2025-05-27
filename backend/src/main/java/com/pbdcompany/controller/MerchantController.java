@@ -17,30 +17,5 @@ public class MerchantController {
     @Autowired
     private MerchantService merchantService;
 
-    // 注册商家
-    @PostMapping("/register")
-    public String register(@RequestBody RegisterRequest request) {
-        if (merchantService.register(request).getSuccess()) {
-            return "注册成功";
-        } else {
-            return "用户名或手机号已存在";
-        }
-    }
-
-    // 商家登录
-    @PostMapping("/login")
-    public MerchantResponse login(@RequestParam String merchantName, @RequestParam String password) {
-        MerchantResponse response = new MerchantResponse();
-        Merchant merchant = merchantService.login(merchantName, password);
-        if (merchant == null) {
-            return null;
-        }
-        response.setMerchantId(merchant.getMerchantId());
-        response.setMerchantName(merchant.getMerchantName());
-        response.setPhoneNumber(merchant.getPhoneNumber());
-        response.setMerchantAddress(merchant.getMerchantAddress());
-        response.setHeadPicture(merchant.getHeadPicture());
-        return response;
-    }
 
 }

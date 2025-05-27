@@ -1,5 +1,6 @@
 package com.pbdcompany.mapper;
 
+import com.pbdcompany.dto.response.OrderItemResponse;
 import com.pbdcompany.entity.OrderItem;
 import org.apache.ibatis.annotations.Mapper;
 
@@ -18,7 +19,8 @@ public interface OrderItemMapper {
 
     public OrderItem findById(int id);
 
-    public List<OrderItem> findByOrderId(int orderId);
+    public List<OrderItemResponse> findByOrderId(int orderId);
+
 
 
 }

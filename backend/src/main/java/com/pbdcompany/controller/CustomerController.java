@@ -1,17 +1,14 @@
 package com.pbdcompany.controller;
 
 
-import com.pbdcompany.dto.request.RegisterRequest;
-import com.pbdcompany.dto.response.RegisterResponse;
-import com.pbdcompany.entity.Customer;
+import com.pbdcompany.Utils.JwtUtils;
+import com.pbdcompany.dto.request.UpdateCustomerProfileRequest;
+import com.pbdcompany.dto.response.CustomerProfileResponse;
 import com.pbdcompany.service.CustomerService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
-
-import static org.springframework.http.MediaType.APPLICATION_JSON;
+import org.springframework.web.bind.annotation.*;
 
 /**
  *  CustomerController
@@ -19,29 +16,66 @@ import static org.springframework.http.MediaType.APPLICATION_JSON;
 @RestController
 @RequestMapping("/api/customer")
 public class CustomerController {
-    private final CustomerService customerService;
+    @Autowired
+    private CustomerService customerService;
+    @Autowired
+    private JwtUtils jwtUtils;
 
-    public CustomerController(CustomerService customerService) {
-        this.customerService = customerService;
-    }
+    // 获取当前用户信息
+    @GetMapping("/profile")
+    public ResponseEntity<?> getCurrentUserProfile(
+            @RequestHeader(value = "Authorization", required = false) String authHeader) {
 
-    @RequestMapping("/register")
-    public RegisterResponse register(RegisterRequest request) {
-        return customerService.register(request);
-    }
+        System.out.println("AuthHeader: " + authHeader); // 调试输出
 
-    @RequestMapping("/login")
-    public ResponseEntity<?> login(@RequestParam String username, @RequestParam String password) {
-        Customer customer = customerService.login(username, password);
-        if (customer == null) {
-            return ResponseEntity
-                    .status(HttpStatus.UNAUTHORIZED)
-                    .contentType(APPLICATION_JSON)
-                    .body("\"用户名或密码错误\"");
-            //5.26修改：增加了.contentType的属性设置，以避免在测试时返回的是乱码。
+        if (authHeader==null || !authHeader.startsWith("Bearer ")) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("未登录");
         }
-        return ResponseEntity.ok(customer);
+
+        String token = authHeader.substring(7);
+        System.out.println("Token: " + token); // 输出 Token
+
+        String username = jwtUtils.getUsernameFromToken(token);
+        System.out.println("Username from token: " + username); // 输出用户名
+
+        if (username == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("无效的 Token");
+        }
+
+        CustomerProfileResponse profile = customerService.getCustomerProfileByUsername(username);
+        if (profile == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("用户不存在");
+        }
+
+        return ResponseEntity.ok(profile);
+    }
+
+
+    @PutMapping("/putProfile")
+    public ResponseEntity<?> updateCurrentUserProfile(
+            @RequestHeader("Authorization") String authHeader,
+            @RequestBody UpdateCustomerProfileRequest request) {
+
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("未登录");
+        }
+
+        String token = authHeader.substring(7);
+        String username = jwtUtils.getUsernameFromToken(token);
+
+        if (username == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("无效的 Token");
+        }
+
+        boolean success = customerService.updateCustomerProfile(username, request);
+        if (!success) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("更新失败");
+        }
+
+        return ResponseEntity.ok("信息更新成功");
     }
 
 
 }
+
+

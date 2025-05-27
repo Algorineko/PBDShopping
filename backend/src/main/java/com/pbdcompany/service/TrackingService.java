@@ -1,5 +1,6 @@
 package com.pbdcompany.service;
 
+import com.pbdcompany.dto.response.OrderItemResponse;
 import com.pbdcompany.dto.response.OrderItemTrackingResponse;
 import com.pbdcompany.dto.response.OrderTrackingResponse;
 import com.pbdcompany.entity.Logisticsinfo;
@@ -32,7 +33,7 @@ public class TrackingService {
             throw new RuntimeException("订单不存在");
         }
 
-        List<OrderItem> orderItems = orderItemMapper.findByOrderId(orderId);
+        List<OrderItemResponse> orderItems = orderItemMapper.findByOrderId(orderId);
 
         List<OrderItemTrackingResponse> itemResponses = orderItems.stream()
                 .map(item -> {

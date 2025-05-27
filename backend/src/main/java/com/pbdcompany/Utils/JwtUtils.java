@@ -41,7 +41,7 @@ public class JwtUtils {
 
     // 从配置文件中注入密钥（推荐）
     @Value("${jwt.secret}")
-    private static String SECRET_KEY;
+    private String SECRET_KEY;
 
     // 设置过期时间（24小时）
     private static final long JWT_EXPIRATION = 86400000;
@@ -53,7 +53,7 @@ public class JwtUtils {
 
     // 提取用户 ID（假设你在 token 中存储了 customerId）
     //5.26: 修改extractCustomerId方法，去掉其static标签
-    public static int extractCustomerId(String token) {
+    public  int extractCustomerId(String token) {
         Claims claims = extractAllClaims(token);
         return claims.get("customerId", Integer.class);
     }
@@ -66,7 +66,7 @@ public class JwtUtils {
 
 
     // 生成 Token（带自定义声明）
-    public static String generateToken(Map<String, Object> extraClaims, String username) {
+    public String generateToken(Map<String, Object> extraClaims, String username) {
         return Jwts.builder()
                 .setClaims(extraClaims)
                 .setSubject(username)
@@ -93,7 +93,7 @@ public class JwtUtils {
     }
 
     // 提取所有声明
-    private static Claims extractAllClaims(String token) {
+    private Claims extractAllClaims(String token) {
         return Jwts.parserBuilder()
                 .setSigningKey(getSignInKey())
                 .build()
@@ -102,7 +102,7 @@ public class JwtUtils {
     }
 
     // 获取签名密钥
-    private static Key getSignInKey() {
+    private Key getSignInKey() {
         byte[] keyBytes = Decoders.BASE64.decode(SECRET_KEY);
         return Keys.hmacShaKeyFor(keyBytes);
     }
@@ -111,5 +111,16 @@ public class JwtUtils {
     public int extractMerchantId(String token) {
         return extractClaim(token, claims -> claims.get("merchantId", Integer.class));
     }
+
+    // JwtUtils.java
+
+    public String getUsernameFromToken(String token) {
+        return Jwts.parser()
+                .setSigningKey(SECRET_KEY)
+                .parseClaimsJws(token)
+                .getBody()
+                .getSubject();
+    }
+
 
 }

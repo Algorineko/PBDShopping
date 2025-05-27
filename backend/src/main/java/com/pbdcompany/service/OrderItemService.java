@@ -1,6 +1,7 @@
 
 package com.pbdcompany.service;
 
+import com.pbdcompany.dto.response.OrderItemResponse;
 import com.pbdcompany.entity.OrderItem;
 import com.pbdcompany.mapper.OrderItemMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,5 +38,9 @@ public class OrderItemService {
     // 根据ID查询订单项信息
     public OrderItem findById(int id) {
         return orderItemMapper.findById(id);
+    }
+
+    public List<OrderItemResponse> getOrderItemsByOrderId(int orderId) {
+        return orderItemMapper.findByOrderId(orderId);
     }
 }

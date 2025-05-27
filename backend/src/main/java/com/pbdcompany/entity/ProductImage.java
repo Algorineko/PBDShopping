@@ -11,5 +11,4 @@ public class ProductImage {
     private int productImageId;
     private int productId;
     private String image;
-
 }

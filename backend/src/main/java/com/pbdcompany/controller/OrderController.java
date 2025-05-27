@@ -3,9 +3,11 @@ package com.pbdcompany.controller;
 import com.pbdcompany.dto.request.OrderRequest;
 import com.pbdcompany.dto.request.UpdateOrderRequest;
 import com.pbdcompany.dto.response.OrderInfoResponse;
+import com.pbdcompany.dto.response.OrderItemResponse;
 import com.pbdcompany.dto.response.OrderResponse;
 import com.pbdcompany.Utils.JwtUtils;
 import com.pbdcompany.entity.Merchant;
+import com.pbdcompany.service.OrderItemService;
 import com.pbdcompany.service.OrdersService;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,12 +24,14 @@ import java.util.List;
 public class OrderController {
 
 
-    /*
-        TODO: 需要联系OrderItemService
-     */
+    @Autowired
+    private OrderItemService orderItemService;
+
     @Autowired
     private OrdersService ordersService;
 
+    @Autowired
+    private JwtUtils jwtUtils;
     @PostMapping("/create")
     public ResponseEntity<OrderResponse> createOrder(
             @RequestBody OrderRequest request,
@@ -42,6 +46,26 @@ public class OrderController {
 
         OrderResponse response = ordersService.createOrder(userId, request);
         return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/items")
+    public ResponseEntity<?> getOrderItemsByOrderId(@RequestParam int orderId,
+                                                    HttpServletRequest request) {
+        String token = parseJwt(request);
+        Integer userId = (Integer) getCustomerIdFromToken(token);
+
+        if (token == null || userId == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("未授权");
+        }
+
+        // 检查订单是否属于当前用户（可选增强安全性）
+        if (!ordersService.isOrderBelongsToUser(orderId, userId)) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body("无权限访问此订单");
+        }
+
+        // 获取订单项
+        List<OrderItemResponse> items = orderItemService.getOrderItemsByOrderId(orderId);
+        return ResponseEntity.ok(items);
     }
 
 
@@ -59,7 +83,7 @@ public class OrderController {
 
     private Object getCustomerIdFromToken(String token) {
         try {
-            return JwtUtils.extractCustomerId(token); // 使用工具类方法
+            return jwtUtils.extractCustomerId(token); // 使用工具类方法
         } catch (Exception e) {
             return null;
         }

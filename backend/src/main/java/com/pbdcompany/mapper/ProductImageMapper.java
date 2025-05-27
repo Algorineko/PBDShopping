@@ -1,5 +1,6 @@
 package com.pbdcompany.mapper;
 
+import com.pbdcompany.entity.Product;
 import com.pbdcompany.entity.ProductImage;
 import org.apache.ibatis.annotations.Mapper;
 
@@ -18,5 +19,6 @@ public interface ProductImageMapper {
     public void update(ProductImage ProductImage);
 
     public ProductImage findById(int id);
- 
+
+    public ProductImage findByProductId(int productId);
 }

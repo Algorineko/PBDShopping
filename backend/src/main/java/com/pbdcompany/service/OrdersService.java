@@ -111,4 +111,7 @@ public class OrdersService {
     }
 
 
+    public boolean isOrderBelongsToUser(int orderId, int userId) {
+        return ordersMapper.findById(orderId).getCustomerId() == userId;
+    }
 }

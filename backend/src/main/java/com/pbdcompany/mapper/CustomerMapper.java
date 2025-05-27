@@ -1,5 +1,6 @@
 package com.pbdcompany.mapper;
 
+import com.pbdcompany.dto.response.CustomerProfileResponse;
 import com.pbdcompany.entity.Customer;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -29,7 +30,7 @@ public interface CustomerMapper {
     /*
         根据Id更新用户数据
      */
-    void update(Integer customerId, String customerName, String password, Double money, String phoneNumber, String address);
+    void update(Customer customer);
 
     /*
         根据用户名和密码查询用户
@@ -39,5 +40,9 @@ public interface CustomerMapper {
            @Param("username") String username,
            @Param("password") String password);
 
+    CustomerProfileResponse findProfileByUsername(String username);
+
     Customer findByUsername(String username);
+
+
 }

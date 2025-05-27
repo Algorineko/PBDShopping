@@ -5,6 +5,10 @@ import com.pbdcompany.dto.request.UpdateProductRequest;
 import com.pbdcompany.dto.response.ProductInfoResponse;
 import com.pbdcompany.dto.response.ProductResponse;
 import com.pbdcompany.entity.Product;
+import com.pbdcompany.entity.ProductCategory;
+import com.pbdcompany.entity.ProductImage;
+import com.pbdcompany.mapper.ProductCategoryMapper;
+import com.pbdcompany.mapper.ProductImageMapper;
 import com.pbdcompany.mapper.ProductMapper;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,11 +24,21 @@ public class ProductService {
     @Autowired
     private ProductMapper productMapper;
 
+    @Autowired
+    private ProductImageMapper productImageMapper;
+
+    @Autowired
+    private ProductCategoryMapper  productCategoryMapper;
     // 查询所有商品
     public List<Product> findAll() {
         return productMapper.findAll();
     }
 
+    // 获取所有商品类别
+    public List<ProductCategory> findAllCategory() {
+        return productCategoryMapper.findAll();
+
+    }
     // 根据ID删除商品
     public void deleteById(int id) {
         productMapper.deleteById(id);
@@ -45,9 +59,14 @@ public class ProductService {
         return productMapper.findById(id);
     }
 
+    // 根据Id 查询商品图片
+    public String getProductImage(int productId) {
+       ProductImage productImage = productImageMapper.findByProductId(productId);
+       return productImage.getImage();
+    }
     // 根据名称或ID搜索商品（顾客使用）
-    public List<ProductResponse> findByNameOrId(String name, int id) {
-        return productMapper.findByNameOrId(name, id);
+    public List<ProductResponse> findByNameOrId(String name) {
+        return productMapper.findByName(name);
     }
 
     // 查看商家自己的商品（新增）

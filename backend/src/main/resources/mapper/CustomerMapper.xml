@@ -42,7 +42,6 @@
     </insert>
 
 
-    <!-- 动态更新用户信息 -->
     <update id="update">
         update customer
         <set>
@@ -65,10 +64,27 @@
         where CustomerID = #{customerId}
     </update>
 
+
     <!-- 根据用户名和密码查询用户 -->
     <select id="findByUsernameAndPassword" parameterType="map" resultType="com.pbdcompany.entity.Customer">
         SELECT * FROM customer WHERE customerName = #{username} AND password = #{password}
     </select>
 
+    <!-- CustomerMapper.xml -->
+    <select id="findProfileByUsername" resultType="com.pbdcompany.dto.response.CustomerProfileResponse">
+        SELECT
+            CustomerID AS customerId,
+            CustomerName AS customerName,
+            PhoneNumber AS phoneNumber,
+            Address AS address,
+            Money AS money
+        FROM customer
+        WHERE CustomerName = #{username}
+    </select>
+
+
+    <select id="findByUsername" parameterType="string" resultMap="CustomerResultMap">
+        SELECT * FROM customer WHERE CustomerName = #{username}
+    </select>
 
 </mapper>

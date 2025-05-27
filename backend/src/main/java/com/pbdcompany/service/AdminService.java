@@ -1,5 +1,6 @@
 package com.pbdcompany.service;
 
+import com.pbdcompany.dto.response.OrderItemResponse;
 import com.pbdcompany.entity.*;
 
 import java.util.List;
@@ -18,4 +19,6 @@ public interface AdminService {
     void deleteReview(int id);
 
     List<Admin> getAllAdmins();
+
+    List<OrderItemResponse> getAllOrderItems();
 }

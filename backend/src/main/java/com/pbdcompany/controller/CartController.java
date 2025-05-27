@@ -23,7 +23,6 @@ public class CartController {
     @Autowired
     private CartItemService cartItemService;
 
-    //将 JwtUtils 改为可注入的 Bean，这样可以在测试中使用 @Mock 来模拟其行为。
     @Autowired
     private JwtUtils jwtUtils;
 

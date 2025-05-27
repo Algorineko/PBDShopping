@@ -3,12 +3,12 @@ package com.pbdcompany.dto.response;
 import lombok.Data;
 
 @Data
-public class ProductInfoResponse {
+public class OrderItemResponse {
+    private int orderItemId;
     private int productId;
-    private int categoryId;
-    private int merchantId;
-    private String image;
     private String productName;
-    private String description;
+    private Integer quantity;
     private Double price;
+    private String status;
+    private String customerName;
 }

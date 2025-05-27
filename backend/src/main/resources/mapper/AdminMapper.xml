@@ -103,4 +103,21 @@
         DELETE FROM admin WHERE AdminID = #{id}
     </delete>
 
+    <!-- 多表查询：获取订单项及其关联的商品和用户信息 -->
+    <select id="findAllOrderItems" resultType="com.pbdcompany.dto.response.OrderItemResponse">
+        SELECT
+            oi.OrderItemID AS orderItemId,
+            oi.OrderID AS orderId,
+            oi.ProductID AS productId,
+            p.ProductName AS productName,
+            oi.Quantity AS quantity,
+            oi.Price AS price,
+            c.CustomerName AS customerName
+        FROM orderitem oi
+                 LEFT JOIN product p ON oi.ProductID = p.ProductID
+                 LEFT JOIN orders o ON oi.OrderID = o.OrderID
+                 LEFT JOIN customer c ON o.CustomerID = c.CustomerID
+    </select>
+
+
 </mapper>

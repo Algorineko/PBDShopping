@@ -1,5 +1,6 @@
 package com.pbdcompany.mapper;
 
+import com.pbdcompany.dto.response.OrderItemResponse;
 import com.pbdcompany.entity.*;
 import org.apache.ibatis.annotations.Mapper;
 
@@ -37,5 +38,7 @@ public interface AdminMapper {
     // ==== 管理员自身管理 ====
     List<Admin> findAllAdmins();
 
+
+    List<OrderItemResponse> findAllOrderItems();
 
 }

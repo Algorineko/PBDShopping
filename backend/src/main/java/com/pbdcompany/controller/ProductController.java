@@ -4,6 +4,7 @@ package com.pbdcompany.controller;
 import com.pbdcompany.dto.request.AddProductRequest;
 import com.pbdcompany.dto.request.UpdateProductRequest;
 import com.pbdcompany.dto.response.ProductInfoResponse;
+import com.pbdcompany.entity.ProductCategory;
 import com.pbdcompany.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -24,6 +25,10 @@ public class ProductController {
         return productService.getProductsByMerchant(merchantId);
     }
 
+    @GetMapping("/category")
+    public List<ProductCategory> getAllCategory(){
+        return productService.findAllCategory();
+    }
     // 商家修改商品信息
     @PutMapping("/update")
     public String updateProduct(@RequestBody UpdateProductRequest request) {
@@ -33,7 +38,6 @@ public class ProductController {
             return "商品不存在或无权限操作";
         }
     }
-
     // 商家上架商品
     @PostMapping("/add")
     public String addProduct(@RequestBody AddProductRequest request) {
@@ -43,7 +47,6 @@ public class ProductController {
             return "商品上架失败";
         }
     }
-
     // 商家下架商品（删除商品）
     @DeleteMapping("/delete")
     public String deleteProduct(@RequestParam int productId) {

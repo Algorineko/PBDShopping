@@ -1,5 +1,6 @@
 package com.pbdcompany.service.impl;
 
+import com.pbdcompany.dto.response.OrderItemResponse;
 import com.pbdcompany.entity.*;
 import com.pbdcompany.mapper.AdminMapper;
 import com.pbdcompany.service.AdminService;
@@ -53,4 +54,10 @@ public class AdminServiceImpl implements AdminService {
     public List<Admin> getAllAdmins() {
         return adminMapper.findAllAdmins();
     }
+
+    @Override
+    public List<OrderItemResponse> getAllOrderItems() {
+        return adminMapper.findAllOrderItems();
+    }
+
 }

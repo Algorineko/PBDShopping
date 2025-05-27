@@ -1,5 +1,6 @@
 package com.pbdcompany.controller;
 
+import com.pbdcompany.dto.response.OrderItemResponse;
 import com.pbdcompany.entity.*;
 import com.pbdcompany.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,7 +29,10 @@ public class AdminController {
     public List<Orders> getAllOrders() {
         return adminService.getAllOrders();
     }
-
+    @GetMapping("/orderItem")
+    public List<OrderItemResponse> getAllOrderItems(){
+        return adminService.getAllOrderItems();
+    }
     @PutMapping("/product")
     public void updateProduct(@RequestBody Product product) {
         adminService.updateProduct(product);

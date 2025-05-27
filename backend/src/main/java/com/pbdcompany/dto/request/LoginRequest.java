@@ -1,11 +1,16 @@
 package com.pbdcompany.dto.request;
 
-import com.pbdcompany.enums.UserType;
 import lombok.Data;
+import lombok.NonNull;
 
 @Data
 public class LoginRequest {
+    @NonNull
     private String username;
+
+    @NonNull
     private String password;
-    private UserType userType; // "customer" "merchant" or "admin"
+
+    @NonNull
+    private String userType;
 }

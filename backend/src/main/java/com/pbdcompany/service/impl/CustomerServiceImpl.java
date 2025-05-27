@@ -1,6 +1,8 @@
 package com.pbdcompany.service.impl;
 
 import com.pbdcompany.dto.request.RegisterRequest;
+import com.pbdcompany.dto.request.UpdateCustomerProfileRequest;
+import com.pbdcompany.dto.response.CustomerProfileResponse;
 import com.pbdcompany.dto.response.RegisterResponse;
 import com.pbdcompany.entity.Customer;
 import com.pbdcompany.mapper.CustomerMapper;
@@ -39,4 +41,33 @@ public class CustomerServiceImpl implements CustomerService {
         }
         return null;
     }
+
+    @Override
+    public CustomerProfileResponse getCustomerProfileByUsername(String username) {
+        return customerMapper.findProfileByUsername(username);
+    }
+
+    @Override
+    public boolean updateCustomerProfile(String username, UpdateCustomerProfileRequest request) {
+        Customer customer = customerMapper.findByUsername(username);
+        if (customer == null) {
+            return false;
+        }
+
+        if (request.getPhoneNumber() != null) {
+            customer.setPhoneNumber(request.getPhoneNumber());
+        }
+        if (request.getAddress() != null) {
+            customer.setAddress(request.getAddress());
+        }
+
+        customerMapper.update(customer);
+        return true;
+    }
+
+    @Override
+    public boolean existsByUsername(String username) {
+        return customerMapper.findByUsername(username) != null;
+    }
+
 }
