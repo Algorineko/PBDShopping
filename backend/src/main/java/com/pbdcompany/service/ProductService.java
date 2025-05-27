@@ -1,5 +1,6 @@
 package com.pbdcompany.service;
 
+import com.pbdcompany.dto.request.AddProductRequest;
 import com.pbdcompany.dto.request.UpdateProductRequest;
 import com.pbdcompany.dto.response.ProductInfoResponse;
 import com.pbdcompany.dto.response.ProductResponse;
@@ -9,6 +10,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -50,10 +52,28 @@ public class ProductService {
 
     // 查看商家自己的商品（新增）
     public List<ProductInfoResponse> getProductsByMerchant(int merchantId) {
-        return productMapper.findByMerchantId(merchantId).stream()
+        // 校验参数合法性
+        if (merchantId <= 0) {
+            throw new IllegalArgumentException("Invalid merchant ID");
+        }
+
+        // 查询数据库
+        List<Product> products = productMapper.findByMerchantId(merchantId);
+
+        // 日志记录查询结果
+        if (products == null || products.isEmpty()) {
+            System.out.println("【INFO】未找到该商家的商品数据，MerchantID: " + merchantId);
+            return Collections.emptyList();
+        }
+
+        System.out.println("【DEBUG】查询到商品数量: " + products.size());
+
+        // 转换为响应对象
+        return products.stream()
                 .map(this::convertToResponse)
                 .collect(Collectors.toList());
     }
+
 
     // 修改商品信息（新增）
     public boolean updateProduct(UpdateProductRequest request) {
@@ -81,7 +101,17 @@ public class ProductService {
     private ProductInfoResponse convertToResponse(Product product) {
         if (product == null) return null;
         ProductInfoResponse response = new ProductInfoResponse();
-        BeanUtils.copyProperties(response, product);
+        BeanUtils.copyProperties(product, response);
         return response;
     }
+
+    public boolean addProduct(AddProductRequest request) {
+        // 调用 Mapper 插入新商品
+        return productMapper.insertProduct(request) > 0;
+    }
+
+    public boolean deleteProduct(int productId) {
+        return productMapper.deleteProductById(productId) > 0;
+    }
+
 }

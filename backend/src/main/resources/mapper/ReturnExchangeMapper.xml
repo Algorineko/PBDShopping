@@ -6,11 +6,13 @@
 
     <!-- 通用查询字段 -->
     <sql id="Base_Column_List">
-        requestId, orderItemId, customerId, requestType, reason, status
+        <trim>
+            requestId, orderItemId, customerId, requestType, reason, status
+        </trim>
     </sql>
 
     <!-- 结果映射 -->
-    <resultMap id="ReturnExchangeRequestResultMap" type="com.pbdcompany.entity.ReturnExchangeRequest">
+    <resultMap id="ReturnExchangeRequestResultMap" type="com.pbdcompany.dto.request.ReturnExchangeRequest">
         <id property="requestId" column="requestId"/>
         <result property="orderItemId" column="orderItemId"/>
         <result property="customerId" column="customerId"/>

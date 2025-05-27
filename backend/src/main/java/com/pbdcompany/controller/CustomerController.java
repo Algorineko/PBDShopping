@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import static org.springframework.http.MediaType.APPLICATION_JSON;
+
 /**
  *  CustomerController
  */
@@ -34,7 +36,7 @@ public class CustomerController {
         if (customer == null) {
             return ResponseEntity
                     .status(HttpStatus.UNAUTHORIZED)
-                    .contentType(org.springframework.http.MediaType.APPLICATION_JSON)
+                    .contentType(APPLICATION_JSON)
                     .body("\"用户名或密码错误\"");
             //5.26修改：增加了.contentType的属性设置，以避免在测试时返回的是乱码。
         }

@@ -1,6 +1,7 @@
 package com.pbdcompany.controller;
 
 
+import com.pbdcompany.dto.request.AddProductRequest;
 import com.pbdcompany.dto.request.UpdateProductRequest;
 import com.pbdcompany.dto.response.ProductInfoResponse;
 import com.pbdcompany.service.ProductService;
@@ -32,4 +33,25 @@ public class ProductController {
             return "商品不存在或无权限操作";
         }
     }
+
+    // 商家上架商品
+    @PostMapping("/add")
+    public String addProduct(@RequestBody AddProductRequest request) {
+        if (productService.addProduct(request)) {
+            return "商品上架成功";
+        } else {
+            return "商品上架失败";
+        }
+    }
+
+    // 商家下架商品（删除商品）
+    @DeleteMapping("/delete")
+    public String deleteProduct(@RequestParam int productId) {
+        if (productService.deleteProduct(productId)) {
+            return "商品下架成功";
+        } else {
+            return "商品不存在或无权限操作";
+        }
+    }
+
 }

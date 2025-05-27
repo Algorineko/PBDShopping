@@ -1,5 +1,6 @@
 package com.pbdcompany.mapper;
 
+import com.pbdcompany.dto.request.AddProductRequest;
 import com.pbdcompany.dto.response.ProductResponse;
 import com.pbdcompany.entity.Product;
 import org.apache.ibatis.annotations.Mapper;
@@ -17,9 +18,12 @@ public interface ProductMapper {
     Product findById(int id);
 
     List<ProductResponse> findByNameOrId(String name, int id);
-
-    // 新增方法
     List<Product> findByMerchantId(int merchantId); // 查询商家自己的商品
     void updateSelective(Product product); // 可选字段更新
+
+    int insertProduct(AddProductRequest request);
+
+    int deleteProductById(int productId);
+
 }
 

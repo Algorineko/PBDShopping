@@ -37,11 +37,5 @@ public interface AdminMapper {
     // ==== 管理员自身管理 ====
     List<Admin> findAllAdmins();
 
-    Admin findAdminById(int id);
 
-    void insertAdmin(Admin admin);
-
-    void updateAdmin(Admin admin);
-
-    void deleteAdminById(int id);
 }

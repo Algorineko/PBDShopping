@@ -6,7 +6,10 @@
 
     <!-- 通用查询字段 -->
     <sql id="Base_Column_List">
-        CustomerID, CustomerName, Password, Money, PhoneNumber, Address
+        <trim>
+            CustomerID, CustomerName, Password, Money, PhoneNumber, Address
+        </trim>
+
     </sql>
 
     <!-- 结果映射 -->

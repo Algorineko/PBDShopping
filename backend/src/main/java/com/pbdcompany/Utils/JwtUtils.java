@@ -1,6 +1,8 @@
 package com.pbdcompany.Utils;
 
-import io.jsonwebtoken.*;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
@@ -51,7 +53,7 @@ public class JwtUtils {
 
     // 提取用户 ID（假设你在 token 中存储了 customerId）
     //5.26: 修改extractCustomerId方法，去掉其static标签
-    public  int extractCustomerId(String token) {
+    public static int extractCustomerId(String token) {
         Claims claims = extractAllClaims(token);
         return claims.get("customerId", Integer.class);
     }
