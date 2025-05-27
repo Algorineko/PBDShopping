@@ -16,7 +16,5 @@ public class Customer {
     private String address;
     private String headPicture;
 
-//    private LocalDateTime addedAt;
-//    private LocalDateTime updatedAt;
 }
 

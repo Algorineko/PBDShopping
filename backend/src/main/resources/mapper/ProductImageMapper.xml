@@ -6,7 +6,8 @@
 
     <!-- 通用查询字段 -->
     <sql id="Base_Column_List">
-        ProductImageID, ProductID, Image
+        <trim>ProductImageID, ProductID, Image</trim>
+
     </sql>
 
     <!-- 结果映射 -->

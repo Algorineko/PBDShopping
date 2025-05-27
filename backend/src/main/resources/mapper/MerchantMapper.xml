@@ -6,7 +6,10 @@
 
     <!-- 通用查询字段 -->
     <sql id="Base_Column_List">
-        MerchantID, MerchantName, MerchantAddress, Password, PhoneNumber, HeadPicture
+        <trim>
+            MerchantID, MerchantName, MerchantAddress, Password, PhoneNumber, HeadPicture
+        </trim>
+
     </sql>
 
     <!-- 结果映射 -->

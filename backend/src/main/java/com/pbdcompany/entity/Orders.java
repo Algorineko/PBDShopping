@@ -1,8 +1,8 @@
 package com.pbdcompany.entity;
 
-
-import lombok.AllArgsConstructor;
+import com.pbdcompany.enums.Status;
 import lombok.Data;
+import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 
 @Data
@@ -11,9 +11,11 @@ import lombok.NoArgsConstructor;
 public class Orders {
     private int orderId;
     private int customerId;
+    private int merchantId;
+    private int productId;
+    private int quantity;
     private double totalPrice;
-    private String status;
-
-//    private LocalDateTime addedAt;
-//    private LocalDateTime updatedAt;
+    private Status status;
+    private String logisticsCompany;
+    private String trackingNumber;
 }

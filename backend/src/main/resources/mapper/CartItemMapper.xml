@@ -6,7 +6,9 @@
 
     <!-- 通用查询字段 -->
     <sql id="Base_Column_List">
-        CartItemID, CustomerID, ProductID, Quantity, SelectedOptions
+        <trim>
+            CartItemID, CustomerID, ProductID, Quantity, SelectedOptions
+        </trim>
     </sql>
 
     <!-- 结果映射 -->
@@ -27,7 +29,7 @@
 
     <!-- 根据ID删除购物车项 -->
     <delete id="deleteById">
-        delete from cartItem
+        delete from CartItem
         where CartItemID = #{id}
     </delete>
 

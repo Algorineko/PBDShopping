@@ -1,42 +1,21 @@
-
 package com.pbdcompany.service;
 
-
-import com.pbdcompany.entity.Admin;
-import com.pbdcompany.mapper.AdminMapper;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import com.pbdcompany.entity.*;
 
 import java.util.List;
 
-@Service
-public class AdminService {
+public interface AdminService {
+    List<Customer> getAllCustomers();
+    void deleteCustomer(int id);
 
-    @Autowired
-    private AdminMapper adminMapper;
+    List<Orders> getAllOrders();
 
-    // 查询所有管理员信息
-    public List<Admin> findAll() {
-        return adminMapper.findAll();
-    }
+    List<Product> getAllProducts();
 
-    // 根据ID删除管理员
-    public void deleteById(int id) {
-        adminMapper.deleteById(id);
-    }
+    void updateProduct(Product product);
 
-    // 添加管理员
-    public int insert(Admin admin) {
-        return adminMapper.insert(admin);
-    }
+    List<Review> getAllReviews();
+    void deleteReview(int id);
 
-    // 更新管理员信息
-    public void update(Admin admin) {
-        adminMapper.update(admin);
-    }
-
-    // 根据ID查询管理员信息
-    public Admin findById(int id) {
-        return adminMapper.findById(id);
-    }
+    List<Admin> getAllAdmins();
 }

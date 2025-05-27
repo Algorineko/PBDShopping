@@ -1,6 +1,8 @@
 package com.pbdcompany.Utils;
 
-import io.jsonwebtoken.*;
+import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
@@ -8,19 +10,41 @@ import org.springframework.stereotype.Component;
 
 import java.security.Key;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
 @Component
 public class JwtUtils {
+    // 提取用户类型
+    public String extractUserType(String token) {
+        return extractClaim(token, claims -> (String) claims.get("userType"));
+    }
+
+    // 判断是否是管理员
+    public boolean isAdmin(String token) {
+        String userType = extractUserType(token);
+        return "admin".equalsIgnoreCase(userType);
+    }
+
+    // 判断是否是商户
+    public boolean isMerchant(String token) {
+        String userType = extractUserType(token);
+        return "merchant".equalsIgnoreCase(userType);
+    }
+
+    // 判断是否是普通用户
+    public boolean isCustomer(String token) {
+        String userType = extractUserType(token);
+        return "customer".equalsIgnoreCase(userType);
+    }
+
 
     // 从配置文件中注入密钥（推荐）
     @Value("${jwt.secret}")
     private static String SECRET_KEY;
 
     // 设置过期时间（24小时）
-    private final long JWT_EXPIRATION = 86400000;
+    private static final long JWT_EXPIRATION = 86400000;
 
     // 提取用户名
     public String extractUsername(String token) {
@@ -29,7 +53,7 @@ public class JwtUtils {
 
     // 提取用户 ID（假设你在 token 中存储了 customerId）
     //5.26: 修改extractCustomerId方法，去掉其static标签
-    public  int extractCustomerId(String token) {
+    public static int extractCustomerId(String token) {
         Claims claims = extractAllClaims(token);
         return claims.get("customerId", Integer.class);
     }
@@ -40,15 +64,9 @@ public class JwtUtils {
         return claimsResolver.apply(claims);
     }
 
-    // 生成 Token（可携带额外信息）
-    public String generateToken(Long customerId, String username) {
-        Map<String, Object> extraClaims = new HashMap<>();
-        extraClaims.put("customerId", customerId);
-        return generateToken(extraClaims, username);
-    }
 
     // 生成 Token（带自定义声明）
-    public String generateToken(Map<String, Object> extraClaims, String username) {
+    public static String generateToken(Map<String, Object> extraClaims, String username) {
         return Jwts.builder()
                 .setClaims(extraClaims)
                 .setSubject(username)
@@ -88,4 +106,10 @@ public class JwtUtils {
         byte[] keyBytes = Decoders.BASE64.decode(SECRET_KEY);
         return Keys.hmacShaKeyFor(keyBytes);
     }
+
+
+    public int extractMerchantId(String token) {
+        return extractClaim(token, claims -> claims.get("merchantId", Integer.class));
+    }
+
 }

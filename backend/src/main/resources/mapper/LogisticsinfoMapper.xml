@@ -6,7 +6,10 @@
 
     <!-- 通用查询字段 -->
     <sql id="Base_Column_List">
-        LogisticsID, OrderItemID, LogisticsCompany, TrackingNumber, Status
+        <trim>
+            LogisticsID, OrderItemID, LogisticsCompany, TrackingNumber, Status
+        </trim>
+
     </sql>
 
     <!-- 结果映射 -->

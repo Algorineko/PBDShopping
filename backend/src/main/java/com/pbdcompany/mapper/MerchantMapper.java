@@ -6,17 +6,29 @@ import org.apache.ibatis.annotations.Mapper;
 
 import java.util.List;
 
-@Mapper //该应用程序在应用时，会自动为该接口创建一个代理实现对象，并且将其存入IOC容器中，成为Bean
+
+import com.pbdcompany.entity.Merchant;
+import org.apache.ibatis.annotations.*;
+
+@Mapper
 public interface MerchantMapper {
-    
-    public List<Merchant> findAll();
-    
-    public void deleteById(int id);
-    
-    public int insert(Merchant Merchant);
 
-    public void update(Merchant Merchant);
+    List<Merchant> findAll();
 
-    public Merchant findById(int id);
- 
+    void deleteById(int id);
+
+    void insert(Merchant merchant);
+
+    void update(Merchant merchant);
+
+    Merchant findById(int id);
+
+
+    Merchant findByMerchantName(String merchantName);  // 查询店铺名是否存在
+
+    Merchant findByUsername(String username);
+
+    Merchant findByPhoneNumber(String phoneNumber);    // 查询手机号是否存在
 }
+
+
