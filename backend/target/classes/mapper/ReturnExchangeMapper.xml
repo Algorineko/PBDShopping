@@ -6,9 +6,9 @@
 
     <!-- 通用查询字段 -->
     <sql id="Base_Column_List">
-       <trim>
-           requestId, orderItemId, customerId, requestType, reason, status
-       </trim>
+        <trim>
+            requestId, orderItemId, customerId, requestType, reason, status
+        </trim>
     </sql>
 
     <!-- 结果映射 -->

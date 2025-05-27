@@ -6,9 +6,9 @@
 
     <!-- 通用查询字段 -->
     <sql id="Base_Column_List">
-    <trim>
+        <trim>
         ProductID, CategoryID, MerchantID, ProductName, Description, Price
-    </trim>
+        </trim>
 
     </sql>
 
@@ -36,14 +36,12 @@
     </delete>
 
     <insert id="insertProduct" parameterType="com.pbdcompany.dto.request.AddProductRequest">
-        INSERT INTO product (ProductName, Price, Description, CategoryID,MerchantID)
-        VALUES (
-                   #{productName},
-                   #{price},
-                   #{description},
-                   #{categoryId},
-                   #{merchantId}
-               )
+        INSERT INTO product (ProductName, Price, Description, CategoryID, MerchantID)
+        VALUES (#{productName},
+                #{price},
+                #{description},
+                #{categoryId},
+                #{merchantId})
     </insert>
 
     <!-- 动态更新商品信息 -->
@@ -86,7 +84,9 @@
     </select>
 
     <delete id="deleteProductById">
-        DELETE FROM product WHERE ProductID = #{productId}
+        DELETE
+        FROM product
+        WHERE ProductID = #{productId}
     </delete>
 
     <!-- 根据商家ID查询商品 -->

@@ -7,7 +7,7 @@
     <!-- 通用查询字段 -->
     <sql id="Base_Column_List">
 
-<trim>        CategoryID, CategoryName, Description, Image</trim>
+        <trim>CategoryID, CategoryName, Description, Image</trim>
 
     </sql>
 
