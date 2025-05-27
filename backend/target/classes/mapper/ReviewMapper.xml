@@ -6,7 +6,9 @@
 
     <!-- 通用查询字段 -->
     <sql id="Base_Column_List">
-        ReviewID, CustomerID, OrderItemID, Rating, Comment
+        <trim>
+            ReviewID, CustomerID, OrderItemID, Rating, Comment
+        </trim>
     </sql>
 
     <!-- 结果映射 -->

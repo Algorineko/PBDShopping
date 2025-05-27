@@ -6,7 +6,9 @@
 
     <!-- 通用查询字段 -->
     <sql id="Base_Column_List">
+        <trim>
         OrderID, CustomerID, TotalPrice, Status
+        </trim>
     </sql>
 
     <!-- 结果映射 -->

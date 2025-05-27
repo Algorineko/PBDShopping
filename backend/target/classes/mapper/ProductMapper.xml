@@ -6,7 +6,10 @@
 
     <!-- 通用查询字段 -->
     <sql id="Base_Column_List">
+    <trim>
         ProductID, CategoryID, MerchantID, ProductName, Description, Price
+    </trim>
+
     </sql>
 
     <!-- 结果映射 -->
@@ -32,21 +35,15 @@
         where ProductID = #{id}
     </delete>
 
-    <!-- 插入商品 -->
-    <insert id="insert" useGeneratedKeys="true" keyProperty="productId">
-        insert into product
-        (
-        <include refid="Base_Column_List"/>
-        )
-        values
-        (
-        #{productId},
-        #{categoryId},
-        #{merchantId},
-        #{productName},
-        #{description},
-        #{price}
-        )
+    <insert id="insertProduct" parameterType="com.pbdcompany.dto.request.AddProductRequest">
+        INSERT INTO product (ProductName, Price, Description, CategoryID,MerchantID)
+        VALUES (
+                   #{productName},
+                   #{price},
+                   #{description},
+                   #{categoryId},
+                   #{merchantId}
+               )
     </insert>
 
     <!-- 动态更新商品信息 -->
@@ -88,5 +85,15 @@
         where ProductName like concat('%', #{name}, '%')
     </select>
 
+    <delete id="deleteProductById">
+        DELETE FROM product WHERE ProductID = #{productId}
+    </delete>
+
+    <!-- 根据商家ID查询商品 -->
+    <select id="findByMerchantId" resultMap="ProductResultMap">
+        select *
+        from product
+        where MerchantID = #{merchantId}
+    </select>
 
 </mapper>

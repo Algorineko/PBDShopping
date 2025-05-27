@@ -11,5 +11,4 @@ public class ProductResponse {
     private int productId;
     private String name;
     private Double price;
-    //private Integer stock;
 }

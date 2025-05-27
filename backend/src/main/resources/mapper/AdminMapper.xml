@@ -55,12 +55,11 @@
         UPDATE product
         SET
             ProductName = #{productName},
+            CategoryID = #{categoryId},
             Price = #{price},
             Description = #{description},
-            Stock = #{stock},
-            Category = #{category},
             MerchantId = #{merchantId}
-        WHERE ProductID = #{productId}
+        WHERE ProductID = #{productId};
     </update>
 
 
@@ -88,16 +87,15 @@
     </select>
 
     <insert id="insertAdmin" parameterType="com.pbdcompany.entity.Admin">
-        INSERT INTO admin (AdminName, Password, Email)
-        VALUES (#{adminName}, #{password}, #{email})
+        INSERT INTO admin (AdminName, Password)
+        VALUES (#{adminName}, #{password})
     </insert>
 
     <update id="updateAdmin" parameterType="com.pbdcompany.entity.Admin">
         UPDATE admin
         SET
             AdminName = #{adminName},
-            Password = #{password},
-            Email = #{email}
+            Password = #{password}
         WHERE AdminID = #{adminId}
     </update>
 
