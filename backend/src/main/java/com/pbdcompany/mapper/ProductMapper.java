@@ -19,7 +19,7 @@ public interface ProductMapper {
 
     List<ProductResponse> findByName(String name);
     List<Product> findByMerchantId(int merchantId); // 查询商家自己的商品
-    void updateSelective(Product product); // 可选字段更新
+    //void updateSelective(Product product); // 可选字段更新(不必要，update已经有可选更新的功能)
 
     int insertProduct(AddProductRequest request);
 

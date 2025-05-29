@@ -18,7 +18,7 @@
         <result property="orderItemId" column="OrderItemID"/>
         <result property="logisticsCompany" column="LogisticsCompany"/>
         <result property="trackingNumber" column="TrackingNumber"/>
-        <result property="status" column="Status"/>
+        <result property="status" column="Status"  typeHandler="com.pbdcompany.handler.StatusTypeHandler"/>
     </resultMap>
 
     <!-- 查询所有物流信息 -->
@@ -80,7 +80,8 @@
 
     <!-- 新增的功能，根据订单项Id查询物流信息   -->
     <select id="findByOrderItemId" resultMap="LogisticsinfoResultMap">
-        SELECT * FROM logisticsinfo WHERE orderItemId = #{orderItemId}
+        SELECT <include refid="Base_Column_List"/>
+            FROM logisticsinfo WHERE orderItemId = #{orderItemId}
     </select>
 
 </mapper>

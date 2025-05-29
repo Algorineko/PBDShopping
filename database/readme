@@ -14,3 +14,7 @@
 3.在backend文件中，修改entity包中的实体类和Service包中的Service类，新增mapper包和resources文件下的mapper.xml映射配置文件
 4.在application.properties中，增加XML映射配置文件位置的配置
 5.在main/java目录下，建立一个test文件，用于测试与数据库的连接
+
+5.29的修改：
+1.添加了shopping6和shopping7的版本
+2.shopping6和shopping7结构一样，都是最新的数据库，但shopping6有很多的测试数据，shopping7只有三个登录用户

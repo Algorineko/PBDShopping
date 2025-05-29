@@ -112,7 +112,7 @@ public class ProductService {
             product.setPrice(request.getPrice());
         }
 
-        productMapper.updateSelective(product);
+        productMapper.update(product);
         return true;
     }
 

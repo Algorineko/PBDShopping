@@ -24,7 +24,7 @@ public class LogisticsController {
         return ResponseEntity.ok(response);
     }
 
-    // 更新物流信息
+    // 更新物流信息（5.29修改：这两个URL完全一样，不知如何区分）
     @PutMapping("/{orderItemId}")
     public ResponseEntity<String> updateLogisticsInfo(
             @PathVariable int orderItemId,

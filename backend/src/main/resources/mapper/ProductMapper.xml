@@ -9,7 +9,6 @@
         <trim>
         ProductID, CategoryID, MerchantID, ProductName, Description, Price
         </trim>
-
     </sql>
 
     <!-- 结果映射 -->
@@ -95,5 +94,6 @@
         from product
         where MerchantID = #{merchantId}
     </select>
+
 
 </mapper>
