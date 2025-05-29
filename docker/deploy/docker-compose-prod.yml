@@ -1,0 +1,53 @@
+version: '2.1'
+services:
+  fms_be:
+    container_name: fms_be
+    networks:
+      - fms_backend
+    depends_on:
+      fms_mysql:
+        condition: service_healthy
+    build:
+      context: ..
+      dockerfile: deploy/Dockerfile
+    command:
+      - --spring.profiles.active=prod
+    restart: always
+    ports:
+      - "8080:8080"
+    environment:
+      - TZ=${TZ}
+      - PROD_MYSQL_FMS_URL=${PROD_MYSQL_FMS_URL}
+      - PROD_MYSQL_FMS_USERNAME=${PROD_MYSQL_FMS_USERNAME}
+      - PROD_MYSQL_FMS_PASSWORD=${PROD_MYSQL_FMS_PASSWORD}
+      - spring.datasource.url=${PROD_MYSQL_FMS_URL}
+      - spring.datasource.username=${PROD_MYSQL_FMS_USERNAME}
+      - spring.datasource.password=${PROD_MYSQL_FMS_PASSWORD}
+      - spring.jpa.properties.hibernate.dialect=org.hibernate.dialect.MySQL8Dialect
+      - spring.jpa.hibernate.ddl-auto=update
+      - PROD_JWT_SECRET=${PROD_JWT_SECRET}
+  fms_mysql:
+    container_name: fms_mysql
+    networks:
+      - fms_backend
+    image: mysql:8
+    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci --max_connections=200
+    restart: always
+    healthcheck:
+      test: [ "CMD", "mysqladmin", "ping" ]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    ports:
+      - "3306:3306"
+    environment:
+      - TZ=${TZ}
+      - MYSQL_ROOT_PASSWORD=${PROD_MYSQL_FMS_ROOT_PASSWORD}
+      - MYSQL_USER=${PROD_MYSQL_FMS_USERNAME}
+      - MYSQL_PASSWORD=${PROD_MYSQL_FMS_PASSWORD}
+      - MYSQL_DATABASE=${PROD_MYSQL_FMS_DATABASE}
+    volumes:
+      - ../data/mysql:/var/lib/mysql
+
+networks:
+  fms_backend:
