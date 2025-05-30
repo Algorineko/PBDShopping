@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.pbdcompany.mapper.OrderItemMapper">
+
+    <!-- 查询所有订单项 -->
+    <select id="findAll" resultType="com.pbdcompany.entity.OrderItem">
+        SELECT * FROM orderItem
+    </select>
+
+    <!-- 根据订单ID查询订单项 -->
+    <select id="findByOrderId" resultType="com.pbdcompany.entity.OrderItem">
+        SELECT * FROM orderItem WHERE OrderID = #{orderId}
+    </select>
+
+    <!-- 批量插入订单项 -->
+    <insert id="insertBatch">
+        INSERT INTO orderitem (OrderID, ProductID, Quantity, Price)
+        VALUES
+        <foreach collection="items" item="item" separator=",">
+            (#{item.orderId}, #{item.productId}, #{item.quantity}, #{item.price})
+        </foreach>
+    </insert>
+
+
+</mapper>

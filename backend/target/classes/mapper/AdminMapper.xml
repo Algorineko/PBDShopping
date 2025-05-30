@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.pbdcompany.mapper.AdminMapper">
+
+    <!-- 结果映射：Customer -->
+    <resultMap id="CustomerResultMap" type="com.pbdcompany.entity.Customer">
+        <id property="customerId" column="CustomerID"/>
+        <result property="customerName" column="CustomerName"/>
+        <result property="password" column="Password"/>
+        <result property="money" column="Money"/>
+        <result property="phoneNumber" column="PhoneNumber"/>
+        <result property="address" column="Address"/>
+    </resultMap>
+
+    <!-- 查询所有用户 -->
+    <select id="findAllCustomers" resultMap="CustomerResultMap">
+        SELECT * FROM customer
+    </select>
+
+    <!-- 根据ID查询用户 -->
+    <select id="findCustomerById" parameterType="int" resultMap="CustomerResultMap">
+        SELECT * FROM customer WHERE CustomerID = #{id}
+    </select>
+
+    <!-- 删除用户 -->
+    <delete id="deleteCustomerById" parameterType="int">
+        DELETE FROM customer WHERE CustomerID = #{id}
+    </delete>
+
+
+    <select id="findOrderById" parameterType="int" resultType="com.pbdcompany.entity.Orders">
+        SELECT * FROM orders WHERE OrderID = #{id}
+    </select>
+
+
+    <!-- 查询商品 -->
+    <select id="findAllProducts" resultType="com.pbdcompany.entity.Product">
+        SELECT * FROM product
+    </select>
+
+    <select id="findProductById" parameterType="int" resultType="com.pbdcompany.entity.Product">
+        SELECT * FROM product WHERE ProductID = #{id}
+    </select>
+
+    <!-- 修改商品信息 -->
+    <update id="updateProduct" parameterType="com.pbdcompany.entity.Product">
+        UPDATE product
+        SET
+            ProductName = #{productName},
+            CategoryID = #{categoryId},
+            Price = #{price},
+            Description = #{description},
+            MerchantId = #{merchantId}
+        WHERE ProductID = #{productId};
+    </update>
+
+
+    <!-- 查询评论 -->
+    <select id="findAllReviews" resultType="com.pbdcompany.entity.Review">
+        SELECT * FROM review
+    </select>
+
+    <select id="findReviewById" parameterType="int" resultType="com.pbdcompany.entity.Review">
+        SELECT * FROM review WHERE ReviewID = #{id}
+    </select>
+
+    <delete id="deleteReviewById" parameterType="int">
+        DELETE FROM review WHERE ReviewID = #{id}
+    </delete>
+
+
+    <!-- 管理员相关 -->
+    <select id="findAllAdmins" resultType="com.pbdcompany.entity.Admin">
+        SELECT * FROM admin
+    </select>
+
+    <select id="findAdminById" parameterType="int" resultType="com.pbdcompany.entity.Admin">
+        SELECT * FROM admin WHERE AdminID = #{id}
+    </select>
+
+    <insert id="insertAdmin" parameterType="com.pbdcompany.entity.Admin">
+        INSERT INTO admin (AdminName, Password)
+        VALUES (#{adminName}, #{password})
+    </insert>
+
+    <update id="updateAdmin" parameterType="com.pbdcompany.entity.Admin">
+        UPDATE admin
+        SET
+            AdminName = #{adminName},
+            Password = #{password}
+        WHERE AdminID = #{adminId}
+    </update>
+
+    <delete id="deleteAdminById" parameterType="int">
+        DELETE FROM admin WHERE AdminID = #{id}
+    </delete>
+
+    <!-- 多表查询：获取订单项及其关联的商品和用户信息 -->
+    <select id="findAllOrderItems" resultType="com.pbdcompany.dto.response.OrderItemResponse">
+        SELECT
+            oi.OrderItemID AS orderItemId,
+            oi.OrderID AS orderId,
+            oi.ProductID AS productId,
+            p.ProductName AS productName,
+            oi.Quantity AS quantity,
+            oi.Price AS price,
+            c.CustomerName AS customerName
+        FROM orderitem oi
+                 LEFT JOIN product p ON oi.ProductID = p.ProductID
+                 LEFT JOIN orders o ON oi.OrderID = o.OrderID
+                 LEFT JOIN customer c ON o.CustomerID = c.CustomerID
+    </select>
+
+
+    <!-- 定义 resultMap -->
+    <resultMap id="OrderResponseMap" type="com.pbdcompany.dto.response.OrderResponse">
+        <id property="orderId" column="OrderID"/>
+        <result property="userId" column="CustomerID"/>
+        <result property="merchantId" column="MerchantID"/>
+        <result property="totalPrice" column="TotalPrice"/>
+        <result property="status" column="Status"/>
+        <!-- items 字段由 service 层填充 -->
+    </resultMap>
+
+    <!-- 查询所有订单 -->
+    <select id="getAllOrders" resultMap="OrderResponseMap">
+        SELECT OrderID, CustomerID, MerchantID, TotalPrice, Status
+        FROM orders
+    </select>
+
+
+</mapper>

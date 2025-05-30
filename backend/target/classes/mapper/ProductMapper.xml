@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.pbdcompany.mapper.ProductMapper">
+
+    <!-- 通用查询字段 -->
+    <sql id="Base_Column_List">
+        <trim>
+        ProductID, CategoryID, MerchantID, ProductName, Description, Price
+        </trim>
+    </sql>
+
+    <!-- 结果映射 -->
+    <resultMap id="ProductResultMap" type="com.pbdcompany.entity.Product">
+        <id property="productId" column="ProductID"/>
+        <result property="categoryId" column="CategoryID"/>
+        <result property="merchantId" column="MerchantID"/>
+        <result property="productName" column="ProductName"/>
+        <result property="description" column="Description"/>
+        <result property="price" column="Price"/>
+    </resultMap>
+
+    <!-- 查询所有商品 -->
+    <select id="findAll" resultMap="ProductResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from product
+    </select>
+
+    <!-- 根据ID删除商品 -->
+    <delete id="deleteById">
+        delete from product
+        where ProductID = #{id}
+    </delete>
+
+    <insert id="insertProduct" parameterType="com.pbdcompany.dto.request.AddProductRequest">
+        INSERT INTO product (ProductName, Price, Description, CategoryID, MerchantID)
+        VALUES (#{productName},
+                #{price},
+                #{description},
+                #{categoryId},
+                #{merchantId})
+    </insert>
+
+    <!-- 动态更新商品信息 -->
+    <update id="update">
+        update product
+        <set>
+            <if test="categoryId != null">
+                CategoryID = #{categoryId},
+            </if>
+            <if test="merchantId != null">
+                MerchantID = #{merchantId},
+            </if>
+            <if test="productName != null and productName.trim() != ''">
+                ProductName = #{productName},
+            </if>
+            <if test="description != null and description.trim() != ''">
+                Description = #{description},
+            </if>
+            <if test="price != null">
+                Price = #{price},
+            </if>
+        </set>
+        where ProductID = #{productId}
+    </update>
+
+    <!-- 根据ID查询商品 -->
+    <select id="findById" resultMap="ProductResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from product
+        where ProductID = #{id}
+    </select>
+
+    <!-- 根据名称模糊查询商品 -->
+    <select id="findByName" resultMap="ProductResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from product
+        where ProductName like concat('%', #{name}, '%')
+    </select>
+
+    <delete id="deleteProductById">
+        DELETE
+        FROM product
+        WHERE ProductID = #{productId}
+    </delete>
+
+    <!-- 根据商家ID查询商品 -->
+    <select id="findByMerchantId" resultMap="ProductResultMap">
+        select *
+        from product
+        where MerchantID = #{merchantId}
+    </select>
+
+
+</mapper>

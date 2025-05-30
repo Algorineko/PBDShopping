@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.pbdcompany.mapper.MerchantMapper">
+
+    <!-- 通用查询字段 -->
+    <sql id="Base_Column_List">
+        <trim>
+            MerchantID, MerchantName, MerchantAddress, Password, PhoneNumber, HeadPicture
+        </trim>
+
+    </sql>
+
+    <!-- 结果映射 -->
+    <resultMap id="MerchantResultMap" type="com.pbdcompany.entity.Merchant">
+        <id property="merchantId" column="MerchantID"/>
+        <result property="merchantName" column="MerchantName"/>
+        <result property="merchantAddress" column="MerchantAddress"/>
+        <result property="password" column="Password"/>
+        <result property="phoneNumber" column="PhoneNumber"/>
+        <result property="headPicture" column="HeadPicture"/>
+    </resultMap>
+
+    <!-- 查询所有商户信息 -->
+    <select id="findAll" resultMap="MerchantResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from merchant
+    </select>
+
+    <!-- 根据ID删除商户信息 -->
+    <delete id="deleteById">
+        delete from merchant
+        where MerchantID = #{id}
+    </delete>
+
+    <!-- 插入商户信息 -->
+    <insert id="insert" useGeneratedKeys="true" keyProperty="merchantId">
+        insert into merchant
+        (
+        <include refid="Base_Column_List"/>
+        )
+        values
+        (
+        #{merchantId},
+        #{merchantName},
+        #{merchantAddress},
+        #{password},
+        #{phoneNumber},
+        #{headPicture}
+        )
+    </insert>
+
+    <!-- 动态更新商户信息 -->
+    <update id="update">
+        update merchant
+        <set>
+            <if test="merchantName != null and merchantName.trim() != ''">
+                MerchantName = #{merchantName},
+            </if>
+            <if test="merchantAddress != null and merchantAddress.trim() != ''">
+                MerchantAddress = #{merchantAddress},
+            </if>
+            <if test="password != null and password.trim() != ''">
+                Password = #{password},
+            </if>
+            <if test="phoneNumber != null and phoneNumber.trim() != ''">
+                PhoneNumber = #{phoneNumber},
+            </if>
+            <if test="headPicture != null and headPicture.trim() != ''">
+                HeadPicture = #{headPicture},
+            </if>
+        </set>
+        where MerchantID = #{merchantId}
+    </update>
+
+    <!-- 根据ID查询商户信息 -->
+    <select id="findById" resultMap="MerchantResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from merchant
+        where MerchantID = #{id}
+    </select>
+
+</mapper>
