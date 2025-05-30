@@ -4,12 +4,29 @@
     
     <div class="info-card">
       <div class="info-item">
+        <label>用户ID：</label>
+        <span class="info-content">{{ userData.id || '未设置' }}</span>
+      </div>
+      <div class="info-item">
         <label>用户名：</label>
         <span class="info-content">{{ userData.username || '未设置' }}</span>
       </div>
       <div class="info-item">
         <label>收货地址：</label>
         <span class="info-content">{{ userData.address || '暂无收货地址' }}</span>
+      </div>
+      <div class="info-item">
+        <label>手机号码：</label>
+        <span class="info-content">{{ userData.contact || '暂无手机号码' }}</span>
+      </div>
+      <div class="info-item">
+        <label>用户头像：</label>
+        <div class="avatar-preview">
+          <el-avatar 
+            :size="80" 
+            :src="userData.avatar || '/default-avatar.jpg'" 
+          />
+        </div>
       </div>
       <el-button 
         type="primary" 
@@ -32,15 +49,29 @@
         :rules="formRules"
         label-width="100px"
       >
-        <el-form-item label="用户名：" prop="username">
+        <el-form-item label="用户ID">
+          <el-input v-model="editForm.id" disabled />
+        </el-form-item>
+        
+        <el-form-item label="用户名" prop="username">
           <el-input
             v-model="editForm.username"
             placeholder="请输入2-20位用户名"
             clearable
           />
         </el-form-item>
+        
+        <el-form-item label="登录密码">
+          <el-input
+            v-model="editForm.password"
+            type="password"
+            show-password
+            placeholder="请输入新密码"
+          />
+          <div class="info-tip">留空则不修改密码</div>
+        </el-form-item>
 
-        <el-form-item label="收货地址：" prop="address">
+        <el-form-item label="收货地址" prop="address">
           <el-input
             v-model="editForm.address"
             type="textarea"
@@ -49,6 +80,42 @@
             maxlength="100"
             show-word-limit
           />
+        </el-form-item>
+        
+        <el-form-item label="手机号码" prop="contact">
+          <el-input
+            v-model="editForm.contact"
+            placeholder="请输入手机号码"
+          />
+        </el-form-item>
+        
+        <el-form-item label="用户头像">
+          <div class="avatar-upload">
+            <el-avatar 
+              :size="120" 
+              :src="editForm.avatar || '/default-avatar.jpg'" 
+              class="avatar-preview"
+            />
+            <div class="avatar-actions">
+              <el-upload
+                action="#"
+                :show-file-list="false"
+                :auto-upload="false"
+                :on-change="handleAvatarChange"
+              >
+                <el-button type="primary" icon="el-icon-upload" size="small">上传头像</el-button>
+              </el-upload>
+              <el-button 
+                v-if="editForm.avatar" 
+                type="danger" 
+                icon="el-icon-delete" 
+                size="small"
+                @click="editForm.avatar = ''"
+              >
+                移除
+              </el-button>
+            </div>
+          </div>
         </el-form-item>
       </el-form>
 
@@ -72,15 +139,32 @@ import { ElMessage } from 'element-plus'
 
 export default {
   data() {
+    // 手机号码验证规则
+    const validatePhone = (rule, value, callback) => {
+      if (value && !/^1[3-9]\d{9}$/.test(value)) {
+        callback(new Error('请输入正确的手机号码'))
+      } else {
+        callback()
+      }
+    }
+    
     return {
       userData: {
+        id: '',
         username: '',
-        address: ''
+        address: '',
+        contact: '',
+        password: '',
+        avatar: ''
       },
       showDialog: false,
       editForm: {
+        id: '',
         username: '',
-        address: ''
+        address: '',
+        contact: '',
+        password: '',
+        avatar: ''
       },
       formRules: {
         username: [
@@ -90,6 +174,9 @@ export default {
         address: [
           { required: true, message: '收货地址不能为空', trigger: 'blur' },
           { max: 100, message: '最多可输入100个字符', trigger: 'blur' }
+        ],
+        contact: [
+          { validator: validatePhone, trigger: 'blur' }
         ]
       }
     }
@@ -100,9 +187,23 @@ export default {
   methods: {
     loadLocalData() {
       try {
+        const userId = localStorage.getItem('userId')
+        const userName = localStorage.getItem('userName')
+        
+        // 设置默认用户ID和名称
+        this.userData.id = userId || 'BUYER2023'
+        this.userData.username = userName || '买家用户'
+        
+        // 尝试从本地存储获取完整用户信息
         const savedData = localStorage.getItem('userProfile')
         if (savedData) {
-          this.userData = JSON.parse(savedData)
+          const profileData = JSON.parse(savedData)
+          this.userData = {
+            ...this.userData,
+            address: profileData.address || '',
+            contact: profileData.contact || '',
+            avatar: profileData.avatar || ''
+          }
         }
       } catch (error) {
         ElMessage.error('本地数据加载失败')
@@ -112,7 +213,7 @@ export default {
 
     handleEditClick() {
       this.showDialog = true
-      this.editForm = { ...this.userData }
+      this.editForm = { ...this.userData, password: '' }
     },
 
     handleDialogOpen() {
@@ -122,12 +223,48 @@ export default {
         }
       })
     },
+    
+    // 处理头像上传
+    handleAvatarChange(file) {
+      if (!file) return
+      
+      const rawFile = file.raw
+      if (rawFile) {
+        const reader = new FileReader()
+        reader.onload = (e) => {
+          this.editForm.avatar = e.target.result
+        }
+        reader.readAsDataURL(rawFile)
+      }
+    },
 
     submitForm() {
       this.$refs.formRef.validate((valid) => {
         if (valid) {
-          this.userData = { ...this.editForm }
-          localStorage.setItem('userProfile', JSON.stringify(this.userData))
+          // 更新用户信息
+          this.userData = {
+            ...this.userData,
+            username: this.editForm.username,
+            address: this.editForm.address,
+            contact: this.editForm.contact,
+            avatar: this.editForm.avatar
+          }
+          
+          // 如果输入了新密码，则更新密码
+          if (this.editForm.password) {
+            this.userData.password = this.editForm.password
+          }
+          
+          // 保存到本地存储
+          localStorage.setItem('userProfile', JSON.stringify({
+            address: this.editForm.address,
+            contact: this.editForm.contact,
+            avatar: this.editForm.avatar
+          }))
+          
+          // 更新本地存储中的用户名
+          localStorage.setItem('userName', this.editForm.username)
+          
           ElMessage.success('修改成功')
           this.showDialog = false
         } else {
@@ -155,7 +292,7 @@ export default {
 
 .info-item {
   display: flex;
-  align-items: baseline;
+  align-items: center;
   margin-bottom: 20px;
 }
 
@@ -172,6 +309,10 @@ export default {
   color: #303133;
 }
 
+.avatar-preview {
+  margin-top: 10px;
+}
+
 .edit-button {
   margin-top: 20px;
   width: 200px;
@@ -183,14 +324,38 @@ export default {
   gap: 12px;
 }
 
+.avatar-upload {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+}
+
+.avatar-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.info-tip {
+  font-size: 12px;
+  color: #909399;
+  margin-top: 5px;
+}
+
 @media (max-width: 768px) {
   .info-item {
     flex-direction: column;
+    align-items: flex-start;
     gap: 8px;
   }
   
   .edit-button {
     width: 100%;
+  }
+  
+  .avatar-upload {
+    flex-direction: column;
+    align-items: flex-start;
   }
 }
 </style>

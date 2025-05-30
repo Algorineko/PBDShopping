@@ -11,10 +11,18 @@
 <script>
 export default {
   methods: {
+    methods: {
     logout() {
-      localStorage.clear()
+      // 只清除认证信息，保留用户数据
+      localStorage.removeItem('token')
+      localStorage.removeItem('userId')
+      localStorage.removeItem('userName')
+     localStorage.removeItem('role')
       this.$router.push('/login')
+      // 清空所有 localStorage 数据
+      
     }
+  }
   }
 }
 </script>

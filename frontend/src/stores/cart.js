@@ -16,6 +16,7 @@ export const useCartStore = defineStore('cart', () => {
 
   const items = ref(initialCart())
   const selectedItems = ref(new Set())
+  
   // 添加商品
   const addItem = (item) => {
     const existing = items.value.find(i => i.id === item.id)
@@ -36,6 +37,14 @@ export const useCartStore = defineStore('cart', () => {
   // 移除商品
   const removeItem = (id) => {
     items.value = items.value.filter(i => i.id !== id)
+    selectedItems.value.delete(id) // 同时从选中项中移除
+    persistCart()
+  }
+  
+  // 批量移除商品
+  const removeItems = (ids) => {
+    items.value = items.value.filter(i => !ids.includes(i.id))
+    ids.forEach(id => selectedItems.value.delete(id))
     persistCart()
   }
 
@@ -52,6 +61,23 @@ export const useCartStore = defineStore('cart', () => {
       return sum + (price * quantity)
     }, 0)
   )
+  
+  // 选中商品总价
+  const selectedTotalPrice = computed(() => 
+    items.value.reduce((sum, item) => {
+      if (selectedItems.value.has(item.id)) {
+        const price = Number(item.price) || 0
+        const quantity = Number(item.quantity) || 1
+        return sum + (price * quantity)
+      }
+      return sum
+    }, 0)
+  )
+  
+  // 选中的商品列表
+  const selectedItemsList = computed(() => 
+    items.value.filter(item => selectedItems.value.has(item.id))
+  )
 
   const toggleSelection = (id) => {
     if (selectedItems.value.has(id)) {
@@ -61,16 +87,30 @@ export const useCartStore = defineStore('cart', () => {
     }
     persistCart()
   }
+  
+  // 全选/取消全选
+  const toggleSelectAll = () => {
+    if (selectedItems.value.size === items.value.length) {
+      selectedItems.value.clear()
+    } else {
+      items.value.forEach(item => selectedItems.value.add(item.id))
+    }
+    persistCart()
+  }
 
   const clearSelected = () => selectedItems.value.clear()
 
   return {
     items: computed(() => items.value),
     totalPrice,
+    selectedTotalPrice,
     selectedItems: computed(() => selectedItems.value),
+    selectedItemsList,
     addItem,
     removeItem,
+    removeItems,
     toggleSelection,
+    toggleSelectAll,
     clearSelected
   }
 })

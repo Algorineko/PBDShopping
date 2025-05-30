@@ -45,12 +45,46 @@ const routes = [
       ]
     },
   */
+ /*
   {
     path: '/business',
     name: 'Business',
     component: () => import('../views/BusinessView.vue'),
     meta: { requiresAuth: true, role: 'business' },
 
+  },
+  */
+  {
+    path: '/business',
+    name: 'Business',
+    component: () => import('../views/business/BusinessView.vue'),
+    meta: { requiresAuth: true, role: 'business' },
+    children: [
+      {
+        path: 'info',
+        name: 'BusinessInfo', // 添加名称
+        component: () => import('../views/business/BusinessInfo.vue')
+      },
+      {
+        path: 'products',
+        name: 'BusinessProducts', // 添加名称
+        component: () => import('../views/business/ProductManagement.vue')
+      },
+      {
+        path: 'orders',
+        name: 'BusinessOrders', // 添加名称
+        component: () => import('../views/business/OrderManagement.vue')
+      },
+      {
+        path: 'reviews',
+        name: 'BusinessReviews', // 添加名称
+        component: () => import('../views/business/ReviewManagement.vue')
+      },
+      {
+        path: '',
+        redirect: { name: 'BusinessInfo' } // 使用名称重定向
+      }
+    ]
   },
 /*
   {

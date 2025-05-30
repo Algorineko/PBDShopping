@@ -3,8 +3,8 @@
     <h2>用户登录</h2>
     <form @submit.prevent="handleLogin">
       <div class="form-group">
-        <label>用户名:</label>
-        <input type="text" v-model="loginForm.username" required>
+        <label>用户ID:</label>
+        <input type="text" v-model="loginForm.userId" required>
       </div>
       <div class="form-group">
         <label>密码:</label>
@@ -25,40 +25,43 @@ export default {
   data() {
     return {
       loginForm: {
-        username: '',
+        userId: '',
         password: ''
       }
     }
   },
   methods: {
     async handleLogin() {
-  try {
-    const response = await authService.login(this.loginForm)
-    
-    // 存储用户信息
-    localStorage.setItem('token', response.data.token)
-    localStorage.setItem('username', this.loginForm.username)
-    localStorage.setItem('role', response.data.role)
+      try {
+        const response = await authService.login(this.loginForm)
 
-    // 根据角色跳转
-    switch(response.data.role) {
-      case 'business':
-        this.$router.push('/business')
-        break
-      case 'buyer':
-        this.$router.push('/buyer')
-        break
-      case 'admin':
-        this.$router.push('/admin')
-        break
-      default:
-        alert('未知用户角色')
-    }
-  } catch (error) {
-    console.error('登录失败:', error)
-    alert(error.response?.data?.message || '登录失败')
-  }
-},
+        localStorage.setItem('token', 'simulated-token')
+        localStorage.setItem('userId', response.data.userId)
+        localStorage.setItem('userName', response.data.userName)
+        localStorage.setItem('role', response.data.role)
+
+        switch (response.data.role) {
+          case 'business':
+            this.$router.push('/business')
+            break
+          case 'buyer':
+            this.$router.push('/buyer')
+            break
+          case 'admin':
+            this.$router.push('/admin')
+            break
+          default:
+            alert('未知用户角色')
+        }
+      } catch (error) {
+        // 更明确的错误提示
+        if (error.message.includes('用户ID或密码错误')) {
+          alert('登录失败：用户ID或密码错误');
+        } else {
+          alert(`登录失败: ${error.message}`);
+        }
+      }
+    },
     goToRegister() {
       this.$router.push('/register')
     }

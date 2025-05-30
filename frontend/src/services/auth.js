@@ -1,38 +1,79 @@
+/*
+
 import axios from 'axios'
 
 const apiClient = axios.create({
-  baseURL: 'http://ajax-api.itheima.net', // 替换为你的实际API地址
+  baseURL: 'http://ajax-api.itheima.net',
   withCredentials: false,
   headers: {
     Accept: 'application/json',
     'Content-Type': 'application/json'
   }
 })
+*/
 
 export default {
-  //login(user) {
-  //  return apiClient.post('/login', user)
-  //},
   login(user) {
-    return apiClient.post('/login', user)
-      .then(response => {
-        // 添加角色字段
-        return {
-          ...response,
-          data: {
-            ...response.data,
-            role: 'buyer' // 临时测试值
-          }
-        };
-      });
+    return new Promise((resolve, reject) => {
+      const roles = ['business', 'buyer', 'admin'];
+      let foundUser = null;
+      
+      for (const role of roles) {
+        const key = `${role}Users`;
+        const users = JSON.parse(localStorage.getItem(key) || '[]')
+        
+        // 确保正确处理空数组情况
+        if (Array.isArray(users)) {
+          foundUser = users.find(u => 
+            u.userId === user.userId && u.password === user.password
+          );
+        }
+
+        if (foundUser) {
+          return resolve({
+            data: {
+              token: 'simulated-token',
+              userId: foundUser.userId,
+              userName: foundUser.userName,
+              role: foundUser.role
+            }
+          });
+        }
+      }
+      
+      reject(new Error('用户ID或密码错误'));
+    });
   },
+
   register(user) {
-    return apiClient.post('/register', {
-      ...user,
-      // 确保注册时提交的role字段与后端匹配
-      role: user.role === 'business' ? 1 : 
-           user.role === 'buyer' ? 2 :
-           user.role === 'admin' ? 3 : 0
-    })
+    return new Promise((resolve, reject) => {
+      const key = `${user.role}Users`;
+      const users = JSON.parse(localStorage.getItem(key) || '[]');
+
+      // 检查用户ID是否已存在
+      if (users.some(u => u.userId === user.userId)) {
+        reject(new Error('用户ID已存在'));
+        return;
+      }
+
+      // 创建新用户对象
+      const newUser = {
+        userId: user.userId,
+        userName: user.userName,
+        password: user.password,
+        role: user.role
+      };
+
+      // 更新存储
+      users.push(newUser);
+      localStorage.setItem(key, JSON.stringify(users));
+      
+      resolve({ 
+        data: {
+          message: '注册成功',
+          user: newUser
+        }
+      });
+    });
   }
 }

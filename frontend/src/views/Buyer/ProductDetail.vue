@@ -3,9 +3,9 @@
     <el-button type="text" @click="$router.go(-1)">返回</el-button>
     
     <div class="detail-content">
-      <el-carousel :interval="4000" height="400px">
+      <el-carousel :interval="4000" height="400px" v-if="product.images?.length > 0">
         <el-carousel-item 
-          v-for="(img, index) in product.mainPictures" 
+          v-for="(img, index) in product.images" 
           :key="index"
           style="height: 400px;"
         >
@@ -16,32 +16,37 @@
           />
         </el-carousel-item>
       </el-carousel>
+      
+      <!-- 无图片提示 -->
+      <div v-else class="no-images">
+        <el-empty description="暂无商品图片" />
+      </div>
 
       <div class="product-info">
         <h1>{{ product.name }}</h1>
         <p class="price">¥{{ product.price }}</p>
-        <el-tag type="success">库存 {{ product.inventory }} 件</el-tag>
+        <el-tag type="success">库存 {{ product.stock }} 件</el-tag>
         
         <div class="action-group">
           <el-input-number 
             v-model="quantity" 
-            :min="product.inventory > 0 ? 1 : 0"
-            :max="product.inventory"
-            :disabled="product.inventory === 0"
+            :min="product.stock > 0 ? 1 : 0"
+            :max="product.stock"
+            :disabled="product.stock === 0"
           />
           <el-button 
             type="primary" 
             @click="addToCart"
-            :disabled="product.inventory === 0"
+            :disabled="product.stock === 0"
           >
-            {{ product.inventory > 0 ? '加入购物车' : '已售罄' }}
+            {{ product.stock > 0 ? '加入购物车' : '已售罄' }}
           </el-button>
         </div>
 
         <el-divider />
         <div class="description">
           <h3>商品详情</h3>
-          <p>{{ product.detailDesc || '暂无详情描述' }}</p>
+          <p>{{ product.description || '暂无详情描述' }}</p>
         </div>
       </div>
     </div>
@@ -54,47 +59,62 @@ import { useRoute } from 'vue-router'
 import { ElMessage } from 'element-plus'
 import { useCartStore } from '@/stores/cart'
 
-
 const route = useRoute()
 const cartStore = useCartStore()
-const reviews = ref([])
+//const reviews = ref([])
 
-onMounted(() => {
-  const savedReviews = JSON.parse(localStorage.getItem('productReviews') || '[]')
-  reviews.value = savedReviews.filter(r => r.productId === product.value.id)
-})
 const product = ref({
   id: '',
   name: '',
   price: 0,
-  inventory: 0,
-  mainPictures: [],
-  detailDesc: ''
+  stock: 0,
+  images: [],
+  description: ''
 })
 
 const quantity = ref(1)
 
-const fetchProductDetail = async (id) => {
+// 从本地存储获取商品详情
+const fetchProductDetail = (id) => {
+  if (!id) {
+    ElMessage.error('无效的商品ID')
+    return
+  }
+  
   try {
-    const response = await fetch(
-      `http://pcapi-xiaotuxian-front-devtest.itheima.net/goods?id=${id}`
-    )
-    const res = await response.json()
-    if (res.code !== '1') throw new Error(res.msg || '商品加载失败')
+    // 从所有商家的商品中查找
+    let foundProduct = null
     
-    product.value = {
-      id: res.result.id,
-      name: res.result.name,
-      price: Number(res.result.price).toFixed(2),
-      inventory: res.result.inventory || 0,
-      mainPictures: res.result.mainPictures || [],
-      detailDesc: res.result.details?.properties?.[0]?.value || ''
+    // 获取所有商家商品存储的key
+    const keys = Object.keys(localStorage).filter(key => 
+      key.startsWith('businessProducts_')
+    )
+    
+    // 遍历所有商家商品
+    for (const key of keys) {
+      const products = JSON.parse(localStorage.getItem(key) || '[]')
+      const p = products.find(p => p.id === id)
+      if (p) {
+        foundProduct = {
+          ...p,
+          price: Number(p.price) || 0,
+          stock: Number(p.stock) || 0
+        }
+        break
+      }
     }
-
-    // 根据库存设置初始数量
-    quantity.value = product.value.inventory > 0 ? 1 : 0
+    
+    if (foundProduct) {
+      product.value = foundProduct
+      
+      // 根据库存设置初始数量
+      quantity.value = foundProduct.stock > 0 ? 1 : 0
+    } else {
+      ElMessage.error('未找到商品信息')
+    }
   } catch (error) {
-    ElMessage.error(error.message)
+    ElMessage.error('商品加载失败')
+    console.error('商品加载错误:', error)
   }
 }
 
@@ -109,22 +129,15 @@ const addToCart = () => {
     name: product.value.name,
     price: product.value.price,
     quantity: quantity.value,
-    image: product.value.mainPictures[0]
+    image: product.value.images?.[0] || ''
   })
   ElMessage.success('已加入购物车')
 }
 </script>
 
 <style scoped>
-.product-image {
-  width: 100%;
-  height: 200px;
-  object-fit: cover;
-  border-radius: 8px 8px 0 0;
-}
-
-.el-carousel__item {
-  background-color: #f5f7fa;
+.product-detail {
+  padding: 20px;
 }
 
 .detail-content {
@@ -146,24 +159,25 @@ const addToCart = () => {
 .description {
   margin-top: 30px;
 }
-.reviews {
-  margin-top: 30px;
+
+.price {
+  font-size: 24px;
+  color: #f56c6c;
+  font-weight: bold;
 }
-.review-item {
-  padding: 15px;
-  border-bottom: 1px solid #ebeef5;
-}
-.review-header {
+
+.no-images {
+  height: 400px;
   display: flex;
   align-items: center;
-  gap: 15px;
-  margin-bottom: 10px;
+  justify-content: center;
+  background: #f5f7fa;
+  border-radius: 8px;
 }
-.date {
-  color: #909399;
-  font-size: 0.9em;
-}
-.content {
-  color: #606266;
+
+@media (max-width: 768px) {
+  .detail-content {
+    grid-template-columns: 1fr;
+  }
 }
 </style>

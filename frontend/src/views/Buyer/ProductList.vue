@@ -26,13 +26,14 @@
           :src="formatImageUrl(category.picture)" 
           style="width: 120px; height: 40px; margin-left: 15px"
           fit="contain"
+          v-if="category.picture"
         />
       </div>
 
       <!-- 商品网格 -->
-      <div class="product-grid">
+      <div class="product-grid" v-if="category.products.length > 0">
         <div 
-          v-for="product in category.goods"
+          v-for="product in category.products"
           :key="product.id"
           class="product-card"
           @click="viewDetail(product.id)"
@@ -40,9 +41,8 @@
           <!-- 商品图片 -->
           <div class="image-container">
             <el-image 
-              :src="formatImageUrl(product.picture)" 
+              :src="getFirstImage(product.images)" 
               class="product-image"
-              :preview-src-list="[formatImageUrl(product.picture)]"
               style="width: 100%; height: 200px;"
               fit="cover"
             />
@@ -51,28 +51,26 @@
           <!-- 商品信息 -->
           <div class="product-info">
             <h3 class="name">{{ product.name }}</h3>
-            <p class="desc">{{ product.desc }}</p>
+            <p class="desc">{{ product.description || '暂无描述' }}</p>
             <div class="price-section">
               <span class="price">¥{{ product.price }}</span>
-              <el-tag type="success" size="small">销量 {{ product.orderNum || 0 }}</el-tag>
+              <el-tag type="success" size="small">库存 {{ product.stock || 0 }}</el-tag>
             </div>
           </div>
         </div>
       </div>
+      
+      <!-- 无商品提示 -->
+      <div v-else class="empty-products">
+        <el-empty description="该分类下暂无商品" />
+      </div>
     </div>
-
-    <el-empty
-      v-if="!loading && filteredCategories.length === 0"
-      description="没有找到相关商品"
-      class="empty-tip"
-    />
   </div>
 </template>
 
 <script setup>
 import { ref, computed, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
-import { ElMessage } from 'element-plus'
 import { Search } from '@element-plus/icons-vue'
 
 const router = useRouter()
@@ -81,64 +79,118 @@ const categories = ref([])
 const searchKeyword = ref('')
 const loading = ref(true)
 
-// 图片URL格式化（移除尺寸参数）
-const formatImageUrl = (url) => {
-  if (!url) return ''
-  // 示例输入：http://xxx.com/pic.jpg?quality=95&imageView
-  // 处理后：http://xxx.com/pic.jpg
-  return url.split('?')[0]
+// 加载分类数据
+const loadCategories = () => {
+  const savedCategories = localStorage.getItem('productCategories')
+  if (savedCategories) {
+    return JSON.parse(savedCategories)
+  }
+  
+  // 默认分类数据
+  return [
+    { id: "1005000", name: "居家" },
+    { id: "1005002", name: "美食" },
+    { id: "1010000", name: "服饰" },
+    { id: "1011000", name: "母婴" },
+    { id: "1013001", name: "个护" },
+    { id: "1019000", name: "严选" },
+    { id: "1043000", name: "数码" },
+    { id: "109243029", name: "运动" },
+    { id: "19999999", name: "杂项" }
+  ]
 }
 
-const fetchCategories = async () => {
-  try {
-    const response = await fetch(
-      'http://pcapi-xiaotuxian-front-devtest.itheima.net/home/category/head'
-    )
-    const res = await response.json()
-    
-    if (res.code !== '1') throw new Error(res.msg || '数据加载失败')
-    
-    // 数据结构映射
-    categories.value = res.result.map(category => ({
-      id: category.id,
-      name: category.name,
-      picture: category.picture,
-      goods: (category.goods || []).map(g => ({
-        id: g.id,
-        name: g.name,
-        desc: g.desc,
-        price: Number(g.price).toFixed(2),
-        picture: g.picture,
-        orderNum: g.orderNum
-      }))
-    })).filter(c => c.goods.length > 0)
-    
-  } catch (error) {
-    ElMessage.error(error.message)
-    categories.value = []
-  } finally {
-    loading.value = false
-  }
+// 加载所有商品
+const loadAllProducts = () => {
+  const allProducts = []
+  
+  // 从localStorage加载所有商家的商品
+  const keys = Object.keys(localStorage).filter(key => 
+    key.startsWith('businessProducts_')
+  )
+  
+  keys.forEach(key => {
+    try {
+      const products = JSON.parse(localStorage.getItem(key))
+      allProducts.push(...products)
+    } catch (e) {
+      console.error(`Error parsing products from ${key}:`, e)
+    }
+  })
+  
+  return allProducts
+}
+
+// 获取第一张图片
+const getFirstImage = (images) => {
+  return images?.length > 0 ? images[0] : '/placeholder-product.jpg'
+}
+
+// 初始化数据
+const initData = () => {
+  // 加载分类
+  const categoryList = loadCategories()
+  
+  // 加载所有商品
+  const allProducts = loadAllProducts()
+  
+  // 创建分类映射
+  const categoryMap = new Map()
+  
+  // 初始化所有分类（包括没有商品的）
+  categoryList.forEach(category => {
+    categoryMap.set(category.id, {
+      ...category,
+      products: []
+    })
+  })
+  
+  // 分配商品到分类
+  allProducts.forEach(product => {
+    if (product.categoryId && categoryMap.has(product.categoryId)) {
+      categoryMap.get(product.categoryId).products.push(product)
+    } else {
+      // 如果杂项分类不存在则创建
+      if (!categoryMap.has("19999999")) {
+        categoryMap.set("19999999", {
+          id: "19999999",
+          name: "杂项",
+          products: []
+        })
+      }
+      categoryMap.get("19999999").products.push(product)
+    }
+  })
+  
+  // 确保所有分类都显示，即使没有商品
+  categories.value = Array.from(categoryMap.values())
+  
+  loading.value = false
 }
 
 const filteredCategories = computed(() => {
   const keyword = searchKeyword.value.toLowerCase()
+  
+  // 没有搜索关键词时显示所有分类
+  if (!keyword) return categories.value
+  
+  // 有搜索关键词时，只显示包含匹配商品的分类
   return categories.value
     .map(category => ({
       ...category,
-      goods: category.goods.filter(product => 
-        product.name?.toLowerCase().includes(keyword) ||
-        product.desc?.toLowerCase().includes(keyword)
+      products: category.products.filter(product => 
+        (product.name || '').toLowerCase().includes(keyword) ||
+        (product.description || '').toLowerCase().includes(keyword)
       )
     }))
-    .filter(category => category.goods.length > 0)
+    .filter(category => category.products.length > 0)
 })
 
 const viewDetail = (productId) => {
   router.push(`/buyer/product/${productId}`)
 }
 
-onMounted(fetchCategories)
+onMounted(initData)
 </script>
 
 <style scoped>
@@ -222,5 +274,12 @@ onMounted(fetchCategories)
   font-size: 18px;
   color: #f56c6c;
   font-weight: bold;
+}
+
+.empty-products {
+  padding: 40px 0;
+  background: #f9fafc;
+  border-radius: 8px;
+  margin-top: 20px;
 }
 </style>

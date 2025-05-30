@@ -3,8 +3,12 @@
     <h2>用户注册</h2>
     <form @submit.prevent="handleRegister">
       <div class="form-group">
-        <label>用户名:</label>
-        <input type="text" v-model="registerForm.username" required>
+        <label>用户ID:</label>
+        <input type="text" v-model="registerForm.userId" required>
+      </div>
+      <div class="form-group">
+        <label>用户名称:</label>
+        <input type="text" v-model="registerForm.userName" required>
       </div>
       <div class="form-group">
         <label>密码:</label>
@@ -35,7 +39,8 @@ export default {
   data() {
     return {
       registerForm: {
-        username: '',
+        userId: '',
+        userName: '',
         password: '',
         confirmPassword: '',
         role: ''
@@ -50,17 +55,16 @@ export default {
       }
 
       try {
-        const response = await authService.register({
-          username: this.registerForm.username,
+        await authService.register({
+          userId: this.registerForm.userId,
+          userName: this.registerForm.userName,
           password: this.registerForm.password,
           role: this.registerForm.role
         })
-        console.log('注册成功:', response.data)
         alert('注册成功，请登录')
         this.$router.push('/login')
       } catch (error) {
-        console.error('注册失败:', error)
-        alert('注册失败，请重试')
+        alert(error.message || '注册失败，请重试')
       }
     }
   }
@@ -101,7 +105,7 @@ button {
   border: none;
   border-radius: 4px;
   cursor: pointer;
-  margin-top: 1rem;
+  margin-top: 1rem; 
 }
 
 button:hover {
