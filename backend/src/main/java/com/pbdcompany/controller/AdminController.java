@@ -1,6 +1,7 @@
 package com.pbdcompany.controller;
 
 import com.pbdcompany.dto.response.OrderItemResponse;
+import com.pbdcompany.dto.response.OrderResponse;
 import com.pbdcompany.entity.*;
 import com.pbdcompany.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +27,7 @@ public class AdminController {
     }
 
     @GetMapping("/order")
-    public List<Orders> getAllOrders() {
+    public List<OrderResponse> getAllOrders() {
         return adminService.getAllOrders();
     }
     @GetMapping("/orderItem")

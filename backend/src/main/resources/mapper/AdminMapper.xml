@@ -31,11 +31,6 @@
     </delete>
 
 
-    <!-- 查询所有订单 -->
-    <select id="findAllOrders" resultType="com.pbdcompany.entity.Orders">
-        SELECT * FROM orders
-    </select>
-
     <select id="findOrderById" parameterType="int" resultType="com.pbdcompany.entity.Orders">
         SELECT * FROM orders WHERE OrderID = #{id}
     </select>
@@ -117,6 +112,23 @@
                  LEFT JOIN product p ON oi.ProductID = p.ProductID
                  LEFT JOIN orders o ON oi.OrderID = o.OrderID
                  LEFT JOIN customer c ON o.CustomerID = c.CustomerID
+    </select>
+
+
+    <!-- 定义 resultMap -->
+    <resultMap id="OrderResponseMap" type="com.pbdcompany.dto.response.OrderResponse">
+        <id property="orderId" column="OrderID"/>
+        <result property="userId" column="CustomerID"/>
+        <result property="merchantId" column="MerchantID"/>
+        <result property="totalPrice" column="TotalPrice"/>
+        <result property="status" column="Status"/>
+        <!-- items 字段由 service 层填充 -->
+    </resultMap>
+
+    <!-- 查询所有订单 -->
+    <select id="getAllOrders" resultMap="OrderResponseMap">
+        SELECT OrderID, CustomerID, MerchantID, TotalPrice, Status
+        FROM orders
     </select>
 
 

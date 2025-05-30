@@ -1,10 +1,9 @@
-package com.pbdcompany.dto.response;
+package com.pbdcompany.dto.request;
 
 import lombok.Data;
 
 @Data
-public class OrderItemResponse {
-    private int orderItemId;
+public class OrderItemRequest {
     private int productId;
     private int quantity;
     private double price;

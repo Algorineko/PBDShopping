@@ -1,56 +1,48 @@
 package com.pbdcompany.service;
 
-import com.pbdcompany.dto.response.OrderItemResponse;
-import com.pbdcompany.dto.response.OrderItemTrackingResponse;
+import com.pbdcompany.dto.response.LogisticsInfoResponse;
 import com.pbdcompany.dto.response.OrderTrackingResponse;
-import com.pbdcompany.entity.Logisticsinfo;
+import com.pbdcompany.entity.LogisticsInfo;
 import com.pbdcompany.entity.OrderItem;
-import com.pbdcompany.entity.Orders;
-import com.pbdcompany.mapper.LogisticsinfoMapper;
+import com.pbdcompany.mapper.LogisticsInfoMapper;
 import com.pbdcompany.mapper.OrderItemMapper;
-import com.pbdcompany.mapper.OrdersMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
 import java.util.List;
-import java.util.stream.Collectors;
-import com.pbdcompany.enums.Status;
+import java.util.Map;
+
 @Service
 public class TrackingService {
-
-    @Autowired
-    private OrdersMapper ordersMapper;
 
     @Autowired
     private OrderItemMapper orderItemMapper;
 
     @Autowired
-    private LogisticsinfoMapper logisticsinfoMapper;
+    private LogisticsInfoMapper logisticsInfoMapper;
 
-    public OrderTrackingResponse getTrackingInfo(int orderId) {
-        Orders order = ordersMapper.findById(orderId);
-        if (order == null) {
-            throw new RuntimeException("订单不存在");
+    public OrderTrackingResponse getTrackingInfoByOrderId(int orderId) {
+        List<OrderItem> items = orderItemMapper.findByOrderId(orderId);
+        Map<Integer, LogisticsInfoResponse> logisticsMap = new HashMap<>();
+
+        for (OrderItem item : items) {
+            LogisticsInfo logistics = logisticsInfoMapper.findByOrderItemId(item.getOrderItemId());
+            if (logistics != null) {
+                LogisticsInfoResponse response = new LogisticsInfoResponse();
+                response.setLogisticsCompany(logistics.getLogisticsCompany());
+                response.setTrackingNumber(logistics.getTrackingNumber());
+                response.setStatus(logistics.getStatus());
+
+                logisticsMap.put(item.getOrderItemId(), response);
+            }
         }
 
-        List<OrderItemResponse> orderItems = orderItemMapper.findByOrderId(orderId);
+        OrderTrackingResponse result = new OrderTrackingResponse();
+        result.setOrderId(orderId);
+        result.setItemLogistics(logisticsMap);
 
-        List<OrderItemTrackingResponse> itemResponses = orderItems.stream()
-                .map(item -> {
-                    Logisticsinfo logistics = logisticsinfoMapper.findByOrderItemId(item.getOrderItemId());
-
-                    String upperCase = logistics.getStatus().toString().toUpperCase();
-                    return new OrderItemTrackingResponse(
-                            item.getOrderItemId(),
-                            item.getProductId(),
-                            item.getQuantity(),
-                            logistics.getLogisticsCompany(),
-                            logistics.getTrackingNumber(),
-                            Status.valueOf(logistics.getStatus().toString().toUpperCase())
-                    );
-                })
-                .collect(Collectors.toList());
-
-        return new OrderTrackingResponse(orderId, itemResponses);
+        return result;
     }
 }
+

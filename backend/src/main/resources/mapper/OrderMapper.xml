@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.pbdcompany.mapper.OrderMapper">
+
+    <resultMap id="OrderResponseMap" type="com.pbdcompany.dto.response.OrderResponse">
+        <id property="orderId" column="OrderID"/>
+        <result property="customerId" column="CustomerID"/>
+        <result property="merchantId" column="MerchantID"/>  <!-- 修复这里 -->
+        <result property="totalPrice" column="TotalPrice"/>
+        <result property="status" column="Status"/>
+    </resultMap>
+
+
+    <select id="findByCustomerId" resultType="com.pbdcompany.entity.Orders">
+        SELECT * FROM orders WHERE CustomerID = #{customerId}
+    </select>
+
+    <select id="findByMerchantId" resultType="com.pbdcompany.entity.Orders">
+        SELECT * FROM orders WHERE MerchantID = #{merchantId}
+    </select>
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="orderId">
+        INSERT INTO orders (CustomerID, MerchantID, TotalPrice, Status)
+        VALUES (#{customerId}, #{merchantId}, #{totalPrice}, 'PENDING')
+    </insert>
+
+
+</mapper>

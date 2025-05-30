@@ -1,15 +1,11 @@
 package com.pbdcompany.dto.response;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
-import java.util.List;
+import java.util.Map;
 
 @Data
-@NoArgsConstructor
-@AllArgsConstructor
 public class OrderTrackingResponse {
     private int orderId;
-    private List<OrderItemTrackingResponse> items;
+    private Map<Integer, LogisticsInfoResponse> itemLogistics; // key: orderItemId
 }

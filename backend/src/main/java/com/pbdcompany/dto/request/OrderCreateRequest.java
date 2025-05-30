@@ -5,9 +5,8 @@ import lombok.Data;
 import java.util.List;
 
 @Data
-public class OrderRequest {
-    private int CustomerId;
+public class OrderCreateRequest {
+    private int userId;
     private int merchantId;
-    private double totalPrice;
     private List<OrderItemRequest> items;
 }
