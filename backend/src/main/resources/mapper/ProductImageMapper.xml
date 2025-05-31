@@ -17,53 +17,20 @@
         <result property="image" column="Image"/>
     </resultMap>
 
-    <!-- 查询所有商品图片 -->
-    <select id="findAll" resultMap="ProductImageResultMap">
-        select
-        <include refid="Base_Column_List"/>
-        from productImage
+    <select id="findImagesByProductId" resultType="string">
+        SELECT image
+        FROM productimage
+        WHERE ProductID = #{productId}
     </select>
 
-    <!-- 根据ID删除商品图片 -->
-    <delete id="deleteById">
-        delete from productImage
-        where ProductImageID = #{id}
-    </delete>
-
-    <!-- 插入商品图片 -->
-    <insert id="insert" useGeneratedKeys="true" keyProperty="productImageId">
-        insert into productImage
-        (
-        <include refid="Base_Column_List"/>
-        )
-        values
-        (
-        #{productImageId},
-        #{productId},
-        #{image}
-        )
+    <insert id="insert">
+        INSERT INTO productimage (
+            productid,
+            image
+        ) VALUES (
+                     #{productId},
+                     #{image}
+                 )
     </insert>
-
-    <!-- 动态更新商品图片信息 -->
-    <update id="update">
-        update productImage
-        <set>
-            <if test="productId != null">
-                ProductID = #{productId},
-            </if>
-            <if test="image != null and image.trim() != ''">
-                Image = #{image},
-            </if>
-        </set>
-        where ProductImageID = #{productImageId}
-    </update>
-
-    <!-- 根据ID查询商品图片 -->
-    <select id="findById" resultMap="ProductImageResultMap">
-        select
-        <include refid="Base_Column_List"/>
-        from productImage
-        where ProductImageID = #{id}
-    </select>
 
 </mapper>

@@ -13,6 +13,10 @@
     </resultMap>
 
 
+    <select id="selectAll" resultType="com.pbdcompany.entity.Orders">
+        SELECT * FROM orders
+    </select>
+
     <select id="findByCustomerId" resultType="com.pbdcompany.entity.Orders">
         SELECT * FROM orders WHERE CustomerID = #{customerId}
     </select>
@@ -26,5 +30,10 @@
         VALUES (#{customerId}, #{merchantId}, #{totalPrice}, 'PENDING')
     </insert>
 
+    <update id="updateOrderStatusToShipped">
+        UPDATE orders
+        SET status = 'SHIPPED'
+        WHERE orderid = #{orderId}
+    </update>
 
 </mapper>

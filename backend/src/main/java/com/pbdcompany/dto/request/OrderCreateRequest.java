@@ -6,7 +6,7 @@ import java.util.List;
 
 @Data
 public class OrderCreateRequest {
-    private int userId;
+    private int customerId;
     private int merchantId;
     private List<OrderItemRequest> items;
 }

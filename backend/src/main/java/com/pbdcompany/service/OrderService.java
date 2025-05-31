@@ -1,11 +1,14 @@
 package com.pbdcompany.service;
 
 import com.pbdcompany.dto.request.OrderCreateRequest;
+import com.pbdcompany.dto.request.OrderShippingRequest;
 import com.pbdcompany.dto.response.OrderItemResponse;
 import com.pbdcompany.dto.response.OrderResponse;
+import com.pbdcompany.entity.LogisticsInfo;
 import com.pbdcompany.entity.OrderItem;
 import com.pbdcompany.entity.Orders;
 import com.pbdcompany.enums.Status;
+import com.pbdcompany.mapper.LogisticsInfoMapper;
 import com.pbdcompany.mapper.OrderItemMapper;
 import com.pbdcompany.mapper.OrderMapper;
 import jakarta.transaction.Transactional;
@@ -23,6 +26,10 @@ public class OrderService {
 
     @Autowired
     private OrderItemMapper orderItemMapper;
+
+    @Autowired
+    private LogisticsInfoMapper logisticsInfoMapper;
+
 
     // 获取用户的所有订单（含订单项）
     public List<OrderResponse> getOrdersByCustomerId(int customerId) {
@@ -54,7 +61,6 @@ public class OrderService {
                     List<OrderItemResponse> itemResponses = items.stream()
                             .map(item -> {
                                 OrderItemResponse res = new OrderItemResponse();
-                                res.setOrderItemId(item.getOrderItemId());
                                 res.setProductId(item.getProductId());
                                 res.setQuantity(item.getQuantity());
                                 res.setPrice(item.getPrice());
@@ -67,6 +73,25 @@ public class OrderService {
                 })
                 .collect(Collectors.toList());
     }
+
+    @Transactional
+    public boolean shipOrder(OrderShippingRequest request) {
+        List<LogisticsInfo> logisticsList = request.getLogisticsList();
+
+        // 设置物流状态为 "SHIPPED"
+        for (LogisticsInfo logistics : logisticsList) {
+            logistics.setStatus(Status.SHIPPED);
+        }
+
+        // 批量插入物流信息
+        logisticsInfoMapper.insertBatch(logisticsList);
+
+        // 更新订单状态为 "SHIPPED"
+        orderMapper.updateOrderStatusToShipped(request.getOrderId());
+
+        return true;
+    }
+
     @Transactional
     public boolean createOrder(OrderCreateRequest request) {
         try {
@@ -80,7 +105,7 @@ public class OrderService {
 
             // 3. 构建订单对象
             Orders order = new Orders();
-            order.setCustomerId(request.getUserId());
+            order.setCustomerId(request.getCustomerId());
             order.setMerchantId(request.getMerchantId());
             order.setTotalPrice(totalPrice);
             order.setStatus(Status.PENDING); // 默认状态

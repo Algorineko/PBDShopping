@@ -21,79 +21,69 @@
         <result property="price" column="Price"/>
     </resultMap>
 
-    <!-- 查询所有商品 -->
-    <select id="findAll" resultMap="ProductResultMap">
-        select
-        <include refid="Base_Column_List"/>
-        from product
+    <select id="findByMerchantId" resultType="com.pbdcompany.entity.Product">
+        SELECT *
+        FROM product
+        WHERE MerchantID = #{merchantId}
     </select>
 
-    <!-- 根据ID删除商品 -->
-    <delete id="deleteById">
-        delete from product
-        where ProductID = #{id}
-    </delete>
+    <!-- 根据分类 ID 查询商品 -->
+    <select id="findByCategoryId" resultType="com.pbdcompany.entity.Product">
+        SELECT *
+        FROM product
+        WHERE CategoryID = #{categoryId}
+    </select>
 
-    <insert id="insertProduct" parameterType="com.pbdcompany.dto.request.AddProductRequest">
-        INSERT INTO product (ProductName, Price, Description, CategoryID, MerchantID)
-        VALUES (#{productName},
-                #{price},
-                #{description},
-                #{categoryId},
-                #{merchantId})
+    <!-- 根据商品名称模糊查询 -->
+    <select id="findByNameLike" resultType="com.pbdcompany.entity.Product">
+        SELECT *
+        FROM product
+        WHERE ProductName LIKE CONCAT('%', #{name}, '%')
+    </select>
+
+    <insert id="insert" useGeneratedKeys="true" keyProperty="productId">
+        INSERT INTO product (
+            categoryid,
+            merchantid,
+            productname,
+            description,
+            price
+        ) VALUES (
+                     #{categoryId},
+                     #{merchantId},
+                     #{productName},
+                     #{description},
+                     #{price}
+                 )
     </insert>
-
-    <!-- 动态更新商品信息 -->
+    <!-- 修改商品信息 -->
     <update id="update">
-        update product
-        <set>
-            <if test="categoryId != null">
-                CategoryID = #{categoryId},
-            </if>
-            <if test="merchantId != null">
-                MerchantID = #{merchantId},
-            </if>
-            <if test="productName != null and productName.trim() != ''">
-                ProductName = #{productName},
-            </if>
-            <if test="description != null and description.trim() != ''">
-                Description = #{description},
-            </if>
-            <if test="price != null">
-                Price = #{price},
-            </if>
-        </set>
-        where ProductID = #{productId}
+        UPDATE product
+        SET
+            productname = #{productName},
+            description = #{description},
+            price = #{price},
+            categoryid = #{categoryId}
+        WHERE productid = #{productId}
     </update>
 
-    <!-- 根据ID查询商品 -->
-    <select id="findById" resultMap="ProductResultMap">
-        select
-        <include refid="Base_Column_List"/>
-        from product
-        where ProductID = #{id}
-    </select>
-
-    <!-- 根据名称模糊查询商品 -->
-    <select id="findByName" resultMap="ProductResultMap">
-        select
-        <include refid="Base_Column_List"/>
-        from product
-        where ProductName like concat('%', #{name}, '%')
-    </select>
-
-    <delete id="deleteProductById">
-        DELETE
-        FROM product
-        WHERE ProductID = #{productId}
+    <!-- 删除商品 -->
+    <delete id="deleteById">
+        DELETE FROM product
+        WHERE productid = #{productId}
     </delete>
 
-    <!-- 根据商家ID查询商品 -->
-    <select id="findByMerchantId" resultMap="ProductResultMap">
-        select *
-        from product
-        where MerchantID = #{merchantId}
+    <!-- 根据 ID 查询商品 -->
+    <select id="findById" resultType="com.pbdcompany.entity.Product">
+        SELECT *
+        FROM product
+        WHERE productid = #{productId}
     </select>
 
+    <!-- 根据 ID 查询商品 -->
+    <select id="findAll" resultType="com.pbdcompany.entity.Product">
+        SELECT *
+        FROM product
+    </select>
 
 </mapper>

@@ -3,12 +3,15 @@ package com.pbdcompany.dto.request;
 
 import lombok.Data;
 
+import java.util.List;
+
 @Data
 public class AddProductRequest {
     private String productName;
-    private Double price;
+    private double price;
     private String description;
-    private Integer stock;
-    private String category;
-    private Integer merchantId;
+    private int categoryId;
+    private int merchantId;
+
+    private List<String> images;
 }

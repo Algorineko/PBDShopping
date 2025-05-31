@@ -35,6 +35,7 @@ public class TrackingService {
                 response.setStatus(logistics.getStatus());
 
                 logisticsMap.put(item.getOrderItemId(), response);
+
             }
         }
 

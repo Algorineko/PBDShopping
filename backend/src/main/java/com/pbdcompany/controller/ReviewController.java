@@ -37,7 +37,7 @@ public class ReviewController {
     }
     @PostMapping("/{orderId}")
     public ResponseEntity<?> addReview(
-            @PathVariable Long orderId,
+            @PathVariable int orderId,
             @RequestBody ReviewRequest request,
             HttpServletRequest httpServletRequest) {
 

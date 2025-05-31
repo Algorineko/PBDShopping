@@ -5,7 +5,14 @@
 <mapper namespace="com.pbdcompany.mapper.LogisticsInfoMapper">
 
     <select id="findByOrderItemId" resultType="com.pbdcompany.entity.LogisticsInfo">
-        SELECT * FROM logisticsInfo WHERE OrderItemID = #{orderItemId}
+        SELECT * FROM logisticsinfo WHERE OrderItemID = #{orderItemId}
     </select>
 
+    <insert id="insertBatch">
+        INSERT INTO logisticsinfo (orderitemid, logistics_company, tracking_number, status)
+        VALUES
+        <foreach collection="list" item="logistics" separator=",">
+            (#{logistics.orderItemId}, #{logistics.logisticsCompany}, #{logistics.trackingNumber}, #{logistics.status})
+        </foreach>
+    </insert>
 </mapper>

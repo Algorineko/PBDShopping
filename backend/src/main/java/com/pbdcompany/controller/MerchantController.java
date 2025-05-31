@@ -1,14 +1,14 @@
+
 package com.pbdcompany.controller;
 
-import com.pbdcompany.dto.request.MerchantRegisterRequest;
-import com.pbdcompany.dto.request.RegisterRequest;
-import com.pbdcompany.dto.response.MerchantResponse;
-import com.pbdcompany.entity.Merchant;
+import com.pbdcompany.Utils.JwtUtils;
+import com.pbdcompany.dto.request.UpdateMerchantProfileRequest;
+import com.pbdcompany.dto.response.MerchantProfileResponse;
 import com.pbdcompany.service.MerchantService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/merchants")
@@ -17,5 +17,55 @@ public class MerchantController {
     @Autowired
     private MerchantService merchantService;
 
+    @Autowired
+    private JwtUtils jwtUtils;
 
+    // 获取当前商家信息
+    @GetMapping("/profile")
+    public ResponseEntity<?> getCurrentMerchantProfile(
+            @RequestHeader(value = "Authorization", required = false) String authHeader) {
+
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("未登录");
+        }
+
+        String token = authHeader.substring(7);
+        String username = jwtUtils.getUsernameFromToken(token);
+
+        if (username == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("无效的 Token");
+        }
+
+        MerchantProfileResponse profile = merchantService.getMerchantProfileByUsername(username);
+        if (profile == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("商家不存在");
+        }
+
+        return ResponseEntity.ok(profile);
+    }
+
+    // 更新当前商家信息
+    @PutMapping("/putProfile")
+    public ResponseEntity<?> updateCurrentMerchantProfile(
+            @RequestHeader("Authorization") String authHeader,
+            @RequestBody UpdateMerchantProfileRequest request) {
+
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("未登录");
+        }
+
+        String token = authHeader.substring(7);
+        String username = jwtUtils.getUsernameFromToken(token);
+
+        if (username == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("无效的 Token");
+        }
+
+        boolean success = merchantService.updateMerchantProfile(username, request);
+        if (!success) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("更新失败");
+        }
+
+        return ResponseEntity.ok("信息更新成功");
+    }
 }

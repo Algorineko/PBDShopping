@@ -16,7 +16,6 @@ public interface AdminMapper {
     void deleteCustomerById(int id);
 
     // ==== 订单管理 ====
-    List<OrderResponse> getAllOrders();
 
     List<OrderItemResponse> findAllOrderItems();
 
