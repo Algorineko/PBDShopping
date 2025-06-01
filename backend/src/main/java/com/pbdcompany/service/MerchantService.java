@@ -33,4 +33,7 @@ public interface MerchantService {
      * 检查用户名是否已存在
      */
     boolean existsByUsername(String username);
+
+    boolean changePassword(String username, String oldPassword, String newPassword);
+
 }

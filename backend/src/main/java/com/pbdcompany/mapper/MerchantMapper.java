@@ -24,6 +24,9 @@ public interface MerchantMapper {
     Merchant findByUsernameAndPassword(String username, String password);
 
     MerchantProfileResponse findProfileByUsername(String username);
+
+    int updatePasswordByUsername(String username, String newPassword);
+
 }
 
 

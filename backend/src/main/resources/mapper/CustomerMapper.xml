@@ -87,4 +87,10 @@
         SELECT * FROM customer WHERE CustomerName = #{username}
     </select>
 
+    <update id="updatePasswordByUsername">
+        UPDATE customer
+        SET password = #{newPassword}
+        WHERE customerName = #{username}
+    </update>
+
 </mapper>

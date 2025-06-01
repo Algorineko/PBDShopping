@@ -44,5 +44,7 @@ public interface CustomerMapper {
 
     Customer findByUsername(String username);
 
+    int updatePasswordByUsername(String username, String newPassword);
+
 
 }

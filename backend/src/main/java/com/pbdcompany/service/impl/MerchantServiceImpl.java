@@ -10,6 +10,8 @@ import com.pbdcompany.service.MerchantService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import static java.util.regex.Pattern.matches;
+
 @Service
 public class MerchantServiceImpl implements MerchantService {
 
@@ -27,7 +29,6 @@ public class MerchantServiceImpl implements MerchantService {
         merchantMapper.insert(merchant);
 
         RegisterResponse response = new RegisterResponse();
-        response.setId(merchant.getMerchantId());
         response.setUsername(merchant.getMerchantName());
         response.setSuccess(true);
 
@@ -68,4 +69,24 @@ public class MerchantServiceImpl implements MerchantService {
     public boolean existsByUsername(String username) {
         return merchantMapper.findByUsername(username) != null;
     }
+
+    @Override
+    public boolean changePassword(String username, String oldPassword, String newPassword) {
+        Merchant merchant = merchantMapper.findByUsername(username);
+
+        if (merchant == null) {
+            return false; // 用户不存在
+        }
+
+        // 检查旧密码是否匹配（假设是明文对比或已加密）
+        if (!merchant.getPassword().equals(oldPassword)) {
+            return false; // 旧密码错误
+        }
+
+        // 更新密码
+        int rowsAffected = merchantMapper.updatePasswordByUsername(username, newPassword);
+        return rowsAffected > 0;
+    }
+
+
 }

@@ -18,5 +18,8 @@ public interface CustomerService {
     boolean updateCustomerProfile(String username, UpdateCustomerProfileRequest request);
 
     boolean existsByUsername(String username);
+
+    boolean changePassword(String username, String oldPassword, String newPassword);
+
 }
 

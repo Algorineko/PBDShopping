@@ -2,6 +2,7 @@
 package com.pbdcompany.controller;
 
 import com.pbdcompany.Utils.JwtUtils;
+import com.pbdcompany.dto.request.ChangePasswordRequest;
 import com.pbdcompany.dto.request.UpdateMerchantProfileRequest;
 import com.pbdcompany.dto.response.MerchantProfileResponse;
 import com.pbdcompany.service.MerchantService;
@@ -9,6 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/merchants")
@@ -68,4 +71,32 @@ public class MerchantController {
 
         return ResponseEntity.ok("信息更新成功");
     }
+
+    @PutMapping("/change-password")
+    public ResponseEntity<?> changeMerchantPassword(
+            @RequestHeader("Authorization") String authHeader,
+            @RequestBody ChangePasswordRequest passwordRequest) {
+
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("未登录");
+        }
+
+        String token = authHeader.substring(7);
+        String username = jwtUtils.getUsernameFromToken(token);
+
+        if (username == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("无效的 Token");
+        }
+
+        String oldPassword = passwordRequest.getOldPassword();
+        String newPassword = passwordRequest.getNewPassword();
+
+        boolean success = merchantService.changePassword(username, oldPassword, newPassword);
+        if (!success) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("密码修改失败，请检查旧密码是否正确");
+        }
+
+        return ResponseEntity.ok("密码修改成功");
+    }
+
 }

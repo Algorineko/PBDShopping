@@ -26,7 +26,6 @@ public class CustomerServiceImpl implements CustomerService {
         customerMapper.insert(customer);
 
         RegisterResponse response = new RegisterResponse();
-        response.setId(customer.getCustomerId());
         response.setUsername(customer.getCustomerName());
         response.setSuccess(true);
 
@@ -68,6 +67,20 @@ public class CustomerServiceImpl implements CustomerService {
     @Override
     public boolean existsByUsername(String username) {
         return customerMapper.findByUsername(username) != null;
+    }
+
+    @Override
+    public boolean changePassword(String username, String oldPassword, String newPassword) {
+        Customer customer = customerMapper.findByUsername(username);
+        if (customer == null) {
+            return false;
+        }
+        if (!customer.getPassword().equals(oldPassword)) {
+            return false; // 旧密码错误
+        }
+
+        int rowsAffected = customerMapper.updatePasswordByUsername(username, newPassword);
+        return rowsAffected > 0;
     }
 
 }

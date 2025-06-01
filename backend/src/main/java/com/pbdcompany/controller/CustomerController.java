@@ -2,6 +2,7 @@ package com.pbdcompany.controller;
 
 
 import com.pbdcompany.Utils.JwtUtils;
+import com.pbdcompany.dto.request.ChangePasswordRequest;
 import com.pbdcompany.dto.request.UpdateCustomerProfileRequest;
 import com.pbdcompany.dto.response.CustomerProfileResponse;
 import com.pbdcompany.service.CustomerService;
@@ -73,6 +74,33 @@ public class CustomerController {
         }
 
         return ResponseEntity.ok("信息更新成功");
+    }
+
+    @PutMapping("/change-password")
+    public ResponseEntity<?> changeCustomerPassword(
+            @RequestHeader("Authorization") String authHeader,
+            @RequestBody ChangePasswordRequest passwordRequest) {
+
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("未登录");
+        }
+
+        String token = authHeader.substring(7);
+        String username = jwtUtils.getUsernameFromToken(token);
+
+        if (username == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("无效的 Token");
+        }
+
+        String oldPassword = passwordRequest.getOldPassword();
+        String newPassword = passwordRequest.getNewPassword();
+
+        boolean success = customerService.changePassword(username, oldPassword, newPassword);
+        if (!success) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("密码修改失败，请检查旧密码是否正确");
+        }
+
+        return ResponseEntity.ok("密码修改成功");
     }
 
 

@@ -83,4 +83,18 @@
         where MerchantID = #{id}
     </select>
 
+    <select id="findByUsername" resultType="com.pbdcompany.entity.Merchant">
+        SELECT * FROM merchant WHERE MerchantName = #{username}
+    </select>
+
+    <select id="findByUsernameAndPassword" resultType="com.pbdcompany.entity.Merchant">
+        SELECT * FROM merchant WHERE Merchantname = #{username} AND password = #{password}
+    </select>
+
+    <update id="updatePasswordByUsername">
+        UPDATE merchant
+        SET password = #{newPassword}
+        WHERE MerchantName = #{username}
+    </update>
+
 </mapper>
