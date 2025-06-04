@@ -9,7 +9,6 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 public class LogisticsInfo {
-    private int logisticsId;
     private int orderItemId;
     private String logisticsCompany;
     private String trackingNumber;

@@ -18,5 +18,6 @@ public interface OrderMapper {
 
     boolean shipOrder(OrderShippingRequest request);
 
-    void updateOrderStatusToShipped(int orderId);
+
+    void updateOrderStatus(int orderId, String status);
 }

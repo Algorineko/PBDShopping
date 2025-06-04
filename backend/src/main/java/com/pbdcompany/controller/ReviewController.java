@@ -1,13 +1,13 @@
 package com.pbdcompany.controller;
 
-import com.pbdcompany.Utils.JwtUtils;
 import com.pbdcompany.dto.request.ReviewRequest;
 import com.pbdcompany.entity.Review;
 import com.pbdcompany.service.ReviewService;
-import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/api/customer/review")
@@ -15,34 +15,11 @@ public class ReviewController {
     @Autowired
     private ReviewService reviewService;
 
-    @Autowired
-    private JwtUtils jwtUtils;
-
-    // 提取 Token 方法
-    private String parseJwt(HttpServletRequest request) {
-        String headerAuth = request.getHeader("Authorization");
-        if (headerAuth != null && headerAuth.startsWith("Bearer ")) {
-            return headerAuth.substring(7);
-        }
-        return null;
-    }
-
-    // 从 Token 提取 Customer ID
-    private int extractCustomerId(HttpServletRequest request) {
-        String token = parseJwt(request);
-        if (token == null) {
-            throw new RuntimeException("Missing or invalid token");
-        }
-        return jwtUtils.extractCustomerId(token);
-    }
-    @PostMapping("/{orderId}")
+    @PostMapping("/add")
     public ResponseEntity<?> addReview(
-            @PathVariable int orderId,
-            @RequestBody ReviewRequest request,
-            HttpServletRequest httpServletRequest) {
+            @RequestBody ReviewRequest request) {
 
-        int customerId = extractCustomerId(httpServletRequest);
-
+        int customerId = request.getCustomerId();
         // 校验必要字段
         if (request.getOrderItemId() == null || request.getRating() == null || request.getComment() == null) {
             return ResponseEntity.badRequest().body("缺少必要参数");
@@ -57,8 +34,32 @@ public class ReviewController {
 
         // 添加评论
         reviewService.insert(review);
-
         return ResponseEntity.ok("评论提交成功");
     }
+
+    @GetMapping("/product/{productId}")
+    public ResponseEntity<List<Review>> getReviewsByProduct(@PathVariable int productId) {
+        List<Review> reviews = reviewService.getReviewsByProductId(productId);
+        return ResponseEntity.ok(reviews);
+    }
+
+    @GetMapping("/customer/{customerId}")
+    public ResponseEntity<List<Review>> getMyReviews(@PathVariable int customerId) {
+        List<Review> reviews = reviewService.getReviewsByCustomerId(customerId);
+        return ResponseEntity.ok(reviews);
+    }
+
+    @DeleteMapping("/{reviewId}")
+    public ResponseEntity<?> deleteReview(
+            @PathVariable int reviewId) {
+        Review review = reviewService.findById(reviewId);
+        if (review == null) {
+            return ResponseEntity.notFound().build();
+        }
+        reviewService.deleteById(reviewId);
+        return ResponseEntity.ok("评论删除成功");
+    }
+
+
 
 }

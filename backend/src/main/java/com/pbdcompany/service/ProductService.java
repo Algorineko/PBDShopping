@@ -163,8 +163,19 @@ public class ProductService {
      * 商家删除商品
      */
     public boolean deleteProduct(int productId) {
+
         return productMapper.deleteById(productId) > 0;
     }
+
+    public ProductInfoResponse getProductById(int productId) {
+        ProductInfoResponse product = productMapper.getProductById(productId);
+        if (product == null) {
+            throw new RuntimeException("商品不存在");
+        }
+        return product;
+    }
+
+
 
 
 }

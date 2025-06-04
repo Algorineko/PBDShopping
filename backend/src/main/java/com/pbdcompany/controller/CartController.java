@@ -1,17 +1,13 @@
 package com.pbdcompany.controller;
 
+import com.pbdcompany.Utils.JwtUtils;
 import com.pbdcompany.dto.request.AddToCartRequest;
 import com.pbdcompany.entity.CartItem;
 import com.pbdcompany.service.CartItemService;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-import com.pbdcompany.Utils.JwtUtils;
-import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -28,26 +24,38 @@ public class CartController {
 
     @PostMapping("/add")
     public ResponseEntity<?> addToCart(
-            @RequestBody AddToCartRequest request,
-            HttpServletRequest httpServletRequest) {
+            @RequestBody AddToCartRequest request) {
 
-        int customerId = extractCustomerIdFromToken(httpServletRequest);
-        try {
-            cartItemService.insert(new CartItem(
-                    0,customerId,
-                    request.getProductId(),
-                    request.getQuantity(),
-                    request.getSelectedOptions()
-                    ));
-            return ResponseEntity.ok("Item added to cart successfully");
-        } catch (Exception e) {
-            return ResponseEntity.status(500).body("Failed to add item to cart");
-        }
+        cartItemService.insert(new CartItem(
+                0,
+                request.getCustomerId(),
+                request.getProductId(),
+                request.getQuantity(),
+                request.getSelectedOptions()
+        ));
+        return ResponseEntity.ok("Item added to cart successfully");
+    }
+
+    public String parseJwt(HttpServletRequest request) {
+        return JwtUtils.parseJwt(request);
     }
 
     @GetMapping("/get")
-    public ResponseEntity<?> getCart(HttpServletRequest httpServletRequest) {
-        int customerId = extractCustomerIdFromToken(httpServletRequest);
+    public ResponseEntity<?> getCart(
+            @RequestHeader(value = "Authorization", required = false) String authHeader
+    ) {
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("未登录");
+        }
+
+        String token = authHeader.substring(7);
+        String username = jwtUtils.getUsernameFromToken(token);
+        int customerId = jwtUtils.extractCustomerId(token);
+
+        if (username == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("无效的 Token");
+        }
+
         try {
             List<CartItem> carts = cartItemService.findByCustomerId(customerId); // 筛选该用户的数据
             return ResponseEntity.ok(carts);
@@ -77,25 +85,5 @@ public class CartController {
         }
     }
 
-    //5.26修改：将 JwtUtils 改为可注入的 Bean。
-    // 从请求中提取用户ID
-    private int extractCustomerIdFromToken(HttpServletRequest request) {
-        String token = parseJwt(request);
-        if (token == null) {
-            throw new RuntimeException("Missing or invalid token");
-        }
-        return jwtUtils.extractCustomerId(token);
-    }
-
-    // 从 Header 提取 JWT Token
-    private String parseJwt(HttpServletRequest request) {
-        String headerAuth = request.getHeader("Authorization");
-
-        if (StringUtils.hasText(headerAuth) && headerAuth.startsWith("Bearer ")) {
-            return headerAuth.substring(7); // 去除 "Bearer " 前缀
-        }
-
-        return null;
-    }
 
 }

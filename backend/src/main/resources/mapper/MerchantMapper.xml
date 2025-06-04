@@ -97,4 +97,10 @@
         WHERE MerchantName = #{username}
     </update>
 
+    <select id="findProfileByUsername" resultType="com.pbdcompany.dto.response.MerchantProfileResponse">
+        SELECT *
+        FROM merchant
+        WHERE merchantName = #{username}
+    </select>
+
 </mapper>

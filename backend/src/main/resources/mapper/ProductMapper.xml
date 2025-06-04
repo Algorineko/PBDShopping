@@ -86,4 +86,16 @@
         FROM product
     </select>
 
+    <select id="getProductById" resultType="com.pbdcompany.dto.response.ProductInfoResponse">
+        SELECT p.ProductID,
+               p.ProductName,
+               p.Description,
+               p.Price,
+               p.CategoryID,
+               p.MerchantID
+        FROM product p
+        WHERE p.ProductID = #{productId}
+    </select>
+
+
 </mapper>

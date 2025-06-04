@@ -30,10 +30,11 @@
         VALUES (#{customerId}, #{merchantId}, #{totalPrice}, 'PENDING')
     </insert>
 
-    <update id="updateOrderStatusToShipped">
+    <update id="updateOrderStatus">
         UPDATE orders
-        SET status = 'SHIPPED'
+        SET status = #{status}
         WHERE orderid = #{orderId}
     </update>
+
 
 </mapper>

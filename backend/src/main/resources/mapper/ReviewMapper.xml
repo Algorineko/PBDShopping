@@ -76,4 +76,21 @@
         where ReviewID = #{id}
     </select>
 
+
+    <!-- 查询某个商品下的所有评论 -->
+    <select id="findByProductId" resultMap="ReviewResultMap">
+        SELECT r.ReviewID, r.CustomerID, r.OrderItemID, r.Rating, r.Comment
+        FROM review r
+                 JOIN orderItem oi ON r.OrderItemID = oi.OrderItemID
+        WHERE oi.ProductID = #{productId}
+    </select>
+
+    <!-- 查询某个用户的所有评论 -->
+    <select id="findByCustomerId" resultMap="ReviewResultMap">
+        SELECT *
+        FROM review
+        WHERE CustomerID = #{customerId}
+    </select>
+
+
 </mapper>

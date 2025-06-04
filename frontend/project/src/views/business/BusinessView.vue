@@ -31,8 +31,8 @@
 </template>
 
 <script setup>
-import { ref, onMounted, computed } from 'vue'
-import { useRouter } from 'vue-router'
+import {computed, onMounted, ref} from 'vue'
+import {useRouter} from 'vue-router'
 
 const router = useRouter()
 
@@ -69,11 +69,19 @@ const updateShopInfo = (newInfo) => {
 
 onMounted(() => {
   const username = localStorage.getItem('username') || ''
+<<<<<<< HEAD:frontend/project/src/views/business/BusinessView.vue
   
   // 使用用户名作为商家ID和名称
   shopInfo.value.id = username
   shopInfo.value.name = username
   
+=======
+
+  // 使用用户名作为商家ID和名称
+  shopInfo.value.id = username
+  shopInfo.value.name = username
+
+>>>>>>> 99d0cf3e475580bd59c6b4bb210ed3f9e37a3ecc:frontend/src/views/business/BusinessView.vue
   // 从本地存储获取商家信息
   const businessUsers = JSON.parse(localStorage.getItem('businessUsers') || '[]')
   const currentBusiness = businessUsers.find(u => u.username === username)
