@@ -1,7 +1,6 @@
 package com.pbdcompany.controller;
 
 import com.pbdcompany.dto.request.OrderCreateRequest;
-import com.pbdcompany.dto.request.OrderRequest;
 import com.pbdcompany.dto.request.OrderShippingRequest;
 import com.pbdcompany.dto.response.OrderResponse;
 import com.pbdcompany.service.OrderService;
@@ -36,10 +35,17 @@ public class OrderController {
         return ResponseEntity.ok(success);
     }
 
+
     @PostMapping("/shipping")
     public ResponseEntity<Boolean> shipOrder(@RequestBody OrderShippingRequest request) {
         boolean success = orderService.shipOrder(request);
         return ResponseEntity.ok(success);
     }
 
+
+    @PutMapping("/updateStatus")
+    public ResponseEntity<Boolean> updateOrderItemStatus(@RequestParam int orderId, @RequestParam String status) {
+        boolean success = orderService.updateOrderStatus(orderId, status);
+        return ResponseEntity.ok(success);
+    }
 }

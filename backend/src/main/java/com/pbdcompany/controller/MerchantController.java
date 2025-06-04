@@ -11,8 +11,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Map;
-
 @RestController
 @RequestMapping("/api/merchants")
 public class MerchantController {
@@ -28,6 +26,7 @@ public class MerchantController {
     public ResponseEntity<?> getCurrentMerchantProfile(
             @RequestHeader(value = "Authorization", required = false) String authHeader) {
 
+        System.out.println("authHeader" + authHeader);
         if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("未登录");
         }

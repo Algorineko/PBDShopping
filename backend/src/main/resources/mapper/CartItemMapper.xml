@@ -29,25 +29,21 @@
 
     <!-- 根据ID删除购物车项 -->
     <delete id="deleteById">
-        delete from CartItem
+        delete
+        from cartItem
         where CartItemID = #{id}
     </delete>
 
     <!-- 插入购物车项 -->
+    <!-- 插入或更新购物车项 -->
     <insert id="insert" useGeneratedKeys="true" keyProperty="cartItemId">
-        insert into cartItem
-        (
-        <include refid="Base_Column_List"/>
-        )
-        values
-        (
-        #{cartItemId},
-        #{customerId}, <!-- 修改 -->
-        #{productId},
-        #{quantity},
-        #{selectedOptions}
-        )
+        INSERT INTO cartItem
+            (CustomerID, ProductID, Quantity, SelectedOptions)
+        VALUES (#{customerId}, #{productId}, #{quantity}, #{selectedOptions})
+        ON DUPLICATE KEY UPDATE Quantity        = VALUES(Quantity),
+                                SelectedOptions = VALUES(SelectedOptions)
     </insert>
+
 
     <!-- 动态更新购物车项信息 -->
     <update id="update">

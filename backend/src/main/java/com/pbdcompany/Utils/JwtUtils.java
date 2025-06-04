@@ -1,10 +1,12 @@
 package com.pbdcompany.Utils;
 
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.JwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -20,25 +22,6 @@ public class JwtUtils {
         return extractClaim(token, claims -> (String) claims.get("userType"));
     }
 
-    // 判断是否是管理员
-    public boolean isAdmin(String token) {
-        String userType = extractUserType(token);
-        return "admin".equalsIgnoreCase(userType);
-    }
-
-    // 判断是否是商户
-    public boolean isMerchant(String token) {
-        String userType = extractUserType(token);
-        return "merchant".equalsIgnoreCase(userType);
-    }
-
-    // 判断是否是普通用户
-    public boolean isCustomer(String token) {
-        String userType = extractUserType(token);
-        return "customer".equalsIgnoreCase(userType);
-    }
-
-
     // 从配置文件中注入密钥（推荐）
     @Value("${jwt.secret}")
     private String SECRET_KEY;
@@ -46,24 +29,13 @@ public class JwtUtils {
     // 设置过期时间（24小时）
     private static final long JWT_EXPIRATION = 86400000;
 
-    // 提取用户名
-    public String extractUsername(String token) {
-        return extractClaim(token, Claims::getSubject);
-    }
 
-    // 提取用户 ID（假设你在 token 中存储了 customerId）
-    //5.26: 修改extractCustomerId方法，去掉其static标签
-    public  int extractCustomerId(String token) {
-        Claims claims = extractAllClaims(token);
-        return claims.get("customerId", Integer.class);
-    }
 
     // 提取指定声明
     public <T> T extractClaim(String token, Function<Claims, T> claimsResolver) {
         final Claims claims = extractAllClaims(token);
         return claimsResolver.apply(claims);
     }
-
 
     // 生成 Token（带自定义声明）
     public String generateToken(Map<String, Object> extraClaims, String username) {
@@ -76,10 +48,42 @@ public class JwtUtils {
                 .compact();
     }
 
+    // 从请求中提取 Token
+    public static String parseJwt(HttpServletRequest request) {
+        String headerAuth = request.getHeader("Authorization");
+
+        if (headerAuth != null && headerAuth.startsWith("Bearer ")) {
+            return headerAuth.substring(7); // 去除 "Bearer " 前缀
+        }
+        return null;
+    }
+
+    public int extractCustomerId(HttpServletRequest request) {
+        String token = parseJwt(request); // 从请求头中提取 JWT
+        if (token == null || !isTokenValid(token)) {
+            throw new RuntimeException("Invalid or missing token");
+        }
+        return extractCustomerId(token);
+    }
+
+    // 提取 customerId
+    public int extractCustomerId(String token) {
+        return Jwts.parser()
+                .setSigningKey(SECRET_KEY)
+                .parseClaimsJws(token)
+                .getBody()
+                .get("customerId", Integer.class)
+                ;
+    }
+
     // 校验 Token 是否有效
-    public boolean isTokenValid(String token, String username) {
-        final String extractedUsername = extractUsername(token);
-        return (extractedUsername.equals(username) && !isTokenExpired(token));
+    public boolean isTokenValid(String token) {
+        try {
+            Jwts.parser().setSigningKey(SECRET_KEY).parseClaimsJws(token);
+            return true;
+        } catch (JwtException | IllegalArgumentException e) {
+            return false;
+        }
     }
 
     // 检查 Token 是否过期
@@ -112,14 +116,9 @@ public class JwtUtils {
         return extractClaim(token, claims -> claims.get("merchantId", Integer.class));
     }
 
-    // JwtUtils.java
 
     public String getUsernameFromToken(String token) {
-        return Jwts.parser()
-                .setSigningKey(SECRET_KEY)
-                .parseClaimsJws(token)
-                .getBody()
-                .getSubject();
+        return extractClaim(token, Claims::getSubject);
     }
 
 

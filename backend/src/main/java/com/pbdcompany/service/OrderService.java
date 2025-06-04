@@ -1,21 +1,26 @@
 package com.pbdcompany.service;
 
 import com.pbdcompany.dto.request.OrderCreateRequest;
+import com.pbdcompany.dto.request.OrderItemRequest;
 import com.pbdcompany.dto.request.OrderShippingRequest;
 import com.pbdcompany.dto.response.OrderItemResponse;
 import com.pbdcompany.dto.response.OrderResponse;
 import com.pbdcompany.entity.LogisticsInfo;
 import com.pbdcompany.entity.OrderItem;
 import com.pbdcompany.entity.Orders;
+import com.pbdcompany.entity.Product;
 import com.pbdcompany.enums.Status;
 import com.pbdcompany.mapper.LogisticsInfoMapper;
 import com.pbdcompany.mapper.OrderItemMapper;
 import com.pbdcompany.mapper.OrderMapper;
+import com.pbdcompany.mapper.ProductMapper;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @Service
@@ -30,6 +35,8 @@ public class OrderService {
     @Autowired
     private LogisticsInfoMapper logisticsInfoMapper;
 
+    @Autowired
+    private ProductMapper productMapper;
 
     // 获取用户的所有订单（含订单项）
     public List<OrderResponse> getOrdersByCustomerId(int customerId) {
@@ -61,6 +68,7 @@ public class OrderService {
                     List<OrderItemResponse> itemResponses = items.stream()
                             .map(item -> {
                                 OrderItemResponse res = new OrderItemResponse();
+                                res.setOrderItemId(item.getOrderItemId());
                                 res.setProductId(item.getProductId());
                                 res.setQuantity(item.getQuantity());
                                 res.setPrice(item.getPrice());
@@ -87,7 +95,7 @@ public class OrderService {
         logisticsInfoMapper.insertBatch(logisticsList);
 
         // 更新订单状态为 "SHIPPED"
-        orderMapper.updateOrderStatusToShipped(request.getOrderId());
+        orderMapper.updateOrderStatus(request.getOrderId(), String.valueOf(Status.SHIPPED));
 
         return true;
     }
@@ -95,45 +103,73 @@ public class OrderService {
     @Transactional
     public boolean createOrder(OrderCreateRequest request) {
         try {
-            // 1. 生成订单号（可使用时间戳 + 随机数）
-            // 这里简化为数据库自增主键
+            List<OrderItemRequest> itemRequests = request.getItems();
+
+            // 1. 批量获取所有商品的价格
+            List<Integer> productIds = itemRequests.stream()
+                    .map(OrderItemRequest::getProductId)
+                    .distinct()
+                    .toList();
+
+            List<Product> products = new ArrayList<>();
+            productIds.forEach(
+                    productId -> {
+                        Product product = productMapper.findById(productId);
+                        products.add(product);
+                    }
+            );
+
+            // 构建 productId -> price 映射
+            Map<Integer, Double> priceMap = products.stream()
+                    .collect(Collectors.toMap(Product::getProductId, Product::getPrice));
 
             // 2. 计算总价
-            double totalPrice = request.getItems().stream()
-                    .mapToDouble(item -> item.getPrice() * item.getQuantity())
+            double totalPrice = itemRequests.stream()
+                    .mapToDouble(item -> {
+                        double price = priceMap.getOrDefault(item.getProductId(), 0.0);
+                        return price * item.getQuantity();
+                    })
                     .sum();
 
-            // 3. 构建订单对象
+            // 3. 创建订单
             Orders order = new Orders();
             order.setCustomerId(request.getCustomerId());
             order.setMerchantId(request.getMerchantId());
             order.setTotalPrice(totalPrice);
-            order.setStatus(Status.PENDING); // 默认状态
-
-            // 4. 插入订单
+            order.setStatus(Status.PENDING);
             orderMapper.insert(order);
 
-            // 5. 构建订单项列表
-            List<OrderItem> items = request.getItems().stream()
+            // 4. 创建订单项
+            List<OrderItem> orderItems = itemRequests.stream()
                     .map(item -> {
                         OrderItem oi = new OrderItem();
-                        oi.setOrderId(order.getOrderId()); // 获取自动生成的订单ID
+                        oi.setOrderId(order.getOrderId());
                         oi.setProductId(item.getProductId());
                         oi.setQuantity(item.getQuantity());
-                        oi.setPrice(item.getPrice());
+                        oi.setPrice(priceMap.getOrDefault(item.getProductId(), 0.0));
                         return oi;
                     })
                     .collect(Collectors.toList());
 
-            // 6. 批量插入订单项
-            if (!items.isEmpty()) {
-                orderItemMapper.insertBatch(items);
+            if (!orderItems.isEmpty()) {
+                orderItemMapper.insertBatch(orderItems);
             }
 
             return true;
 
         } catch (Exception e) {
-            // 日志记录异常信息
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    // 文件路径：/src/main/java/com/pbdcompany/service/OrderService.java
+
+    public boolean updateOrderStatus(int itemId, String status) {
+        try {
+            orderMapper.updateOrderStatus(itemId, status);
+            return true;
+        } catch (Exception e) {
             e.printStackTrace();
             return false;
         }

@@ -44,10 +44,6 @@ public class ProductController {
      */
     @PostMapping("/add")
     public String addProduct(@RequestBody AddProductRequest request) {
-        if (request.getImages() == null || request.getImages().isEmpty()) {
-            return "请至少上传一张商品图片";
-        }
-
         if (productService.addProduct(request)) {
             return "商品上架成功";
         } else {
@@ -77,6 +73,14 @@ public class ProductController {
         } else {
             return "商品不存在或删除失败";
         }
+    }
+
+    /**
+     * 根据商品 ID 获取商品详细信息
+     */
+    @GetMapping("/detail/{productId}")
+    public ProductInfoResponse getProductById(@PathVariable int productId) {
+        return productService.getProductById(productId);
     }
 
 

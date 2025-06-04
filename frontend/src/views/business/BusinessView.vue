@@ -33,8 +33,8 @@
 </template>
 
 <script setup>
-import { ref, onMounted, computed } from 'vue'
-import { useRouter } from 'vue-router'
+import {computed, onMounted, ref} from 'vue'
+import {useRouter} from 'vue-router'
 
 const router = useRouter()
 
@@ -60,8 +60,7 @@ const isActive = computed(() => (routeName) => {
 
 const logout = () => {
   localStorage.removeItem('token')
-  localStorage.removeItem('userId')
-  localStorage.removeItem('userName')
+  localStorage.removeItem('username')
   localStorage.removeItem('role')
   router.push('/login')
 }
@@ -71,14 +70,15 @@ const updateShopInfo = (newInfo) => {
 }
 
 onMounted(() => {
-  const userId = localStorage.getItem('userId')
-  const userName = localStorage.getItem('userName')
-  
-  shopInfo.value.id = userId || 'BUS2023VIP'
-  shopInfo.value.name = userName || '商家名称'
-  
+  const username = localStorage.getItem('username') || ''
+
+  // 使用用户名作为商家ID和名称
+  shopInfo.value.id = username
+  shopInfo.value.name = username
+
+  // 从本地存储获取商家信息
   const businessUsers = JSON.parse(localStorage.getItem('businessUsers') || '[]')
-  const currentBusiness = businessUsers.find(u => u.userId === userId)
+  const currentBusiness = businessUsers.find(u => u.username === username)
   
   if (currentBusiness) {
     shopInfo.value = {

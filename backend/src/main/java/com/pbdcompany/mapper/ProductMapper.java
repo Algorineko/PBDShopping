@@ -1,6 +1,6 @@
 package com.pbdcompany.mapper;
 
-import com.pbdcompany.dto.request.AddProductRequest;
+import com.pbdcompany.dto.response.ProductInfoResponse;
 import com.pbdcompany.entity.Product;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -28,6 +28,8 @@ public interface ProductMapper {
 
     // 删除商品
     int deleteById(int productId);
+
+    ProductInfoResponse getProductById(int productId);
 
 
 }

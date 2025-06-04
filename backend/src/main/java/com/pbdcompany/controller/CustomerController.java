@@ -27,7 +27,6 @@ public class CustomerController {
     public ResponseEntity<?> getCurrentUserProfile(
             @RequestHeader(value = "Authorization", required = false) String authHeader) {
 
-        System.out.println("AuthHeader: " + authHeader); // 调试输出
 
         if (authHeader==null || !authHeader.startsWith("Bearer ")) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("未登录");

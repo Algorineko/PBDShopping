@@ -38,4 +38,12 @@ public class ReviewService {
     public Review findById(int id) {
         return reviewMapper.findById(id);
     }
+
+    public List<Review> getReviewsByProductId(int productId) {
+        return reviewMapper.findByProductId(productId);
+    }
+
+    public List<Review> getReviewsByCustomerId(int customerId) {
+        return reviewMapper.findByCustomerId(customerId);
+    }
 }

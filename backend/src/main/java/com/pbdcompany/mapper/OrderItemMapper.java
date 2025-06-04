@@ -3,7 +3,6 @@ package com.pbdcompany.mapper;
 import com.pbdcompany.entity.OrderItem;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
-import org.hibernate.query.Order;
 
 import java.util.List;
 
@@ -16,5 +15,6 @@ public interface OrderItemMapper {
     List<OrderItem> findByOrderId(int orderId);
 
     List<OrderItem> findAll();
+
 }
 
