@@ -1,0 +1,9 @@
+# 忽略 node_modules 目录
+node_modules/
+
+# 其他可能需要忽略的文件（可选）
+.DS_Store
+dist/
+*.log
+.env.local
+.env.*.local

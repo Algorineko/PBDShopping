@@ -1,79 +1,160 @@
 <template>
-  <div class="info-section">
-    <h2><i class="el-icon-user"></i> 商家信息管理</h2>
-    <el-card class="info-card">
-      <el-form label-width="120px">
-        <el-form-item label="商家用户名">
-          <el-input v-model="shopInfo.username" disabled />
-          <div class="info-tip">商家用户名不可更改</div>
-        </el-form-item>
-        <el-form-item label="旧密码">
-          <el-input 
-            v-model="oldPassword" 
-            type="password" 
-            show-password
-            placeholder="请输入当前密码" 
-          />
-        </el-form-item>
-        <el-form-item label="新密码">
-          <el-input 
-            v-model="shopInfo.password" 
-            type="password" 
-            show-password
-            placeholder="请输入新密码" 
-          />
-          <div class="info-tip">留空则不修改密码</div>
-        </el-form-item>
-        <el-form-item label="商家地址">
-          <el-input v-model="shopInfo.address" placeholder="请输入商家地址" />
-        </el-form-item>
-        <el-form-item label="联系电话">
-          <el-input v-model="shopInfo.phoneNumber" placeholder="请输入联系电话" />
-        </el-form-item>
-        <el-form-item label="商家头像">
-          <div class="avatar-upload">
-            <el-avatar 
-              :size="120" 
-              :src="shopInfo.avatar" 
-              class="avatar-preview"
+  <div class="merchant-info-container">
+    <!-- 顶部品牌导航 -->
+    <div class="brand-header">
+      <div class="brand-section">
+        <div class="brand-icon">
+          🛒
+        </div>
+        <div class="brand-info">
+          <h1>拼宝东商城</h1>
+          <p class="page-subtitle">商家信息管理</p>
+        </div>
+      </div>
+      <div class="user-info">
+        <div class="user-avatar">👤</div>
+        <span class="username">{{ shopInfo.username || '商家' }}</span>
+      </div>
+    </div>
+
+    <!-- 信息管理卡片 -->
+    <div class="info-management-card">
+      <div class="section-header">
+        <div class="title-icon">👤</div>
+        <h2>商家信息管理</h2>
+      </div>
+
+      <div class="info-card-content">
+        <!-- 表单部分 -->
+        <div class="form-container">
+          <div class="form-item">
+            <label class="form-label">商家用户名</label>
+            <input 
+              v-model="shopInfo.username" 
+              class="form-input disabled"
+              disabled
             />
-            <div class="avatar-actions">
-              <el-upload
-                action="#"
-                :show-file-list="false"
-                :auto-upload="false"
-                :on-change="handleAvatarChange"
-              >
-                <el-button type="primary" icon="el-icon-upload" size="small">上传头像</el-button>
-              </el-upload>
-              <el-button 
-                v-if="shopInfo.avatar" 
-                type="danger" 
-                icon="el-icon-delete" 
-                size="small"
-                @click="removeAvatar"
-              >
-                移除
-              </el-button>
+            <div class="form-tip">商家用户名不可更改</div>
+          </div>
+
+          <div class="form-item">
+            <label class="form-label">旧密码</label>
+            <div class="password-input-wrapper">
+              <input 
+                v-model="oldPassword" 
+                type="password" 
+                placeholder="请输入当前密码"
+                class="form-input"
+              />
+              <span class="password-toggle"></span>
             </div>
           </div>
-        </el-form-item>
-        <div class="form-actions">
-          <el-button type="primary" @click="saveShopInfo" :loading="loading">
-            <i class="el-icon-check"></i> 保存修改
-          </el-button>
-          <el-button @click="resetForm">
-            <i class="el-icon-refresh"></i> 重置修改
-          </el-button>
+
+          <div class="form-item">
+            <label class="form-label">新密码</label>
+            <div class="password-input-wrapper">
+              <input 
+                v-model="shopInfo.password" 
+                type="password" 
+                placeholder="请输入新密码"
+                class="form-input"
+              />
+              <span class="password-toggle"></span>
+            </div>
+            <div class="form-tip">留空则不修改密码</div>
+          </div>
+
+          <div class="form-item">
+            <label class="form-label">商家地址</label>
+            <input 
+              v-model="shopInfo.address" 
+              placeholder="请输入商家地址"
+              class="form-input"
+            />
+          </div>
+
+          <div class="form-item">
+            <label class="form-label">联系电话</label>
+            <input 
+              v-model="shopInfo.phoneNumber" 
+              placeholder="请输入联系电话"
+              class="form-input"
+            />
+          </div>
+
+          <div class="form-item">
+            <label class="form-label">商家头像</label>
+            <div class="avatar-uploader">
+              <div class="avatar-preview" :class="{'has-avatar': shopInfo.avatar}">
+                <div v-if="shopInfo.avatar" class="avatar-image-wrapper">
+                  <img :src="shopInfo.avatar" alt="商家头像" />
+                </div>
+                <div v-else class="avatar-placeholder">
+                  👤
+                </div>
+              </div>
+              
+              <div class="avatar-actions">
+                <label class="avatar-upload-btn">
+                  <input 
+                    type="file" 
+                    @change="handleAvatarChange" 
+                    class="file-input" 
+                    accept="image/*" 
+                  />
+                  <span class="btn-text">📤 上传头像</span>
+                </label>
+                
+                <button 
+                  v-if="shopInfo.avatar" 
+                  class="avatar-remove-btn"
+                  @click="removeAvatar"
+                >
+                  🗑️ 移除头像
+                </button>
+              </div>
+            </div>
+          </div>
+          
+          <!-- 安全提示 -->
+          <div class="security-note">
+            <h3>安全提示</h3>
+            <ul>
+              <li>修改密码后请务必妥善保存</li>
+              <li>联系电话请填写有效的手机号码</li>
+              <li>头像图片支持JPG、PNG格式，大小不超过2MB</li>
+            </ul>
+          </div>
+
+          <!-- 表单操作按钮 -->
+          <div class="form-actions">
+            <button 
+              class="save-btn"
+              @click="saveShopInfo"
+              :disabled="loading"
+            >
+              <span v-if="loading">⏳</span>
+              <span v-else>✅</span>
+              保存修改
+            </button>
+            
+            <button class="reset-btn" @click="resetForm">
+              🔄 重置修改
+            </button>
+          </div>
         </div>
-      </el-form>
-    </el-card>
+      </div>
+      
+      <div class="card-footer">
+        <p>拼宝东商城 © 2023 商家信息管理系统</p>
+      </div>
+    </div>
   </div>
 </template>
 
 <script setup>
 import { ref, onMounted } from 'vue'
-import { ElMessage, ElNotification } from 'element-plus'
+import { ElMessage } from 'element-plus'
 import axios from 'axios'
 
 const shopInfo = ref({
@@ -216,9 +297,8 @@ const saveShopInfo = async () => {
     // 4. 重新获取最新数据确保一致性
     await fetchShopInfo()
     
-    ElNotification.success({
-      title: '保存成功',
-      message: '商家信息已更新',
+    ElMessage.success({
+      message: '商家信息已更新成功',
       duration: 2000
     })
   } catch (error) {
@@ -253,99 +333,482 @@ const resetForm = () => {
 }
 
 // 头像上传处理
-const handleAvatarChange = (file) => {
-  if (!file) return
-  const rawFile = file.raw
-  if (rawFile) {
-    const reader = new FileReader()
-    reader.onload = (e) => {
-      shopInfo.value.avatar = e.target.result
-      
-      // 将头像保存到本地存储
-      const userId = localStorage.getItem('userId')
-      if (userId) {
-        localStorage.setItem(`merchant_avatar_${userId}`, e.target.result)
-      }
-    }
-    reader.readAsDataURL(rawFile)
+const handleAvatarChange = (e) => {
+  const file = e.target.files[0];
+  if (!file) return;
+  
+  // 检查文件大小，限制为2MB
+  const maxSize = 2 * 1024 * 1024;
+  if (file.size > maxSize) {
+    ElMessage.error('图片大小不能超过2MB');
+    return;
   }
+  
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    shopInfo.value.avatar = e.target.result;
+    
+    // 将头像保存到本地存储
+    const userId = localStorage.getItem('userId');
+    if (userId) {
+      localStorage.setItem(`merchant_avatar_${userId}`, e.target.result);
+    }
+    
+    ElMessage.success('头像上传成功');
+  };
+  reader.readAsDataURL(file);
+  
+  // 重置文件输入，允许再次选择相同的文件
+  e.target.value = null;
 }
 
 // 移除头像
 const removeAvatar = () => {
-  shopInfo.value.avatar = ''
+  shopInfo.value.avatar = '';
   
   // 从本地存储移除头像
-  const userId = localStorage.getItem('userId')
+  const userId = localStorage.getItem('userId');
   if (userId) {
-    localStorage.removeItem(`merchant_avatar_${userId}`)
+    localStorage.removeItem(`merchant_avatar_${userId}`);
   }
+  
+  ElMessage.info('头像已移除');
 }
 
 // 组件挂载时获取商家信息
 onMounted(() => {
-  fetchShopInfo()
+  fetchShopInfo();
 })
 </script>
 
 <style scoped>
-.info-section h2 {
-  margin-top: 0;
+.merchant-info-container {
+  font-family: 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  background: linear-gradient(135deg, #f5f7fa 0%, #e4ecf4 100%);
+  min-height: 100vh;
+  padding: 25px;
+}
+
+.brand-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   margin-bottom: 25px;
-  color: #303133;
-  font-size: 22px;
-  font-weight: 600;
-  display: flex;
-  align-items: center;
-  padding-bottom: 15px;
-  border-bottom: 1px solid #ebeef5;
+  padding-bottom: 20px;
+  border-bottom: 1px solid rgba(48, 49, 51, 0.08);
 }
 
-.info-section h2 i {
-  margin-right: 12px;
+.brand-section {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.brand-icon {
+  background: linear-gradient(135deg, #e53935, #e35d5b);
+  width: 56px;
+  height: 56px;
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 12px rgba(229, 57, 53, 0.3);
+  font-size: 28px;
+  color: white;
+}
+
+.brand-info h1 {
   font-size: 24px;
-  color: #409eff;
+  font-weight: bold;
+  color: #303133;
+  margin: 0;
+  letter-spacing: 1px;
 }
 
-.info-card {
-  border-radius: 10px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-  border: none;
+.page-subtitle {
+  color: #909399;
+  font-size: 14px;
+  margin-top: 5px;
 }
 
-.avatar-upload {
+.user-info {
   display: flex;
   align-items: center;
-  gap: 25px;
+  gap: 12px;
+}
+
+.user-avatar {
+  width: 40px;
+  height: 40px;
+  background: #e1e4e8;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+}
+
+.username {
+  font-weight: 500;
+  color: #606266;
+}
+
+.info-management-card {
+  background: white;
+  border-radius: 18px;
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  margin: 0 auto;
+  max-width: 900px;
+  animation: fadeIn 0.6s ease;
+}
+
+.section-header {
+  padding: 25px 30px;
+  background: linear-gradient(to right, #f8fafc, #f0f5ff);
+  border-bottom: 1px solid #ebeef5;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.section-header h2 {
+  font-size: 22px;
+  color: #303133;
+  font-weight: 600;
+  margin: 0;
+}
+
+.title-icon {
+  font-size: 24px;
+  width: 48px;
+  height: 48px;
+  background: linear-gradient(135deg, #e6f7ff, #d1e9ff);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #1890ff;
+}
+
+.info-card-content {
+  padding: 35px 40px;
+}
+
+.form-container {
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+.form-item {
+  margin-bottom: 30px;
+}
+
+.form-label {
+  display: block;
+  font-weight: 600;
+  color: #409EFF;
+  font-size: 16px;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.form-input {
+  width: 100%;
+  padding: 14px 18px;
+  border: 1px solid #dcdfe6;
+  border-radius: 12px;
+  font-size: 15px;
+  transition: all 0.3s;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.form-input:focus {
+  outline: none;
+  border-color: #1890ff;
+  box-shadow: 0 0 0 3px rgba(24, 144, 255, 0.15);
+}
+
+.form-input.disabled {
+  background-color: #f8f9fa;
+  color: #909399;
+  cursor: not-allowed;
+}
+
+.password-input-wrapper {
+  position: relative;
+}
+
+.password-toggle {
+  position: absolute;
+  right: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  font-size: 18px;
+  opacity: 0.6;
+}
+
+.form-tip {
+  font-size: 13px;
+  color: #909399;
+  margin-top: 8px;
+  padding-left: 8px;
+  font-style: italic;
+}
+
+.avatar-uploader {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
 }
 
 .avatar-preview {
-  border: 1px dashed #dcdfe6;
-  border-radius: 8px;
-  background-color: #f8f9fa;
+  width: 130px;
+  height: 130px;
+  border-radius: 16px;
+  overflow: hidden;
+  position: relative;
+  border: 3px solid #f0f5ff;
+  transition: all 0.3s;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+}
+
+.avatar-preview.has-avatar {
+  border-color: #d9ecff;
+}
+
+.avatar-preview:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+}
+
+.avatar-placeholder {
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(135deg, #f5f7fa 0%, #e4ecf4 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #a0a0a0;
+  font-size: 45px;
+}
+
+.avatar-image-wrapper {
+  width: 100%;
+  height: 100%;
+}
+
+.avatar-image-wrapper img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
 }
 
 .avatar-actions {
   display: flex;
-  flex-direction: column;
-  gap: 10px;
+  gap: 15px;
 }
 
-.info-tip {
-  font-size: 12px;
-  color: #909399;
-  margin-top: 5px;
+.avatar-upload-btn {
+  position: relative;
+  display: inline-block;
+}
+
+.avatar-upload-btn .btn-text {
+  display: inline-block;
+  padding: 10px 18px;
+  background: linear-gradient(to right, #1890ff, #47a6ff);
+  color: white;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s;
+  box-shadow: 0 4px 10px rgba(24, 144, 255, 0.3);
+}
+
+.avatar-upload-btn:hover .btn-text {
+  background: linear-gradient(to right, #0082e6, #2a96ff);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 15px rgba(24, 144, 255, 0.4);
+}
+
+.file-input {
+  position: absolute;
+  left: 0;
+  top: 0;
+  opacity: 0;
+  width: 100%;
+  height: 100%;
+  cursor: pointer;
+}
+
+.avatar-remove-btn {
+  padding: 10px 18px;
+  background: linear-gradient(to right, #ff4d4f, #ff7875);
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s;
+  box-shadow: 0 4px 10px rgba(255, 77, 79, 0.2);
+}
+
+.avatar-remove-btn:hover {
+  background: linear-gradient(to right, #e64244, #ff6b6b);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 15px rgba(255, 77, 79, 0.3);
+}
+
+.security-note {
+  padding: 20px;
+  background: #f0f9ff;
+  border-radius: 12px;
+  border-left: 4px solid #1890ff;
+  margin: 35px 0 25px;
+}
+
+.security-note h3 {
+  margin-bottom: 12px;
+  color: #303133;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.security-note ul {
+  padding-left: 20px;
+}
+
+.security-note li {
+  margin-bottom: 8px;
+  line-height: 1.6;
+  color: #606266;
 }
 
 .form-actions {
   display: flex;
   justify-content: center;
-  gap: 20px;
+  gap: 25px;
   margin-top: 30px;
 }
 
-.form-actions .el-button {
-  padding: 12px 30px;
+.save-btn, .reset-btn {
+  padding: 14px 40px;
   font-size: 16px;
+  font-weight: 500;
+  border-radius: 15px;
+  cursor: pointer;
+  transition: all 0.3s;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border: none;
+}
+
+.save-btn {
+  background: linear-gradient(to right, #e53935, #e35d5b);
+  color: white;
+  box-shadow: 0 6px 18px rgba(229, 57, 53, 0.4);
+}
+
+.save-btn:hover {
+  background: linear-gradient(to right, #d63031, #e05553);
+  transform: translateY(-3px);
+  box-shadow: 0 8px 25px rgba(229, 57, 53, 0.5);
+}
+
+.save-btn:disabled {
+  background: linear-gradient(to right, #bdc3c7, #95a5a6);
+  opacity: 0.7;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: 0 4px 10px rgba(189, 195, 199, 0.4);
+}
+
+.reset-btn {
+  background: #ffffff;
+  color: #606266;
+  border: 1px solid #dcdfe6;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+}
+
+.reset-btn:hover {
+  background: #f0f5ff;
+  color: #1890ff;
+  border-color: #1890ff;
+  transform: translateY(-3px);
+  box-shadow: 0 6px 15px rgba(24, 144, 255, 0.15);
+}
+
+.card-footer {
+  text-align: center;
+  padding: 25px 0;
+  color: #909399;
+  font-size: 14px;
+  border-top: 1px solid #ebeef5;
+  background-color: #f8fafc;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* 响应式设计 */
+@media (max-width: 768px) {
+  .merchant-info-container {
+    padding: 15px;
+  }
+  
+  .brand-header {
+    flex-direction: column;
+    gap: 15px;
+    text-align: center;
+  }
+  
+  .brand-section {
+    flex-direction: column;
+  }
+  
+  .info-card-content {
+    padding: 25px 20px;
+  }
+  
+  .section-header {
+    padding: 20px;
+  }
+  
+  .avatar-actions {
+    flex-direction: column;
+    gap: 10px;
+  }
+  
+  .form-actions {
+    flex-direction: column;
+    gap: 15px;
+  }
+  
+  .save-btn, .reset-btn {
+    width: 100%;
+    justify-content: center;
+  }
+  
+  .avatar-preview {
+    margin: 0 auto;
+  }
 }
 </style>
