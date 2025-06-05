@@ -28,12 +28,6 @@
       >
         <div class="category-header">
           <h2 class="category-title">{{ category.name }}</h2>
-          <el-image 
-            :src="formatImageUrl(category.picture)" 
-            style="width: 120px; height: 40px; margin-left: 15px"
-            fit="contain"
-            v-if="category.picture"
-          />
         </div>
 
         <!-- 商品网格 -->
@@ -87,30 +81,42 @@ const categories = ref([])
 const searchKeyword = ref('')
 const loading = ref(true)
 
-// 加载分类数据
-const loadCategories = () => {
-  const savedCategories = localStorage.getItem('productCategories')
-  if (savedCategories) {
-    return JSON.parse(savedCategories)
+// 固定的商品分类数据
+const fixedCategories = [
+  { id: "1005000", name: "居家" },
+  { id: "1005002", name: "美食" },
+  { id: "1010000", name: "服饰" },
+  { id: "1011000", name: "母婴" },
+  { id: "1013001", name: "个护" },
+  { id: "1019000", name: "严选" },
+  { id: "1043000", name: "数码" },
+  { id: "109243029", name: "运动" },
+  { id: "19999999", name: "杂项" }
+]
+
+// 格式化图片URL
+const formatImageUrl = (url) => {
+  if (!url || url.trim() === '') return '';
+  
+  if (url.startsWith('http') || url.startsWith('data:')) {
+    return url;
   }
   
-  // 默认分类数据
-  return [
-    { id: "1005000", name: "居家" },
-    { id: "1005002", name: "美食" },
-    { id: "1010000", name: "服饰" },
-    { id: "1011000", name: "母婴" },
-    { id: "1013001", name: "个护" },
-    { id: "1019000", name: "严选" },
-    { id: "1043000", name: "数码" },
-    { id: "109243029", name: "运动" },
-    { id: "19999999", name: "杂项" }
-  ]
+  if (url.startsWith('/')) {
+    return `http://algorineko.top:8081${url}`;
+  }
+  
+  return `http://algorineko.top:8081/${url}`;
 }
 
-// 获取第一张图片
+// 获取第一张图片 - 修正了formatImageUrl的调用方式
 const getFirstImage = (images) => {
-  return images?.length > 0 ? images[0] : '/placeholder-product.jpg'
+  // 处理图片数组：过滤空字符串并格式化URL
+  const validImages = (images || [])
+    .filter(img => img && img.trim() !== '')
+    .map(img => formatImageUrl(img)); // 修正：正确调用formatImageUrl函数
+  
+  return validImages?.length > 0 ? validImages[0] : '/placeholder-product.jpg'
 }
 
 // 从API获取分类商品
@@ -119,7 +125,7 @@ const fetchCategoryProducts = async (categoryId) => {
     const response = await axios.get(
       `http://algorineko.top:8080/api/merchant/product/category/${categoryId}`
     )
-    
+    console.log('获取分类商品成功:', response.data)
     // 转换API数据结构以适应前端需求
     return response.data.map(product => ({
       id: product.productId,
@@ -140,21 +146,10 @@ const initData = async () => {
   try {
     loading.value = true
     
-    // 加载分类
-    const categoryList = loadCategories()
+    // 使用固定的分类数据
+    const categoryList = fixedCategories
     
-    // 创建分类映射
-    const categoryMap = new Map()
-    
-    // 初始化所有分类
-    categoryList.forEach(category => {
-      categoryMap.set(category.id, {
-        ...category,
-        products: []
-      })
-    })
-    
-    // 并发请求所有分类的商品
+    // 为每个分类获取商品
     const requests = categoryList.map(category => 
       fetchCategoryProducts(parseInt(category.id))
     )
@@ -162,15 +157,10 @@ const initData = async () => {
     const results = await Promise.all(requests)
     
     // 将商品分配到对应分类
-    results.forEach((products, index) => {
-      const categoryId = categoryList[index].id
-      if (categoryMap.has(categoryId)) {
-        categoryMap.get(categoryId).products = products
-      }
-    })
-    
-    // 确保所有分类都显示
-    categories.value = Array.from(categoryMap.values())
+    categories.value = categoryList.map((category, index) => ({
+      ...category,
+      products: results[index] || [] // 确保有商品数组
+    }))
     
   } catch (error) {
     console.error('初始化数据失败:', error)

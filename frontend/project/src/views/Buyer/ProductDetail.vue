@@ -3,9 +3,9 @@
     <el-button type="text" @click="$router.go(-1)">返回</el-button>
     
     <div class="detail-content">
-      <el-carousel :interval="4000" height="400px" v-if="product.images?.length > 0">
+      <el-carousel :interval="4000" height="400px" v-if="formattedImages.length > 0">
         <el-carousel-item 
-          v-for="(img, index) in product.images" 
+          v-for="(img, index) in formattedImages" 
           :key="index"
           style="height: 400px;"
         >
@@ -86,7 +86,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, computed } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { ElMessage } from 'element-plus'
 import { useCartStore } from '@/stores/cart'
@@ -111,6 +111,28 @@ const reviewsLoading = ref(false)
 const quantity = ref(1)
 const isAddingToCart = ref(false) // 加载状态
 
+// 格式化图片URL
+const formatImageUrl = (url) => {
+  if (!url || url.trim() === '') return '';
+  
+  if (url.startsWith('http') || url.startsWith('data:')) {
+    return url;
+  }
+  
+  if (url.startsWith('/')) {
+    return `http://algorineko.top:8081${url}`;
+  }
+  
+  return `http://algorineko.top:8081/${url}`;
+}
+
+// 计算格式化后的图片数组
+const formattedImages = computed(() => {
+  return (product.value.images || [])
+    .filter(img => img && img.trim() !== '')
+    .map(img => formatImageUrl(img));
+})
+
 // 从API获取商品详情
 const fetchProductDetail = async (id) => {
   if (!id) {
@@ -122,7 +144,7 @@ const fetchProductDetail = async (id) => {
     const response = await axios.get(
       `http://algorineko.top:8080/api/merchant/product/detail/${id}`
     )
-    
+    console.log('商品详情数据:', response.data)
     const apiData = response.data
     
     // 转换API数据结构以适应前端需求
@@ -177,7 +199,8 @@ const addToCart = async () => {
       productName: product.value.name,
       price: product.value.price,
       quantity: quantity.value,
-      image: product.value.images?.[0] || ''
+      // 使用格式化后的第一张图片
+      image: formattedImages.value?.[0] || ''
     })
      // 新增：添加成功后刷新购物车数据
     await cartStore.fetchCart()

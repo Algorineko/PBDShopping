@@ -180,6 +180,24 @@ import { ref, onMounted, computed } from 'vue'
 import { ElMessage } from 'element-plus'
 import axios from 'axios'
 
+// 图片格式化函数
+const formatImageUrl = (url) => {
+  if (!url || url.trim() === '') return '';
+  
+  if (url.startsWith('http') || url.startsWith('data:')) {
+    return url;
+  }
+  
+  // 使用固定基础URL
+  const baseUrl = 'http://algorineko.top:8081';
+  
+  if (url.startsWith('/')) {
+    return `${baseUrl}${url}`;
+  }
+  
+  return `${baseUrl}/${url}`;
+}
+
 // 订单状态配置
 const statusText = {
   PENDING: '待付款',
@@ -366,7 +384,7 @@ const loadOrders = async () => {
         return null
       })
     )
-
+    console.log('productRequests:', productIds)
     // 等待所有商品详情请求完成
     const productResponses = await Promise.all(productRequests)
     
@@ -375,12 +393,22 @@ const loadOrders = async () => {
     productResponses.forEach((res, index) => {
       if (res && res.data) {
         const product = res.data
+        // 处理商品图片
+        let formattedImage = 'https://via.placeholder.com/60';
+        if (product.images && product.images.length > 0) {
+          // 过滤空字符串并处理图片URL
+          const images = (product.images || [])
+            .filter(img => img && img.trim() !== '')
+            .map(img => formatImageUrl(img));
+          
+          if (images.length > 0) {
+            formattedImage = images[0];
+          }
+        }
+        
         productMap[productIds[index]] = {
           name: product.productName,
-          // 使用第一张图片或默认图片
-          image: product.images && product.images.length > 0 
-            ? product.images[0] 
-            : 'https://via.placeholder.com/60'
+          image: formattedImage
         }
       }
     })

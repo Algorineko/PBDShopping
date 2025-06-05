@@ -248,7 +248,6 @@ const fetchProductMerchant = async (productId) => {
     const response = await axios.get(
       `http://algorineko.top:8080/api/merchant/product/detail/${productId}`
     )
-    
     if (response.data && response.data.merchantId) {
       return response.data.merchantId
     }
@@ -319,7 +318,7 @@ const checkout = async () => {
     if (!payload || !payload.customerId) {
       throw new Error('用户信息不完整，请重新登录')
     }
-    console.log('payload',payload)
+    
     // 构造请求数据
     const orderItems = selectedItemsList.value.map(item => ({
       productId: item.id,
@@ -331,7 +330,7 @@ const checkout = async () => {
       merchantId: merchantId,
       items: orderItems
     }
-    console.log('requestData',requestData)  
+    
     // 调用创建订单API
     const response = await axios.post(
       'http://algorineko.top:8080/api/order/create',

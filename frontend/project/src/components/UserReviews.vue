@@ -11,7 +11,7 @@
             <div class="product-item">
               <router-link :to="`/buyer/${username}/product/${row.item.id}`">
                 <el-image 
-                  :src="row.item.image || '/placeholder-product.jpg'"
+                  :src="row.item.image"
                   style="width: 60px; height: 60px;"
                   fit="cover"
                 />
@@ -63,6 +63,24 @@ import { ElMessage, ElMessageBox } from 'element-plus'
 import axios from 'axios'
 
 const reviews = ref([])
+
+// 图片格式化函数
+const formatImageUrl = (url) => {
+  if (!url || url.trim() === '') return '';
+  
+  if (url.startsWith('http') || url.startsWith('data:')) {
+    return url;
+  }
+  
+  // 使用固定基础URL
+  const baseUrl = 'http://algorineko.top:8081';
+  
+  if (url.startsWith('/')) {
+    return `${baseUrl}${url}`;
+  }
+  
+  return `${baseUrl}/${url}`;
+}
 
 // JWT 解析函数
 const parseJwt = (token) => {
@@ -141,6 +159,12 @@ const loadReviews = async () => {
       // 使用本地存储的商品快照（如果存在）
       const itemSnapshot = localReview?.itemSnapshot || {}
       
+      // 格式化商品图片
+      let formattedImage = '/placeholder-product.jpg';
+      if (itemSnapshot.image) {
+        formattedImage = formatImageUrl(itemSnapshot.image);
+      }
+      
       return {
         ...apiReview,
         content: apiReview.comment, // 为了兼容原有模板
@@ -150,7 +174,7 @@ const loadReviews = async () => {
           name: itemSnapshot.name || '商品信息缺失',
           price: itemSnapshot.price || 0,
           quantity: itemSnapshot.quantity || 1,
-          image: itemSnapshot.image || '/placeholder-product.jpg'
+          image: formattedImage // 使用格式化后的图片URL
         }
       }
     })

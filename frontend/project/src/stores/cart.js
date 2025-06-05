@@ -21,6 +21,24 @@ const parseJwt = (token) => {
   }
 }
 
+// 格式化图片URL
+const formatImageUrl = (url) => {
+  if (!url || url.trim() === '') return '';
+  
+  if (url.startsWith('http') || url.startsWith('data:')) {
+    return url;
+  }
+  
+  // 使用固定基础URL
+  const baseUrl = 'http://algorineko.top:8081';
+  
+  if (url.startsWith('/')) {
+    return `${baseUrl}${url}`;
+  }
+  
+  return `${baseUrl}/${url}`;
+}
+
 export const useCartStore = defineStore('cart', () => {
   const items = ref([])
   const selectedItems = ref(new Set())
@@ -51,7 +69,7 @@ export const useCartStore = defineStore('cart', () => {
         name: item.name || '未知商品',
         price: Number(item.price) || 0,
         quantity: Math.max(1, Number(item.quantity) || 1),
-        image: item.image || '/placeholder-product.jpg',
+        image: formatImageUrl(item.image) || '/placeholder-product.jpg',
         cartItemId: item.cartItemId
       })
     }
@@ -145,6 +163,21 @@ export const useCartStore = defineStore('cart', () => {
       for (const cartItem of response.data) {
         const productDetail = await fetchProductDetail(cartItem.productId)
         
+        // 处理商品图片
+        let formattedImage = '/placeholder-product.jpg';
+        if (productDetail && productDetail.images) {
+          // 过滤空字符串并处理图片URL
+          const images = (productDetail.images || [])
+            .filter(img => img && img.trim() !== '')
+            .map(img => formatImageUrl(img));
+          
+          if (images.length > 0) {
+            formattedImage = images[0];
+          }
+        } else if (cartItem.image) {
+          formattedImage = formatImageUrl(cartItem.image);
+        }
+        
         // 合并购物车项和商品详情数据
         tempItems.push({
           id: cartItem.productId,
@@ -152,7 +185,7 @@ export const useCartStore = defineStore('cart', () => {
           name: productDetail?.productName || cartItem.productName || '未知商品',
           price: Number(productDetail?.price) || Number(cartItem.price) || 0,
           quantity: Math.max(1, Number(cartItem.quantity) || 1),
-          image: cartItem.image || '/placeholder-product.jpg'
+          image: formattedImage
         })
       }
       

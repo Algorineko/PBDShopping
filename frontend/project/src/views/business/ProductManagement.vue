@@ -425,7 +425,7 @@ const saveProduct = async () => {
     document.body.appendChild(loadingMessage);
     
     if (isEditing.value) {
-      // 编辑商品
+      // 编辑商品逻辑保持不变
       const response = await axios.put('http://algorineko.top:8080/api/merchant/product/update', {
         productId: currentProduct.value.productId,
         merchantId: merchantId.value,
@@ -435,33 +435,40 @@ const saveProduct = async () => {
         categoryId: currentProduct.value.categoryId
       })
       
-      if (response.data.includes('成功')) {
-        // 更新成功后重新加载商品列表
-        alert('商品更新成功')
-        productDialogVisible.value = false
-        await loadProducts()
+      if (response.data?.message?.includes('成功')) {
+        alert('商品更新成功');
+        productDialogVisible.value = false;
+        await loadProducts();
       } else {
-        throw new Error(response.data || '商品更新失败')
+        throw new Error(response.data?.message || '商品更新失败');
       }
     } else {
-      // 新增商品
-      const response = await axios.post('http://algorineko.top:8080/api/merchant/product/add', {
-        merchantId: merchantId.value,
-        productName: currentProduct.value.productName,
-        description: currentProduct.value.description || '',
-        price: currentProduct.value.price,
-        categoryId: currentProduct.value.categoryId,
-        images: currentProduct.value.images.length > 0 
-                ? currentProduct.value.images 
-                : [""]
-      })
-      if (response.data.includes('成功')) {
-        // 新增成功后重新加载商品列表
-        alert('商品添加成功')
-        productDialogVisible.value = false
-        await loadProducts()
+      // 新增商品 - 使用FormData上传
+      const formData = new FormData();
+      formData.append('productName', currentProduct.value.productName);
+      formData.append('price', currentProduct.value.price);
+      formData.append('categoryId', currentProduct.value.categoryId);
+      formData.append('merchantId', merchantId.value);
+      formData.append('description', currentProduct.value.description || '');
+      
+      // 添加图片文件
+      currentProduct.value.images.forEach((base64Image, index) => {
+        const blob = dataURLtoBlob(base64Image);
+        formData.append('images', blob, `image_${index}.jpg`);
+      });
+      
+      const response = await axios.post('http://algorineko.top:8080/api/merchant/product/add', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      });
+      
+      if (response.data?.message?.includes('成功')) {
+        alert('商品添加成功');
+        productDialogVisible.value = false;
+        await loadProducts();
       } else {
-        throw new Error(response.data || '商品添加失败')
+        throw new Error(response.data?.message || '商品添加失败');
       }
     }
   } catch (error) {
@@ -476,6 +483,19 @@ const saveProduct = async () => {
       }
     }
   }
+}
+
+// 将base64转换为Blob对象
+function dataURLtoBlob(dataurl) {
+  const arr = dataurl.split(',');
+  const mime = arr[0].match(/:(.*?);/)[1];
+  const bstr = atob(arr[1]);
+  let n = bstr.length;
+  const u8arr = new Uint8Array(n);
+  while (n--) {
+    u8arr[n] = bstr.charCodeAt(n);
+  }
+  return new Blob([u8arr], { type: mime });
 }
 
 // 删除商品方法
@@ -533,7 +553,6 @@ const doSearch = () => {
   console.log(`正在搜索商品: ${productFilter.value.keyword}`);
 }
 
-// 加载商品方法
 const loadProducts = async () => {
   try {
     const loadingMessage = document.createElement('div');
@@ -550,16 +569,35 @@ const loadProducts = async () => {
     document.body.appendChild(loadingMessage);
     
     const response = await axios.get(`http://algorineko.top:8080/api/merchant/product/list?merchantId=${merchantId.value}`)
-    
+    console.log('商品数据:', response.data);
+    // 处理API响应数据
     if (Array.isArray(response.data)) {
-      products.value = response.data.map(item => ({
-        productId: item.productId,
-        productName: item.productName,
-        categoryId: String(item.categoryId || ''),
-        price: item.price,
-        description: item.description,
-        images: item.images || []
-      }))
+      products.value = response.data.map(item => {
+        // 处理图片URL - 确保是完整URL
+        const images = (item.images || [])
+          .filter(img => img && img.trim() !== '')  // 过滤空字符串
+          .map(img => {
+            // 如果图片URL是相对路径，则转换为绝对路径
+            if (img && !img.startsWith('http') && !img.startsWith('data:')) {
+              // 处理以斜杠开头的情况
+              if (img.startsWith('/')) {
+                return `http://algorineko.top:8081${img}`;
+              } else {
+                return `http://algorineko.top:8081/${img}`;
+              }
+            }
+            return img;
+          });
+        
+        return {
+          productId: item.productId,
+          productName: item.productName,
+          categoryId: String(item.categoryId || ''),
+          price: item.price,
+          description: item.description,
+          images: images
+        }
+      });
     } else {
       throw new Error('返回的数据格式不正确')
     }
