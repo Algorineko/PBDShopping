@@ -48,6 +48,18 @@ services:
       - MYSQL_DATABASE=${PROD_MYSQL_FMS_DATABASE}
     volumes:
       - ../data/mysql:/var/lib/mysql
+      - /home/javaweb/docker/images:/app/images
+
+  fms_fe:
+    container_name: fms_fe
+    build: 
+      context: /home/javaweb/frontend  # 指向前端目录
+    networks:
+      - fms_backend  # 使用同一网络
+    ports:
+      - "8081:80"
+    restart: always
 
 networks:
   fms_backend:
+
